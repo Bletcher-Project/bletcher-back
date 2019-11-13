@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes) => (
-    sequelize.define('HashTag', {
+module.exports = (sequelize, DataTypes) => {
+    return sequelize.define('HashTag', {
       title: {
         type: DataTypes.STRING(100),
         allowNull: false,
@@ -8,5 +8,5 @@ module.exports = (sequelize, DataTypes) => (
     }, {
       timestamps: true,
       paranoid: true,
-    })
-  );
+    });
+  };

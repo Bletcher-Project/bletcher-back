@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Comment', {
+    return sequelize.define('Save', {
       postId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -15,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
           model: 'User',
           key: 'userId',
         },
-      },
-      content: {
-        type: DataTypes.STRING(10000),
-        allowNull: true,
       },
     }, {
       timestamps: true,

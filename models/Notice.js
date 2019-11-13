@@ -1,14 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Comment', {
-      postId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Post',
-          key: 'postId',
-        },
-      },
-      userId: {
+    return sequelize.define('Notice', {
+      senderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -16,9 +8,21 @@ module.exports = (sequelize, DataTypes) => {
           key: 'userId',
         },
       },
-      content: {
-        type: DataTypes.STRING(10000),
-        allowNull: true,
+      receiverId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'User',
+          key: 'userId',
+        }, 
+      },
+      message: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
+      isChecked: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
       },
     }, {
       timestamps: true,
