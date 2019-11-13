@@ -1,20 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Notice', {
-      senderId: {
+      id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: 'User',
-          key: 'userId',
-        },
-      },
-      receiverId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'User',
-          key: 'userId',
-        }, 
+        autoIncrement: true,
+        primaryKey: true,
       },
       message: {
         type: DataTypes.STRING(100),
