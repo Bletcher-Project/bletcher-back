@@ -1,21 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Notice', {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
+  return sequelize.define(
+    "Notice",
+    {
+      // id: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      //   autoIncrement: true,
+      //   primaryKey: true,
+      // },
       message: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: false
       },
       isChecked: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-    }, {
+        allowNull: false
+      }
+    },
+    {
       timestamps: true,
-      paranoid: true,
-    });
-  };
+      paranoid: true
+    }
+  );
+};
