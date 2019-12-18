@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -16,6 +17,13 @@ sequelize.sync();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
+// cors option setup
+const corsOptions = {
+  origin: 'http://localhost:3000', // allowed request adress
+  credentials: true, // add setting contents into response header if set true
+};
+
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({

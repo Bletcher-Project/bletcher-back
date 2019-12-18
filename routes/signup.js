@@ -42,7 +42,7 @@ router.post("/", upload.single("img"), async (req, res, next) => {
       }
     });
     if (exUser) {
-      return res.status(400).send("Already exists email");
+      return res.status(400).json({ exist: 1 });
     }
 
     await User.create({
@@ -54,7 +54,7 @@ router.post("/", upload.single("img"), async (req, res, next) => {
       type
     });
 
-    return res.status(200).send("Signup Success!");
+    return res.status(200).json({ success: 1 });
   } catch (error) {
     console.error(error);
     return next(error);
