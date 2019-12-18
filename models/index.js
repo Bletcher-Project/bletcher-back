@@ -2,11 +2,12 @@ const path = require("path");
 const Sequelize = require("sequelize");
 
 const env = process.env.NODE_ENV || "development";
-const config = require(path.join(__dirname, "..", "config", "config.json"))[
+const setting = require(path.join(__dirname, "..", "config", "config.json"));
+const config = setting.sqlite[env];
+/*const config = require(path.join(__dirname, "..", "config", "config.json"))[
   env
-];
+]; */
 const db = {};
-
 const sequelize = new Sequelize(
   config.database,
   config.username,
@@ -39,8 +40,12 @@ db.Comment.belongsTo(db.User);
 db.Post.hasMany(db.Comment);
 db.Comment.belongsTo(db.Post);
 
-db.Post.belongsToMany(db.HashTag, { through: "PostHashTag" });
-db.HashTag.belongsToMany(db.Post, { through: "PostHashTag" });
+db.Post.belongsToMany(db.HashTag, {
+  through: "PostHashTag"
+});
+db.HashTag.belongsToMany(db.Post, {
+  through: "PostHashTag"
+});
 
 db.Post.hasMany(db.Save);
 db.Save.belongsTo(db.Post);
