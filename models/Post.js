@@ -1,15 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Post', {
+  return sequelize.define(
+    "Post",
+    {
       postImgName: {
-        type: DataTypes.STRING(200),
-        allowNull: false,
+        type: DataTypes.STRING(300),
+        allowNull: false
       },
       content: {
         type: DataTypes.STRING(10000),
-        allowNull: true,
-      },
-    }, {
+        allowNull: true
+      }
+    },
+    {
       timestamps: true,
-      paranoid: true,
-    });
-  };
+      paranoid: true
+    }
+  );
+};

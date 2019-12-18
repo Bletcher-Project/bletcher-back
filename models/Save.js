@@ -1,7 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Save', {
-    }, {
+  return sequelize.define(
+    "Save",
+    {},
+    {
       timestamps: true,
-      paranoid: true,
-    });
-  };
+      paranoid: true
+    }
+  );
+};
