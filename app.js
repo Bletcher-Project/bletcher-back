@@ -1,16 +1,17 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
-const path = require("path");
+const logger = require("morgan");
 const session = require("express-session");
-const flash = require("connect-flash");
 require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
+// Router
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const signupRouter = require("./routes/signup");
+
+// Sequelize
 const sequelize = require("./models").sequelize;
 
 const app = express();
@@ -21,12 +22,10 @@ sequelize
     console.log("DB successfully connected.");
   })
   .catch(err => {
-    console.log("xxx-- DB connect fail --xxx");
-    console.log(err);
+    console.log("DB ERROR : ", err);
   });
 
-app.use(morgan("dev"));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -42,7 +41,6 @@ app.use(
     cookie: { httpOnly: true, secure: false }
   })
 );
-app.use(flash());
 
 // Router
 app.use("/", indexRouter);
