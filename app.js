@@ -6,12 +6,7 @@ require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
-// Router
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const signupRouter = require("./routes/signup");
-
-// Sequelize
+const routes = require("./routes/api");
 const sequelize = require("./models").sequelize;
 
 const app = express();
@@ -43,9 +38,7 @@ app.use(
 );
 
 // Router
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/signup", signupRouter);
+app.use("/api", routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
