@@ -2,12 +2,15 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
-require("dotenv").config();
+const flash = require("connect-flash");
+const passport = require("passport");
 
+require("dotenv").config();
 const port = process.env.PORT || 4000;
 
 const routes = require("./routes/api");
 const sequelize = require("./models").sequelize;
+const passportConfig = require("./passport");
 
 const app = express();
 //sequelize.sync();
@@ -19,6 +22,7 @@ sequelize
   .catch(err => {
     console.log("DB ERROR : ", err);
   });
+passportConfig(passport);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -36,6 +40,9 @@ app.use(
     cookie: { httpOnly: true, secure: false }
   })
 );
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Router
 app.use("/api", routes);
@@ -53,9 +60,10 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: err
+  });
 });
 
 // open the server

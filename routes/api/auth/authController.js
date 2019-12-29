@@ -1,7 +1,9 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { User } = require("../models");
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const { User } = require("../../../models");
 
 /* code for uploading profile img */
 fs.readdir("uploads", error => {
@@ -27,11 +29,11 @@ const upload = multer({
 });
 
 /* POST Signup */
-export const postSignUp = upload.single("img"), async (req, res, next) => {
-  //console.log(req.file);
-  //res.json({ url: `${req.file.path}` });
+// upload.single("img")),
+exports.postSignUp = async (req, res, next) => {
   const { email, name, password, profileImgName, status, type } = req.body;
   const imgpath = req.file ? req.file.path : null;
+
   try {
     const exUser = await User.findOne({
       where: {
@@ -42,13 +44,17 @@ export const postSignUp = upload.single("img"), async (req, res, next) => {
       return res.status(400).json({ exist: 1 });
     }
 
-    await User.create({
-      email,
-      name,
-      password,
-      profileImgName: imgpath,
-      status,
-      type
+    const saltRounds = 10;
+
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+      User.create({
+        email,
+        name,
+        password: hash,
+        profileImgName: imgpath,
+        status,
+        type
+      });
     });
 
     return res.status(200).json({ success: 1 });
@@ -58,5 +64,30 @@ export const postSignUp = upload.single("img"), async (req, res, next) => {
   }
 };
 
-/* GET Sign In */
-export const getSignIn
+/* POST Sign In */
+exports.postSignIn = (req, res) => {
+  passport.authenticate("local", (authError, user, info) => {
+    if (authError) {
+      console.error(authError);
+      return next(authError);
+    }
+    if (!user) {
+      req.flash("signInError", info.message);
+      return res.redirect("/");
+    }
+    return req.login(user, signInError => {
+      if (signInError) {
+        console.error(signInError);
+        return next(signInError);
+      }
+      return res.redirect("/");
+    });
+  })(req, res, next);
+};
+
+/* GET Sign Out */
+exports.getSignOut = (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.redirect("/");
+};
