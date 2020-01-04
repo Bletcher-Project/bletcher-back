@@ -2,17 +2,23 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
-const flash = require("connect-flash");
-const passport = require("passport");
 
+/* LOAD CONFIG */
 require("dotenv").config();
 const port = process.env.PORT || 4000;
 
 const routes = require("./routes/api");
 const sequelize = require("./models").sequelize;
-const passportConfig = require("./passport");
 
+/* EXPRESS CONFIGURATION */
 const app = express();
+
+/* === CONNECTION TEST === */
+app.get("/", (req, res) => {
+  res.send("Hello BLETCHER");
+});
+
+/* MySQL CONNECT */
 //sequelize.sync();
 sequelize
   .sync()
@@ -22,9 +28,10 @@ sequelize
   .catch(err => {
     console.log("DB ERROR : ", err);
   });
-passportConfig(passport);
 
+/* print the request log on console */
 app.use(logger("dev"));
+
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -40,21 +47,18 @@ app.use(
     cookie: { httpOnly: true, secure: false }
   })
 );
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Router
+/* ROUTER */
 app.use("/api", routes);
 
-// catch 404 and forward to error handler
+/* catch 404 and forward to error handler */
 app.use((req, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
 
-// error handler
+/* error handler */
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;

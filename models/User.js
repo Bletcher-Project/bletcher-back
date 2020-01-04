@@ -1,5 +1,8 @@
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define(
+  const User = sequelize.define(
     "User",
     {
       name: {
@@ -34,4 +37,18 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true
     }
   );
+
+  /* Hash the password before saving the user model */
+  User.beforeCreate(user => {
+    return bcrypt
+      .hash(user.password, 10)
+      .then(hash => {
+        user.password = hash;
+      })
+      .catch(err => {
+        throw new Error();
+      });
+  });
+
+  return User;
 };

@@ -1,10 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
-const controller = require("../auth/authController");
-const { isSignIn, isNotSignIn } = require("./middlewares");
+const controller = require("./authController");
 
-authRouter.post("/signup", isNotSignIn, controller.postSignUp);
-authRouter.post("/signin", isNotSignIn, controller.postSignIn);
-authRouter.get("/signout", isSignIn, controller.getSignOut);
+authRouter.post("/signup", controller.postSignUp);
 
 module.exports = authRouter;
