@@ -1,4 +1,7 @@
-const { User } = require("../../../models");
+const {
+  User,
+  Sequelize: { Op }
+} = require("../../../models");
 
 /*
   Sign Up
@@ -10,7 +13,7 @@ exports.postSignUp = async (req, res, next) => {
   try {
     const exUser = await User.findOne({
       where: {
-        email
+        [Op.or]: [{ email: email }, { name: name }]
       }
     });
     if (exUser) {
@@ -32,6 +35,14 @@ exports.postSignUp = async (req, res, next) => {
   }
 };
 
+/*
+  Sign In
+  POST /api/auth/signin
+*/
+
+exports.postSignIn = (req, res, next) => {
+  res.send("login api is working");
+};
 // /* POST Sign In */
 // exports.postSignIn = (req, res, next) => {
 //   console.log("auth!!");

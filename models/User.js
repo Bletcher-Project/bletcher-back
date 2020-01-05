@@ -1,4 +1,3 @@
-const validator = require("validator");
 const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, DataTypes) => {
