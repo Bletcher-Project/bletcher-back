@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         user.password = hash;
       })
       .catch(err => {
-        throw new Error();
+        throw err;
       });
   });
 
@@ -54,12 +54,12 @@ module.exports = (sequelize, DataTypes) => {
   User.authenticate = async function(email, password) {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      throw new Error({ error: "Invalid login credentials" });
+      return false;
     }
 
     const isPasswordMatch = await bcrypt.compareSync(password, user.password);
     if (!isPasswordMatch) {
-      throw new Error({ error: "Invalid login credentials" });
+      return false;
     }
 
     return user;
@@ -72,6 +72,11 @@ module.exports = (sequelize, DataTypes) => {
       jwt.sign(
         { _id: user.id, email: user.email },
         process.env.JWT_KEY,
+        {
+          // expiresIn: '7d',
+          issuer: "bletcher",
+          subject: "userInfo"
+        },
         (err, token) => {
           if (err) reject(err);
           resolve(token);

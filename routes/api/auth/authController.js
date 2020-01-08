@@ -20,7 +20,7 @@ exports.postSignUp = async (req, res, next) => {
       return res.status(400).json({ exist: 1 });
     }
 
-    User.create({
+    await User.create({
       email,
       name,
       password,
@@ -30,6 +30,7 @@ exports.postSignUp = async (req, res, next) => {
     });
     return res.status(200).json({ success: 1 });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
@@ -52,7 +53,8 @@ exports.postSignIn = async (req, res, next) => {
     const token = await user.authorize();
     return res.status(200).send({ user, token });
   } catch (error) {
-    return res.status(400).send(error);
+    console.error(error);
+    return next(error);
   }
 };
 
