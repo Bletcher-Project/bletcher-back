@@ -30,7 +30,6 @@ exports.postSignUp = async (req, res, next) => {
     });
     return res.status(200).json({ success: 1 });
   } catch (error) {
-    console.error(error);
     return next(error);
   }
 };
@@ -39,35 +38,23 @@ exports.postSignUp = async (req, res, next) => {
   Sign In
   POST /api/auth/signin
 */
+exports.postSignIn = async (req, res, next) => {
+  const { email, password } = req.body;
 
-exports.postSignIn = (req, res, next) => {
-  res.send("login api is working");
+  try {
+    const user = await User.authenticate(email, password);
+    if (!user) {
+      return res
+        .status(401)
+        .send({ error: "Login failed! Check authentication credentials" });
+    }
+
+    const token = await user.authorize();
+    return res.status(200).send({ user, token });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 };
-// /* POST Sign In */
-// exports.postSignIn = (req, res, next) => {
-//   console.log("auth!!");
-//   passport.authenticate("local", (authError, user, info) => {
-//     console.log("auth!!");
-//     console.log(user);
-//     if (authError) {
-//       console.error(authError);
-//       return next(authError);
-//     }
-//     if (!user) {
-//       console.log("not user!!");
-//       req.flash("signInError", info.message);
-//       console.log(info.message);
-//       return res.redirect("/");
-//     }
-//     return req.login(user, signInError => {
-//       if (signInError) {
-//         console.error(signInError);
-//         return next(signInError);
-//       }
-//       return res.redirect("/");
-//     });
-//   })(req, res, next);
-// };
 
 // /* GET Sign Out */
 // exports.getSignOut = (req, res) => {
