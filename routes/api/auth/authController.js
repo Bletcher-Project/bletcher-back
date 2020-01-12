@@ -58,9 +58,13 @@ exports.postSignIn = async (req, res, next) => {
   }
 };
 
-// /* GET Sign Out */
-// exports.getSignOut = (req, res) => {
-//   req.logout();
-//   req.session.destroy();
-//   res.redirect("/");
-// };
+/*
+  Check user status with JWT token
+  GET /api/auth/check
+*/
+exports.check = (req, res) => {
+  res.json({
+    success: true,
+    info: req.decoded
+  });
+};
