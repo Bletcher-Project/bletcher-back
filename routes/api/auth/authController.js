@@ -17,6 +17,7 @@ exports.postSignUp = async (req, res, next) => {
     status,
     type
   } = req.body;
+  const imgpath = req.file ? req.file.path : null;
 
   try {
     const exUser = await User.findOne({
@@ -35,7 +36,7 @@ exports.postSignUp = async (req, res, next) => {
         email,
         name,
         password,
-        profileImgName: null,
+        profileImgName: imgpath,
         status,
         type
       });
