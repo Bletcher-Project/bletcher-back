@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
+const cors = require("cors");
 
 /* LOAD CONFIG */
 require("dotenv").config();
@@ -12,6 +13,14 @@ const sequelize = require("./models").sequelize;
 
 /* EXPRESS CONFIGURATION */
 const app = express();
+
+/* ALLOW CONNECT BACK-FRONT */
+// cors option setup
+const corsOptions = {
+  origin: 'http://localhost:3000', // allowed request adress
+  credentials: true, // add setting contents into response header if set true
+};
+app.use(cors(corsOptions));
 
 /* === CONNECTION TEST === */
 app.get("/", (req, res) => {

@@ -8,7 +8,15 @@ const {
   POST /api/auth/signup
 */
 exports.postSignUp = async (req, res, next) => {
-  const { email, name, password, profileImgName, status, type } = req.body;
+  const {
+    checkRepeat,
+    email,
+    name,
+    password,
+    profileImgName,
+    status,
+    type
+  } = req.body;
 
   try {
     const exUser = await User.findOne({
@@ -20,15 +28,19 @@ exports.postSignUp = async (req, res, next) => {
       return res.status(400).json({ exist: 1 });
     }
 
-    await User.create({
-      email,
-      name,
-      password,
-      profileImgName: null,
-      status,
-      type
-    });
-    return res.status(200).json({ success: 1 });
+    if (checkRepeat) {
+      return res.status(200).json({ exist: 0 });
+    } else {
+      await User.create({
+        email,
+        name,
+        password,
+        profileImgName: null,
+        status,
+        type
+      });
+      return res.status(200).json({ success: 1 });
+    }
   } catch (error) {
     console.error(error);
     return next(error);
