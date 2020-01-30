@@ -25,6 +25,6 @@ const p = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-const authUpload = p.single("img");
+const signUpMiddleware = p.single("img");
 
-module.exports = authUpload;
+module.exports = signUpMiddleware;
