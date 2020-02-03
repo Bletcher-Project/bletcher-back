@@ -9,6 +9,7 @@ const {
 */
 exports.postSignUp = async (req, res, next) => {
   const { email, name, password, profileImgName, status, type } = req.body;
+  const imgpath = req.file ? req.file.path : null;
 
   try {
     const exUser = await User.findOne({
@@ -24,7 +25,7 @@ exports.postSignUp = async (req, res, next) => {
       email,
       name,
       password,
-      profileImgName: null,
+      profileImgName: imgpath,
       status,
       type
     });
@@ -40,10 +41,10 @@ exports.postSignUp = async (req, res, next) => {
   POST /api/auth/signin
 */
 exports.postSignIn = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { id, password } = req.body;
 
   try {
-    const user = await User.authenticate(email, password);
+    const user = await User.authenticate(id, password);
     if (!user) {
       return res
         .status(401)

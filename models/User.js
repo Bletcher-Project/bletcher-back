@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Op = require("sequelize").Op;
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -51,8 +52,12 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   /* Search for a user by email and password. */
-  User.authenticate = async function(email, password) {
-    const user = await User.findOne({ where: { email } });
+  User.authenticate = async function(id, password) {
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [{ email: id }, { name: id }]
+      }
+    });
     if (!user) {
       return false;
     }
