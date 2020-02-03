@@ -4,44 +4,11 @@ const {
 } = require("../../../models");
 
 /*
-  Create user (signup)
-  POST /api/users/
+  Get User
+  GET /api/user/:name
+  GET /api/user/:email
 */
-exports.createUser = async (req, res, next) => {
-  const { email, name, password, profileImgName, status, type } = req.body;
-  const imgpath = req.file ? req.file.path : null;
-
-  try {
-    const exUser = await User.findOne({
-      where: {
-        [Op.or]: [{ email: email }, { name: name }]
-      }
-    });
-    if (exUser) {
-      return res.status(400).json({ exist: 1 });
-    }
-
-    await User.create({
-      email,
-      name,
-      password,
-      profileImgName: imgpath,
-      status,
-      type
-    });
-    return res.status(200).json({ success: 1 });
-  } catch (error) {
-    console.error(error);
-    return next(error);
-  }
-};
-
-/*
-  Search user by name or email
-  GET /api/users?name={...}
-  GET /api/users?email={...}
-*/
-exports.searchUser = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
   const id = req.query.id;
   const email = req.query.email;
   const name = req.query.name;
@@ -68,6 +35,10 @@ exports.searchUser = async (req, res, next) => {
   }
 };
 
+/*
+  Delete User
+  ...
+*/
 exports.deleteUser = async (req, res, next) => {
   const id = req.query.id;
 

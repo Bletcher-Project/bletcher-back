@@ -5,7 +5,7 @@ const fs = require("fs");
 /* code for uploading profile img */
 fs.readdir("uploads", error => {
   if (error) {
-    console.error("uploads 폴더가 없어 uploads 폴더를 생성합니다.");
+    console.error("Create Upload folder");
     fs.mkdirSync("uploads");
   }
 });
@@ -25,6 +25,6 @@ const p = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-const signUpMiddleware = p.single("img");
+const multerMiddleware = p.single("img");
 
-module.exports = signUpMiddleware;
+module.exports = multerMiddleware;
