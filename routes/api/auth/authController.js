@@ -4,39 +4,6 @@ const {
 } = require("../../../models");
 
 /*
-  Sign Up
-  POST /api/auth/signup
-*/
-exports.postSignUp = async (req, res, next) => {
-  const { email, name, password, profileImgName, status, type } = req.body;
-  const imgpath = req.file ? req.file.path : null;
-
-  try {
-    const exUser = await User.findOne({
-      where: {
-        [Op.or]: [{ email: email }, { name: name }]
-      }
-    });
-    if (exUser) {
-      return res.status(400).json({ exist: 1 });
-    }
-
-    await User.create({
-      email,
-      name,
-      password,
-      profileImgName: imgpath,
-      status,
-      type
-    });
-    return res.status(200).json({ success: 1 });
-  } catch (error) {
-    console.error(error);
-    return next(error);
-  }
-};
-
-/*
   Sign In
   POST /api/auth/signin
 */
