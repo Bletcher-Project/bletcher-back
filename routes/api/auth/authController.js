@@ -36,3 +36,24 @@ exports.check = (req, res) => {
     info: req.decoded
   });
 };
+
+
+/*
+  Get user Info with JWT token
+  GET /api/auth/user
+*/
+exports.getUserInfo = async (req, res, next) => {
+  try {
+    const userInfo = await User.findOne({
+      where: {
+        [Op.or]: [
+          { id: req.decoded._id },
+        ]
+      }
+    });
+    return res.status(200).send({ userInfo });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+};
