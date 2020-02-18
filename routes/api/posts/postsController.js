@@ -1,4 +1,5 @@
 const {
+  User,
   Post,
   Sequelize: { Op }
 } = require("../../../models");
@@ -12,7 +13,11 @@ exports.getPost = async (req, res, next) => {
   const id = req.params.id;
   try {
     if (id) {
-      await Post.findOne({ where: { id: id } }).then(post => {
+      await Post.findOne({
+        where: { id: id },
+        include: { model: User, attributes: ["id", "name", "profileImgName"] },
+        order: [["createdAt", "DESC"]]
+      }).then(post => {
         return post !== null
           ? res.status(200).json({ post: post })
           : res.status(404).json({ message: "Post not found" });
