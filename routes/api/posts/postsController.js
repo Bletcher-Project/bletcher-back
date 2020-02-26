@@ -23,8 +23,10 @@ exports.getPost = async (req, res, next) => {
           : res.status(404).json({ message: "Post not found" });
       });
     } else {
-      await Post.findAll({}).then(async Allposts => {
-        return res.status(200).json({ posts: Allposts });
+      await Post.findAll({
+        include: { model: User, attributes: ["id", "name", "profileImgName"] }
+      }).then(async allPosts => {
+        return res.status(200).json({ posts: allPosts });
       });
     }
   } catch (error) {
