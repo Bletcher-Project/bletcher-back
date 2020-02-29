@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   /* Search for a user by email and password. */
-  User.authenticate = async function(id, password) {
+  User.authenticate = async function (id, password) {
     const user = await User.findOne({
       where: {
         [Op.or]: [{ email: id }, { name: id }]
@@ -71,14 +71,14 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   /* Generate an auth token for the user */
-  User.prototype.authorize = function() {
+  User.prototype.authorize = function () {
     const user = this;
     const p = new Promise((resolve, reject) => {
       jwt.sign(
         { _id: user.id, email: user.email },
         process.env.JWT_KEY,
         {
-          // expiresIn: '7d',
+          expiresIn: "7d",
           issuer: "bletcher",
           subject: "userInfo"
         },
