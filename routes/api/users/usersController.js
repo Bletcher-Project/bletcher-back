@@ -48,7 +48,7 @@ exports.getUser = async (req, res, next) => {
 */
 exports.postUser = async (req, res, next) => {
   const { email, name, password, profileImgName, status, type } = req.body;
-  const imgpath = req.file ? req.file.path : null;
+  const imgpath = req.file ? req.file.filename : null;
 
   try {
     const exUser = await User.findOne({

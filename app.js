@@ -9,6 +9,7 @@ require("dotenv").config();
 const port = process.env.PORT || 4000;
 
 const routes = require("./routes/api");
+const imgRoute = require("./routes/image");
 const sequelize = require("./models").sequelize;
 
 /* EXPRESS CONFIGURATION */
@@ -59,6 +60,7 @@ app.use(
 
 /* ROUTER */
 app.use("/api", routes);
+app.use("/image", imgRoute);
 
 /* catch 404 and forward to error handler */
 app.use((req, res, next) => {
