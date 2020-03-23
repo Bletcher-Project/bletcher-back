@@ -40,7 +40,7 @@ exports.getPost = async (req, res, next) => {
 */
 exports.postPost = async (req, res, next) => {
   const { content, UserId } = req.body;
-  const imgpath = req.file ? req.file.path : null;
+  const imgpath = req.file ? req.file.filename : null;
   try {
     await Post.create({
       postImgName: imgpath,
