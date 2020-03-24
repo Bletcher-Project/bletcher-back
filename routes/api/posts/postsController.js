@@ -15,7 +15,7 @@ exports.getPost = async (req, res, next) => {
     if (id) {
       await Post.findOne({
         where: { id: id },
-        include: { model: User, attributes: ["id", "name", "profileImgName"] },
+        include: { model: User, attributes: ["name", "profileImgName", "type"] },
         order: [["createdAt", "DESC"]]
       }).then(post => {
         return post !== null
@@ -24,7 +24,7 @@ exports.getPost = async (req, res, next) => {
       });
     } else {
       await Post.findAll({
-        include: { model: User, attributes: ["id", "name", "profileImgName"] }
+        include: { model: User, attributes: ["name", "profileImgName", "type"] }
       }).then(async allPosts => {
         return res.status(200).json({ posts: allPosts });
       });
