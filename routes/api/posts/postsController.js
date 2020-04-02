@@ -7,19 +7,19 @@ const {
 /*
   Get Post
   GET /api/posts => get all posts
-  GET /api/posts/:id => get post by post id
+  GET /api/posts/:userid => get post by user id
 */
 exports.getPost = async (req, res, next) => {
-  const id = req.params.id;
+  const userId = req.params.userid;
   try {
-    if (id) {
-      await Post.findOne({
-        where: { id: id },
+    if (userId) {
+      await Post.findAll({
+        where: { UserId: userId },
         include: { model: User, attributes: ["name", "profileImgName", "type"] },
         order: [["createdAt", "DESC"]]
-      }).then(post => {
-        return post !== null
-          ? res.status(200).json({ post: post })
+      }).then(async allPosts => {
+        return allPosts !== null
+          ? res.status(200).json({ posts: allPosts })
           : res.status(404).json({ message: "Post not found" });
       });
     } else {
@@ -27,9 +27,30 @@ exports.getPost = async (req, res, next) => {
         include: { model: User, attributes: ["name", "profileImgName", "type"] },
         order: [["createdAt", "DESC"]]
       }).then(async allPosts => {
-        return res.status(200).json({ posts: allPosts });
+        return allPosts !== null
+          ? res.status(200).json({ posts: allPosts })
+          : res.status(404).json({ message: "Post not found" });
       });
     }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+/*
+  Get Post by post id
+  GET /api/posts/one/:postid
+*/
+exports.getPostByPostID = async (req, res, next) => {
+  try {
+    await Post.findOne({
+      where: { id: req.params.postid },
+      include: { model: User, attributes: ["name", "profileImgName", "type"] }
+    }).then(async post => {
+      return post !== null
+        ? res.status(200).json({ post: post })
+        : res.status(404).json({ message: "Post not found" });
+    });
   } catch (error) {
     return next(error);
   }
