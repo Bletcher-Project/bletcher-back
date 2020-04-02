@@ -24,7 +24,8 @@ exports.getPost = async (req, res, next) => {
       });
     } else {
       await Post.findAll({
-        include: { model: User, attributes: ["name", "profileImgName", "type"] }
+        include: { model: User, attributes: ["name", "profileImgName", "type"] },
+        order: [["createdAt", "DESC"]]
       }).then(async allPosts => {
         return res.status(200).json({ posts: allPosts });
       });
