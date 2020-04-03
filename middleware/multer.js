@@ -31,7 +31,7 @@ const multerProfile = multer({
       );
     }
   }),
-  limits: { fileSize: 5 * 1024 * 1024 }
+  // limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 const multerPost = multer({
@@ -47,7 +47,7 @@ const multerPost = multer({
       );
     }
   }),
-  limits: { fileSize: 5 * 1024 * 1024 }
+  // limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 const uploadProfile = multerProfile.single("img");

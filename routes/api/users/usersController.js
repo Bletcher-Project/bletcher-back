@@ -8,7 +8,7 @@ const {
   GET /api/users => get all users
   GET /api/users?id=`id` => get user by id
   GET /api/users?name=`name` => get user by name
-  GET /api/users/?email=`email` => get user by email
+  GET /api/users?email=`email` => get user by email
 */
 exports.getUser = async (req, res, next) => {
   const id = req.query.id;
@@ -18,7 +18,7 @@ exports.getUser = async (req, res, next) => {
     if ((id === undefined) & (email === undefined) & (name === undefined)) {
       const exUser = await User.findAll({});
       if (exUser) {
-        return res.status(200).json({ exUser });
+        return res.status(200).json({ allUsers: exUser });
       }
     } else {
       const exUser = await User.findOne({
@@ -31,9 +31,9 @@ exports.getUser = async (req, res, next) => {
         }
       });
       if (exUser) {
-        return res.status(400).json({ exUser });
+        return res.status(200).json({ userInfo: exUser });
       } else {
-        return res.status(200).json({ exist: 0 });
+        return res.status(400).json({ exist: 0 });
       }
     }
   } catch (error) {
