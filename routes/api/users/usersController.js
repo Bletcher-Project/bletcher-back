@@ -33,7 +33,7 @@ exports.getUser = async (req, res, next) => {
       if (exUser) {
         return res.status(200).json({ userInfo: exUser });
       } else {
-        return res.status(400).json({ exist: 0 });
+        return res.status(204).json({ exist: 0 });
       }
     }
   } catch (error) {
