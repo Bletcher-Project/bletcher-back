@@ -66,6 +66,8 @@ exports.postPost = async (req, res, next) => {
   try {
     await Post.create({
       postImgName: imgpath,
+      postImgWidth: 1,
+      postImgHeight: 1,
       content: content,
       UserId: UserId
     })
