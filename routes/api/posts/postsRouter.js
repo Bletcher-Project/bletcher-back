@@ -6,8 +6,12 @@ const multerMiddleware = require("../../../middleware/multer");
 postsRouter.get("/", controller.getPost);
 postsRouter.get("/:userid", controller.getPost);
 postsRouter.get("/one/:postid", controller.getPostByPostID);
+
 postsRouter.post("/", multerMiddleware.uploadPost, controller.postPost);
 postsRouter.put("/:id", multerMiddleware.uploadPost, controller.putPost);
 postsRouter.delete("/:id", controller.deletePost);
+
+postsRouter.post("/like/:postid", controller.postPostLike);
+postsRouter.delete("/like/:postid", controller.deletePostLike);
 
 module.exports = postsRouter;
