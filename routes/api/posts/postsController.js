@@ -1,6 +1,7 @@
 const {
   User,
   Post,
+  Like,
   Sequelize: { Op }
 } = require("../../../models");
 
@@ -11,6 +12,7 @@ const {
 */
 exports.getPost = async (req, res, next) => {
   const userId = req.params.userid;
+  const tokenUserId = req.decoded_id;
   try {
     if (userId) {
       await Post.findAll({
@@ -131,3 +133,23 @@ exports.deletePost = async (req, res, next) => {
     return next(error);
   }
 };
+
+/*
+  POST Post Like
+  POST /api/posts/like/:postid
+*/
+exports.postPostLike = async (req, res, next) => {
+  const postId = req.params.postid;
+  const userId = req.decoded._id;
+  try {
+    const exists = await Like.findOne({ where: { PostId: postId, UserId: userId } });
+    if (exists) {
+      return res.status(409).json({ message: "Already Liked." });
+    }
+
+    await Like.create({ PostId: postId, UserId: userId });
+    return res.status(200).json({ message: "Post is liked successfully." });
+  } catch (error) {
+    return next(error);
+  }
+}
