@@ -47,10 +47,15 @@ exports.getPost = async (req, res, next) => {
   GET /api/posts/one/:postid
 */
 exports.getPostByPostID = async (req, res, next) => {
+  const postId = req.params.postid;
+  const tokenUserId = req.decoded._id;
   try {
     await Post.findOne({
-      where: { id: req.params.postid },
-      include: { model: User, attributes: ["name", "profileImgName", "type"] }
+      where: { id: postId },
+      include: [
+        { model: User, attributes: ["name", "profileImgName", "type"] },
+        { model: Like, required: false, where: { UserId: tokenUserId } }
+      ],
     }).then(async post => {
       return post !== null
         ? res.status(200).json({ post: post })
