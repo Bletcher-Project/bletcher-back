@@ -2,7 +2,7 @@ const {
   User,
   Post,
   Like,
-  Sequelize: { Op }
+  Sequelize: { Op, fn, col }
 } = require("../../../models");
 
 /*
@@ -12,7 +12,7 @@ const {
 */
 exports.getPost = async (req, res, next) => {
   const userId = req.params.userid;
-  const tokenUserId = req.decoded_id;
+  const tokenUserId = req.decoded._id;
   try {
     if (userId) {
       await Post.findAll({
@@ -26,7 +26,10 @@ exports.getPost = async (req, res, next) => {
       });
     } else {
       await Post.findAll({
-        include: { model: User, attributes: ["name", "profileImgName", "type"] },
+        include: [
+          { model: User, attributes: ["name", "profileImgName", "type"] },
+          { model: Like, required: false, where: { UserId: tokenUserId } }
+        ],
         order: [["createdAt", "DESC"]]
       }).then(async allPosts => {
         return allPosts !== null
