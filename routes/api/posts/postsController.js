@@ -25,17 +25,24 @@ exports.getPost = async (req, res, next) => {
           : res.status(404).json({ message: "Post not found" });
       });
     } else {
-      await Post.findAll({
+      const allPosts = await Post.findAll({
         include: [
           { model: User, attributes: ["name", "profileImgName", "type"] },
-          { model: Like, required: false, where: { UserId: tokenUserId } }
+          { model: Like } // required 절이 없는 include 절의 추가는 Post 기준으로 LEFT JOIN과 같은 결과를 만들어낸다.
         ],
         order: [["createdAt", "DESC"]]
-      }).then(async allPosts => {
-        return allPosts !== null
-          ? res.status(200).json({ posts: allPosts })
-          : res.status(404).json({ message: "Post not found" });
       });
+
+      const result = await allPosts.map(rawPost => {
+        const post = rawPost.toJSON();
+        post.likeCount = post.Likes.length;
+        post.isLiked = post.Likes.some(like => like.UserId === tokenUserId);
+
+        delete post.Likes;
+        return post;
+      });
+
+      return res.status(200).json({ posts: result });
     }
   } catch (error) {
     return next(error);
@@ -50,17 +57,20 @@ exports.getPostByPostID = async (req, res, next) => {
   const postId = req.params.postid;
   const tokenUserId = req.decoded._id;
   try {
-    await Post.findOne({
+    const rawPost = await Post.findOne({
       where: { id: postId },
       include: [
         { model: User, attributes: ["name", "profileImgName", "type"] },
-        { model: Like, required: false, where: { UserId: tokenUserId } }
-      ],
-    }).then(async post => {
-      return post !== null
-        ? res.status(200).json({ post: post })
-        : res.status(404).json({ message: "Post not found" });
+        { model: Like }
+      ]
     });
+
+    const post = rawPost.toJSON();
+    post.likeCount = post.Likes.length;
+    post.isLiked = post.Likes.some(like => like.UserId === tokenUserId);
+
+    delete post.Likes;
+    return res.status(200).json({ post: post });
   } catch (error) {
     return next(error);
   }
