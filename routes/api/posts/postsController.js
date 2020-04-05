@@ -156,3 +156,24 @@ exports.postPostLike = async (req, res, next) => {
     return next(error);
   }
 }
+
+/*
+  DELETE Post Like
+  DELETE /api/posts/like/:postid
+*/
+exports.deletePostLike = async (req, res, next) => {
+  const postId = req.params.postid;
+  const userId = req.decoded._id;
+  try {
+    const exists = await Like.findOne({ where: { PostId: postId, UserId: userId } });
+
+    if (exists) {
+      await Like.destroy({ where: { PostId: postId, UserId: userId } });
+      return res.status(200).json({ message: "Post is disliked successfully." });
+    } else {
+      return res.status(403).json({ message: "Cannot dislike post." });
+    }
+  } catch (error) {
+    return next(error);
+  }
+}

@@ -12,5 +12,6 @@ postsRouter.put("/:id", multerMiddleware.uploadPost, controller.putPost);
 postsRouter.delete("/:id", controller.deletePost);
 
 postsRouter.post("/like/:postid", controller.postPostLike);
+postsRouter.delete("/like/:postid", controller.deletePostLike);
 
 module.exports = postsRouter;
