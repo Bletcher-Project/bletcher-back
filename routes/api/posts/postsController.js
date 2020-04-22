@@ -17,7 +17,10 @@ exports.getPost = async (req, res, next) => {
     if (userId) {
       await Post.findAll({
         where: { UserId: userId },
-        include: { model: User, attributes: ["name", "profileImgName", "type"] },
+        include: {
+          model: User,
+          attributes: ["name", "profileImgName", "type"]
+        },
         order: [["createdAt", "DESC"]]
       }).then(async allPosts => {
         return allPosts !== null
@@ -81,20 +84,20 @@ exports.getPostByPostID = async (req, res, next) => {
   POST /api/posts
 */
 exports.postPost = async (req, res, next) => {
-  const { content, UserId } = req.body;
+  const { content, UserId, width, height } = req.body;
   const imgpath = req.file ? req.file.filename : null;
   try {
     await Post.create({
       postImgName: imgpath,
-      postImgWidth: 1,
-      postImgHeight: 1,
+      postImgWidth: width,
+      postImgHeight: height,
       content: content,
       UserId: UserId
     })
       .then(async post => {
         return res.status(200).json({ createdPost: post });
       })
-      .catch(() => {
+      .catch(err => {
         return res.status(400).json({ message: "Create post failed" });
       });
   } catch (error) {
@@ -160,7 +163,9 @@ exports.postPostLike = async (req, res, next) => {
   const postId = req.params.postid;
   const userId = req.decoded._id;
   try {
-    const exists = await Like.findOne({ where: { PostId: postId, UserId: userId } });
+    const exists = await Like.findOne({
+      where: { PostId: postId, UserId: userId }
+    });
     if (exists) {
       return res.status(409).json({ message: "Already Liked." });
     }
@@ -170,7 +175,7 @@ exports.postPostLike = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-}
+};
 
 /*
   DELETE Post Like
@@ -180,15 +185,19 @@ exports.deletePostLike = async (req, res, next) => {
   const postId = req.params.postid;
   const userId = req.decoded._id;
   try {
-    const exists = await Like.findOne({ where: { PostId: postId, UserId: userId } });
+    const exists = await Like.findOne({
+      where: { PostId: postId, UserId: userId }
+    });
 
     if (exists) {
       await Like.destroy({ where: { PostId: postId, UserId: userId } });
-      return res.status(200).json({ message: "Post is disliked successfully." });
+      return res
+        .status(200)
+        .json({ message: "Post is disliked successfully." });
     } else {
       return res.status(403).json({ message: "Cannot dislike post." });
     }
   } catch (error) {
     return next(error);
   }
-}
+};
