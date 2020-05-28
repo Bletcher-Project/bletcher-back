@@ -2,7 +2,7 @@ const {
   User,
   Post,
   Like,
-  Sequelize: { Op, fn, col }
+  Sequelize: { Op, fn, col },
 } = require("../../../models");
 
 /*
@@ -19,10 +19,10 @@ exports.getPost = async (req, res, next) => {
         where: { UserId: userId },
         include: {
           model: User,
-          attributes: ["name", "profileImgName", "type"]
+          attributes: ["name", "profileImgName", "type"],
         },
-        order: [["createdAt", "DESC"]]
-      }).then(async allPosts => {
+        order: [["createdAt", "DESC"]],
+      }).then(async (allPosts) => {
         return allPosts !== null
           ? res.status(200).json({ posts: allPosts })
           : res.status(404).json({ message: "Post not found" });
@@ -31,15 +31,15 @@ exports.getPost = async (req, res, next) => {
       const allPosts = await Post.findAll({
         include: [
           { model: User, attributes: ["name", "profileImgName", "type"] },
-          { model: Like } // required 절이 없는 include 절의 추가는 Post 기준으로 LEFT JOIN과 같은 결과를 만들어낸다.
+          { model: Like }, // required 절이 없는 include 절의 추가는 Post 기준으로 LEFT JOIN과 같은 결과를 만들어낸다.
         ],
-        order: [["createdAt", "DESC"]]
+        order: [["createdAt", "DESC"]],
       });
 
-      const result = await allPosts.map(rawPost => {
+      const result = await allPosts.map((rawPost) => {
         const post = rawPost.toJSON();
         post.likeCount = post.Likes.length;
-        post.isLiked = post.Likes.some(like => like.UserId === tokenUserId);
+        post.isLiked = post.Likes.some((like) => like.UserId === tokenUserId);
 
         delete post.Likes;
         return post;
@@ -64,13 +64,13 @@ exports.getPostByPostID = async (req, res, next) => {
       where: { id: postId },
       include: [
         { model: User, attributes: ["name", "profileImgName", "type"] },
-        { model: Like }
-      ]
+        { model: Like },
+      ],
     });
 
     const post = rawPost.toJSON();
     post.likeCount = post.Likes.length;
-    post.isLiked = post.Likes.some(like => like.UserId === tokenUserId);
+    post.isLiked = post.Likes.some((like) => like.UserId === tokenUserId);
 
     delete post.Likes;
     return res.status(200).json({ post: post });
@@ -92,13 +92,36 @@ exports.postPost = async (req, res, next) => {
       postImgWidth: width,
       postImgHeight: height,
       content: content,
-      UserId: UserId
+      UserId: UserId,
     })
-      .then(async post => {
+      .then(async (post) => {
         return res.status(200).json({ createdPost: post });
       })
-      .catch(err => {
+      .catch((err) => {
         return res.status(400).json({ message: "Create post failed" });
+      });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+};
+
+exports.postSketcherPost = async (req, res, next) => {
+  const { content, UserId, width, height } = req.body;
+  const imgpath = res.result ? res.result : null;
+  try {
+    await Post.create({
+      postImgName: imgpath,
+      postImgWidth: width,
+      postImgHeight: height,
+      content: content,
+      UserId: UserId,
+    })
+      .then(async (post) => {
+        return console.log("createdPost:" + post);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   } catch (error) {
     console.error(error);
@@ -117,13 +140,13 @@ exports.putPost = async (req, res, next) => {
 
   try {
     Post.findOne({ where: { id: id } })
-      .then(async post => {
+      .then(async (post) => {
         await post
           .update(
             { postImgName: imgpath, content: content },
             { where: { id: id } }
           )
-          .then(async updatedPost => {
+          .then(async (updatedPost) => {
             return res.status(200).json({ updatedPost: updatedPost });
           });
       })
@@ -144,7 +167,7 @@ exports.deletePost = async (req, res, next) => {
 
   try {
     await Post.findOne({ where: { id: id } }).then(async () => {
-      await Post.destroy({ where: { id: id } }).then(async post => {
+      await Post.destroy({ where: { id: id } }).then(async (post) => {
         return post === 1
           ? res.status(200).json({ message: "Post deleted" })
           : res.status(404).json({ message: "Post not found" });
@@ -164,7 +187,7 @@ exports.postPostLike = async (req, res, next) => {
   const userId = req.decoded._id;
   try {
     const exists = await Like.findOne({
-      where: { PostId: postId, UserId: userId }
+      where: { PostId: postId, UserId: userId },
     });
     if (exists) {
       return res.status(409).json({ message: "Already Liked." });
@@ -186,7 +209,7 @@ exports.deletePostLike = async (req, res, next) => {
   const userId = req.decoded._id;
   try {
     const exists = await Like.findOne({
-      where: { PostId: postId, UserId: userId }
+      where: { PostId: postId, UserId: userId },
     });
 
     if (exists) {
