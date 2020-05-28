@@ -53,8 +53,9 @@ exports.uploadColab = (req, res, next) => {
           });
       });
     }
-    getResultNST() {
-      return new Promise((resolve, reject) => {
+
+    excuteNST() {
+      const getResultNST = () => {
         const ssh = new node_ssh();
         const resultRemotePath = colabRemotePath + resultPrefix + contentName;
         const resultLocalPath = localPath + resultPrefix + contentName;
@@ -66,23 +67,18 @@ exports.uploadColab = (req, res, next) => {
                 console.log("completely get result file");
                 ssh.dispose();
                 res.result = resultPrefix + contentName;
-                resolve();
                 next();
               },
               (err) => {
                 console.log(err);
-                reject(err);
               }
             );
           })
           .catch((err) => {
             console.log(err);
-            reject(err);
           });
-      });
-    }
+      };
 
-    excuteNST() {
       return new Promise((resolve, reject) => {
         const ssh = new node_ssh();
 
