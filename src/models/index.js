@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config")[env];
+const config = require("../config")[env];
 // const config = require("../config/config.json").sqlite[env];
 const db = {};
 
@@ -37,10 +37,10 @@ db.Post.hasMany(db.Comment);
 db.Comment.belongsTo(db.Post);
 
 db.Post.belongsToMany(db.HashTag, {
-  through: "PostHashTag"
+  through: "PostHashTag",
 });
 db.HashTag.belongsToMany(db.Post, {
-  through: "PostHashTag"
+  through: "PostHashTag",
 });
 
 db.Post.hasMany(db.Save);
@@ -54,23 +54,23 @@ db.Like.belongsTo(db.Comment);
 db.User.belongsToMany(db.User, {
   foreignKey: "senderId",
   as: "Senders",
-  through: "Notice"
+  through: "Notice",
 });
 db.User.belongsToMany(db.User, {
   foreignKey: "receiverId",
   as: "Receivers",
-  through: "Notice"
+  through: "Notice",
 });
 
 db.User.belongsToMany(db.User, {
   foreignKey: "followingId",
   as: "Followers",
-  through: "Follow"
+  through: "Follow",
 });
 db.User.belongsToMany(db.User, {
   foreignKey: "followerId",
   as: "Followings",
-  through: "Follow"
+  through: "Follow",
 });
 
 module.exports = db;

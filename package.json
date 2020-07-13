@@ -4,7 +4,7 @@
   "description": "bletcher service backend",
   "private": true,
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon src/app"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
@@ -25,7 +25,6 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "sequelize": "^5.21.2",
-    "sqlite3": "^4.1.1",
     "ssh2-sftp-client": "^5.1.2",
     "validator": "^12.1.0"
   }
