@@ -1,8 +1,8 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import config from "config";
-import routes from "routes/api";
-import imgRoute from "routes/image";
+import config from "../config";
+import routes from "../routes/api";
+import imgRoute from "../routes/image";
 
 export default ({ app }: { app: Application }) => {
   /* CONNECTION TEST */

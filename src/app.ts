@@ -1,11 +1,11 @@
 import express, { Application } from "express";
-import config from "config";
-import Logger from "loaders/logger";
+import config from "./config";
+import Logger from "./loaders/logger";
 
 async function startServer() {
   const app: Application = express();
 
-  await require("loaders").default({ expressApp: app });
+  await require("./loaders").default({ expressApp: app });
 
   app.listen(config.port, (err) => {
     if (err) {

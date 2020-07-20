@@ -4,7 +4,7 @@
   "description": "Bletcher Project Backend",
   "private": true,
   "scripts": {
-    "start": "nodemon — exec ts-node src/app"
+    "start": "nodemon --watch src --exec ts-node src/app.ts"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
