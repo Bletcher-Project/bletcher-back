@@ -12,13 +12,10 @@ export default {
   },
   reqAddress: process.env.REQ_ADDRESS,
   database: {
-    username: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    host: process.env.MYSQL_HOST,
-    database: process.env.MYSQL_DATABASE,
-    dialect: "mysql",
-    operatorsAliases: "false",
-    logging: "false",
+    dbname: process.env.DATABASE_NAME,
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    host: process.env.DATABASE_HOST,
   },
   jwtKey: process.env.JWT_KEY,
   api: {
