@@ -32,8 +32,8 @@ export default ({ app }: { app: Application }) => {
   );
 
   /* ROUTER */
-  app.use(config.api.prefix, routes);
-  app.use("/image", imgRoute);
+  // app.use(config.api.prefix, routes);
+  // app.use("/image", imgRoute);
 
   /* catch 404 and forward to error handler */
   app.use((req: Request, res: Response, next: NextFunction) => {
