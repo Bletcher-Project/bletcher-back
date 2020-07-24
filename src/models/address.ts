@@ -1,13 +1,18 @@
-import { Model, DataTypes, Association } from "sequelize";
-import { sequelize } from "../config/database";
-import User from "../models/user";
+import { Model, DataTypes, Association } from 'sequelize';
+import { sequelize } from '../config/database';
+import User from './user';
 
 export default class Address extends Model {
   public id!: number;
+
   public userId!: number;
+
   public street_name_address!: string;
+
   public detail_address!: string;
+
   public zip_code!: number;
+
   public building_name!: string;
 
   public static associations: {
@@ -44,7 +49,7 @@ Address.init(
     },
   },
   {
-    tableName: "address",
-    sequelize: sequelize,
-  }
+    tableName: 'address',
+    sequelize,
+  },
 );

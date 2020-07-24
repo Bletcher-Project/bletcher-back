@@ -2,5 +2,13 @@
   "extends": ["airbnb-typescript/base"],
   "parserOptions": {
     "project": "./tsconfig.json"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["./src/models/*.ts"],
+      "rules": {
+        "import/no-cycle": 0
+      }
+    }
+  ]
 }

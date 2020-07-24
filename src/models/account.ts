@@ -1,11 +1,14 @@
-import { Model, DataTypes, Association } from "sequelize";
-import { sequelize } from "../config/database";
-import User from "../models/user";
+import { Model, DataTypes, Association } from 'sequelize';
+import { sequelize } from '../config/database';
+import User from './user';
 
 export default class Account extends Model {
   public id!: number;
+
   public userId!: number;
+
   public account_number!: number;
+
   public bank_name!: string;
 
   public static associations: {
@@ -34,7 +37,7 @@ Account.init(
     },
   },
   {
-    tableName: "account",
-    sequelize: sequelize,
-  }
+    tableName: 'account',
+    sequelize,
+  },
 );

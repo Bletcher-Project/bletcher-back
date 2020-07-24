@@ -1,21 +1,31 @@
-import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../config/database";
-import Account from "../models/account";
-import Address from "../models/address";
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database';
+import Account from './account';
+import Address from './address';
 
 export default class User extends Model {
   public id!: number;
+
   public name!: string;
+
   public email!: string;
+
   public user_id!: string;
+
   public password!: string;
+
   public phone!: string;
+
   public birth!: Date;
+
   public introduce!: string | null;
+
   public profile_image!: string | null;
 
   public readonly createdAt!: Date;
+
   public readonly updatedAt!: Date;
+
   public readonly deletedAt!: Date | null;
 }
 
@@ -58,21 +68,21 @@ User.init(
     },
   },
   {
-    tableName: "user",
-    sequelize: sequelize,
+    tableName: 'user',
+    sequelize,
     timestamps: true,
     paranoid: true,
-  }
+  },
 );
 
 User.hasMany(Account, {
-  foreignKey: "userId",
-  sourceKey: "id",
-  as: "accounts",
+  foreignKey: 'userId',
+  sourceKey: 'id',
+  as: 'accounts',
 });
 
 User.hasMany(Address, {
-  foreignKey: "userId",
-  sourceKey: "id",
-  as: "addresses",
+  foreignKey: 'userId',
+  sourceKey: 'id',
+  as: 'addresses',
 });
