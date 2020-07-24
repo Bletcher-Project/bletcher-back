@@ -1,13 +1,18 @@
-import { Sequelize, Model, DataTypes, BuildOptions } from "sequelize";
-import { sequelize } from "config/database";
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../config/database";
+import Account from "../models/account";
+import Address from "../models/address";
 
-export class User extends Model {
+export default class User extends Model {
   public id!: number;
   public name!: string;
   public email!: string;
+  public user_id!: string;
   public password!: string;
-  public profileImgName!: string | null;
-  public status!: string | null;
+  public phone!: string;
+  public birth!: Date;
+  public introduce!: string | null;
+  public profile_image!: string | null;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -24,10 +29,14 @@ User.init(
     name: {
       type: new DataTypes.STRING(30),
       allowNull: false,
-      unique: true,
     },
     email: {
       type: new DataTypes.STRING(50),
+      allowNull: false,
+      unique: true,
+    },
+    user_id: {
+      type: new DataTypes.STRING(30),
       allowNull: false,
       unique: true,
     },
@@ -35,17 +44,35 @@ User.init(
       type: new DataTypes.STRING(100),
       allowNull: false,
     },
-    profileImgName: {
-      type: new DataTypes.STRING(300),
+    birth: {
+      type: new DataTypes.DATE(),
+      allowNull: false,
+    },
+    introduce: {
+      type: new DataTypes.STRING(100),
       allowNull: true,
     },
-    status: {
-      type: new DataTypes.STRING(100),
+    profile_image: {
+      type: new DataTypes.STRING(300),
       allowNull: true,
     },
   },
   {
-    tableName: "User",
+    tableName: "user",
     sequelize: sequelize,
+    timestamps: true,
+    paranoid: true,
   }
 );
+
+User.hasMany(Account, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  as: "accounts",
+});
+
+User.hasMany(Address, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  as: "addresses",
+});
