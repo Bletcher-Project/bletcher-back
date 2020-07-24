@@ -1,8 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import config from "../config";
-import routes from "../routes/api";
-import imgRoute from "../routes/image";
+import routes from "../api/routes";
 
 export default ({ app }: { app: Application }) => {
   /* CONNECTION TEST */
@@ -33,7 +32,6 @@ export default ({ app }: { app: Application }) => {
 
   /* ROUTER */
   // app.use(config.api.prefix, routes);
-  // app.use("/image", imgRoute);
 
   /* catch 404 and forward to error handler */
   app.use((req: Request, res: Response, next: NextFunction) => {
