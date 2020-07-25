@@ -1,16 +1,18 @@
-import { Sequelize } from "sequelize";
-import config from "../config";
+import { Sequelize } from 'sequelize';
+import config from './index';
 
-export const sequelize = new Sequelize(
+const sequelize = new Sequelize(
   config.database.dbname as string,
   config.database.username as string,
   config.database.password as string,
   {
     host: config.database.host,
-    dialect: "mariadb",
+    dialect: 'mariadb',
     dialectOptions: { connectTimeout: 1000 },
     define: {
       timestamps: false,
     },
-  }
+  },
 );
+
+export default sequelize;

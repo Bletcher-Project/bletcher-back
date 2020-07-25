@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
 if (envFound.error) throw new Error("Couldn't find .env file");
@@ -8,7 +8,7 @@ if (envFound.error) throw new Error("Couldn't find .env file");
 export default {
   port: parseInt(process.env.PORT as string, 10),
   logs: {
-    level: process.env.LOG_LEVEL || "silly",
+    level: process.env.LOG_LEVEL || 'silly',
   },
   reqAddress: process.env.REQ_ADDRESS,
   database: {
@@ -19,6 +19,6 @@ export default {
   },
   jwtKey: process.env.JWT_KEY,
   api: {
-    prefix: "/api",
+    prefix: '/api',
   },
 };
