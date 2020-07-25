@@ -1,5 +1,5 @@
 import { Model, DataTypes, Association } from 'sequelize';
-import { sequelize } from '../config/database';
+import sequelize from '../config/database';
 import User from './user';
 
 export default class Account extends Model {
