@@ -16,6 +16,7 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
+    "esModuleInterop": true,
 
     /* Experimental Options */
     "experimentalDecorators": true,

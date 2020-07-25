@@ -3,6 +3,9 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "rules": {
+    "object-curly-newline": 0
+  },
   "overrides": [
     {
       "files": ["./src/models/*.ts"],
