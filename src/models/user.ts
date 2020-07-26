@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import bcrypt from 'bcrypt';
 import sequelize from '../config/database';
 import Account from './account';
 import Address from './address';
@@ -74,6 +75,12 @@ User.init(
     paranoid: true,
   },
 );
+
+/* Hash the password before saving the user model */
+User.beforeCreate = async (user: any) => {
+  const encryptedPw = await bcrypt.hash(user.password, 10);
+  user.password = encryptedPw;
+};
 
 User.hasMany(Account, {
   foreignKey: 'userId',
