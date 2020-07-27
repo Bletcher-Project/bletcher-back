@@ -73,14 +73,14 @@ User.init(
     sequelize,
     timestamps: true,
     paranoid: true,
+    hooks: {
+      beforeCreate: async (user) => {
+        const encryptedPw = await bcrypt.hash(user.password, 10);
+        user.password = encryptedPw;
+      },
+    },
   },
 );
-
-/* Hash the password before saving the user model */
-User.beforeCreate = async (user: any) => {
-  const encryptedPw = await bcrypt.hash(user.password, 10);
-  user.password = encryptedPw;
-};
 
 User.hasMany(Account, {
   foreignKey: 'userId',
