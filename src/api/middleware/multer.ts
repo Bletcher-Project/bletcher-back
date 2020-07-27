@@ -1,27 +1,25 @@
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 /* create folder for Profile IMG upload */
-fs.readdir("uploads/profile", (error) => {
+fs.readdir('uploads/profile', (error) => {
   if (error) {
-    console.error("Create Upload folder");
-    fs.mkdirSync("uploads/profile");
+    fs.mkdirSync('uploads/profile');
   }
 });
 
 /* create folder for Post IMG upload */
-fs.readdir("uploads/post", (error) => {
+fs.readdir('uploads/post', (error) => {
   if (error) {
-    console.error("Create Upload folder");
-    fs.mkdirSync("uploads/post");
+    fs.mkdirSync('uploads/post');
   }
 });
 
 const multerProfile = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, "uploads/profile");
+      cb(null, 'uploads/profile');
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
@@ -34,7 +32,7 @@ const multerProfile = multer({
 const multerPost = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, "uploads/post");
+      cb(null, 'uploads/post');
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
@@ -47,7 +45,7 @@ const multerPost = multer({
 const multerSketcherPost = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, "uploads/post");
+      cb(null, 'uploads/post');
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
@@ -56,8 +54,6 @@ const multerSketcherPost = multer({
   }),
 });
 
-const uploadProfile = multerProfile.single("img");
-const uploadPost = multerPost.single("img");
-const uploadSketcherPost = multerSketcherPost.array("img", 2);
-
-module.exports = { uploadProfile, uploadPost, uploadSketcherPost };
+export const uploadProfile = multerProfile.single('img');
+export const uploadPost = multerPost.single('img');
+export const uploadSketcherPost = multerSketcherPost.array('img', 2);
