@@ -4,7 +4,7 @@
   "description": "Bletcher Project Backend",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=production node dist/app.ts",
+    "start": "NODE_ENV=production node dist/app.js",
     "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "build": "tsc",
     "lint": "eslint --ext .js,.ts ./",
