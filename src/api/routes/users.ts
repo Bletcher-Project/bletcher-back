@@ -8,7 +8,14 @@ import {
   getUserByUserInfo,
   deleteUser,
 } from '../../services/user';
-import { SIGN_UP_SUCCESS, EXIST_USER } from '../../constants/responseMessage';
+import {
+  SIGN_UP_SUCCESS,
+  EXIST_USER,
+  GET_ALL_USER_SUCCESS,
+  GET_ONE_USER_SUCCESS,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAIL,
+} from '../../constants/responseMessage';
 
 const userRouter = Router();
 
@@ -54,19 +61,29 @@ userRouter.get(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
+    Logger.debug('Calling Get-User endpoint with query: %o', req.query);
     const { id, email, userId } = req.query;
     try {
       if (!id && !email && !userId) {
         const allUser = await getAllUser();
-        return res.status(200).json({ allUsers: allUser });
+        return res.status(200).json({
+          status: '200 OK',
+          message: GET_ALL_USER_SUCCESS,
+          allUsers: allUser,
+        });
       }
       const user = await getUserByUserInfo(req.query as IUserInfo);
       if (user) {
-        return res.status(200).json({ userInfo: user });
+        return res.status(200).json({
+          status: '200 OK',
+          message: GET_ONE_USER_SUCCESS,
+          userInfo: user,
+        });
       }
-      return res.status(204).json({ exist: 0 });
-    } catch (error) {
-      return next(error);
+      return res.status(204).end();
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
     }
   },
 );
@@ -79,15 +96,23 @@ userRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
+    Logger.debug('Calling Delete-User endpoint with params: %o', req.params);
     const id = parseInt(req.params.id, 10);
     try {
       const deletedUser = await deleteUser(id);
       if (deletedUser) {
-        return res.status(200).json({ delete: 1 });
+        return res.status(200).json({
+          status: '200 OK',
+          message: DELETE_USER_SUCCESS,
+          deletedUser,
+        });
       }
-      return res.status(400).json({ delete: 0 });
-    } catch (error) {
-      return next(error);
+      return res
+        .status(400)
+        .json({ status: '400 Bad Request', message: DELETE_USER_FAIL });
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
     }
   },
 );
