@@ -7,8 +7,8 @@
     "start": "NODE_ENV=production node dist/app.js",
     "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "build": "tsc",
-    "lint": "eslint --ext .js,.ts ./",
-    "format": "eslint --ext .js,.ts ./ --fix"
+    "lint": "eslint --ext .js,.ts ./src",
+    "format": "eslint --ext .js,.ts ./src --fix"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
