@@ -1,12 +1,14 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
+import Logger from '../../loaders/logger';
+import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
 import {
   createUser,
   getAllUser,
   getUserByUserInfo,
   deleteUser,
 } from '../../services/user';
-import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
+import { SIGN_UP_SUCCESS, EXIST_USER } from '../../constants/responseMessage';
 
 const userRouter = Router();
 
@@ -15,16 +17,29 @@ userRouter.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       email: Joi.string().email().required(),
-      user_id: Joi.string().required(),
+      userId: Joi.string().required(),
       password: Joi.string().required(),
     }),
   }),
   async (req: Request, res: Response, next: NextFunction) => {
+    Logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
+    const { email, userId } = req.body;
     try {
+      const existUser = await getUserByUserInfo({ email, userId });
+      if (existUser) {
+        return res.status(409).json({
+          status: '409 Conflict',
+          message: EXIST_USER,
+        });
+      }
       await createUser(req.body as IUserforSignUp);
-      return res.status(200).json({ success: 1 });
-    } catch (error) {
-      return next(error);
+      return res.status(200).json({
+        status: '200 OK',
+        message: SIGN_UP_SUCCESS,
+      });
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
     }
   },
 );
@@ -64,9 +79,9 @@ userRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
+    const id = parseInt(req.params.id, 10);
     try {
-      const deletedUser = await deleteUser(parseInt(id, 10));
+      const deletedUser = await deleteUser(id);
       if (deletedUser) {
         return res.status(200).json({ delete: 1 });
       }

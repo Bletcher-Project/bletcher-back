@@ -12,7 +12,7 @@ export interface IUser {
 
 export interface IUserforSignUp {
   email: string;
-  user_id: string;
+  userId: string;
   password: string;
 }
 

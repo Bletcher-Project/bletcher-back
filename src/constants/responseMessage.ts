@@ -1,3 +1,7 @@
+/* USERS */
+export const SIGN_UP_SUCCESS = '회원가입에 성공했습니다.';
+export const EXIST_USER = '이미 존재하는 사용자입니다.';
+
 export default {
   // NORMAL
   NULL_VALUE: '필수 값 누락',
@@ -5,11 +9,8 @@ export default {
   INTERNAL_SERVER_ERROR: '서버 내부 오류',
 
   // USER POST
-  SIGN_UP_SUCCESS: '회원 가입 성공',
-  SIGN_UP_FAIL: '회원 가입 실패',
   SIGN_IN_SUCCESS: '로그인 성공',
   SING_IN_FAIL: '로그인 실패',
-  ALREADY_EXIST_ID: '중복된 아이디',
   NO_EXIST_ID: '존재하지 않는 아이디',
 
   // IMG POST

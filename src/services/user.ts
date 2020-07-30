@@ -5,7 +5,7 @@ import { IUserforSignUp, IUserInfo } from '../interfaces/user';
 export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
   await User.create({
     email: userInfo.email,
-    user_id: userInfo.user_id,
+    user_id: userInfo.userId,
     password: userInfo.password,
   });
 };
