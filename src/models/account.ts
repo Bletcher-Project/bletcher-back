@@ -5,8 +5,6 @@ import User from './user';
 export default class Account extends Model {
   public id!: number;
 
-  public userId!: number;
-
   public account_number!: number;
 
   public bank_name!: string;
@@ -23,10 +21,6 @@ Account.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
     account_number: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -39,5 +33,8 @@ Account.init(
   {
     tableName: 'account',
     sequelize,
+    underscored: true,
   },
 );
+
+Account.belongsTo(User);

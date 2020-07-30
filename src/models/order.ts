@@ -1,7 +1,7 @@
 import { Model, DataTypes, Association } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
-import Post from './post';
+import Shopitem from './shopitem';
 
 export default class Order extends Model {
   public id!: number;
@@ -17,7 +17,7 @@ export default class Order extends Model {
   public quantity!: number;
 
   public static associations: {
-    posts: Association<User, Post>;
+    posts: Association<User, Shopitem>;
   };
 }
 
@@ -42,5 +42,9 @@ Order.init(
     sequelize,
     timestamps: true,
     paranoid: true,
+    underscored: true,
   },
 );
+
+User.belongsToMany(Shopitem, { through: Order });
+Shopitem.belongsToMany(User, { through: Order });

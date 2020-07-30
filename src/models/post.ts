@@ -5,8 +5,6 @@ import User from './user';
 export default class Post extends Model {
   public id!: number;
 
-  public userId!: number;
-
   public imageId!: number;
 
   public title!: string;
@@ -33,14 +31,6 @@ Post.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
-    imageId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -61,3 +51,10 @@ Post.init(
     paranoid: true,
   },
 );
+
+Post.belongsTo(User, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false,
+  },
+});

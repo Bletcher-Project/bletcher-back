@@ -21,3 +21,12 @@ export interface IUserInfo {
   email?: string;
   userId?: string;
 }
+
+export interface IUserforModify {
+  id: number;
+  email: string;
+  user_id: string;
+  password: string;
+  introduce?: string;
+  profile_image?: string;
+}

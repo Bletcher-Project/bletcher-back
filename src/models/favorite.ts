@@ -1,11 +1,9 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, Association } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 import Post from './post';
 
 export default class Favorite extends Model {
-  public id!: number;
-
   public readonly createdAt!: Date;
 
   public static associations: {
@@ -14,13 +12,7 @@ export default class Favorite extends Model {
 }
 
 Favorite.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-  },
+  {},
   {
     tableName: 'favorite',
     sequelize,
@@ -28,8 +20,9 @@ Favorite.init(
     deletedAt: false,
     updatedAt: false,
     paranoid: true,
+    underscored: true,
   },
 );
 
-Favorite.belongsTo(User, { foreignKey: 'userId' });
-Favorite.belongsTo(Post, { foreignKey: 'PostId' });
+User.belongsToMany(Post, { through: Favorite });
+Post.belongsToMany(User, { through: Favorite });

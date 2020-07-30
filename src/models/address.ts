@@ -5,8 +5,6 @@ import User from './user';
 export default class Address extends Model {
   public id!: number;
 
-  public userId!: number;
-
   public street_name_address!: string;
 
   public detail_address!: string;
@@ -26,10 +24,6 @@ Address.init(
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
-    },
-    userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
     },
     street_name_address: {
       type: DataTypes.STRING,
@@ -51,5 +45,8 @@ Address.init(
   {
     tableName: 'address',
     sequelize,
+    underscored: true,
   },
 );
+
+Address.belongsTo(User);

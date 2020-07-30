@@ -5,7 +5,7 @@ import Post from './post';
 export default class Category extends Model {
   public id!: number;
 
-  public parentId!: number;
+  public parent_id!: number;
 
   public name!: string;
 
@@ -45,19 +45,17 @@ Category.init(
   {
     tableName: 'category',
     sequelize,
+    underscored: true,
   },
 );
 
-// 하나의 테이블이 셀프 조인되는 예제
 Category.hasMany(Category, {
   as: 'sub_cat',
-  foreignKey: 'parent',
+  foreignKey: 'parent_id',
 });
-
 Category.belongsTo(Category, {
-  foreignKey: 'parent',
+  foreignKey: 'parent_id',
 });
-
 Category.hasMany(Post, {
   as: 'category',
 });

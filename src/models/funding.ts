@@ -1,11 +1,9 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, Association } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 import Post from './post';
 
 export default class Funding extends Model {
-  public id!: number;
-
   public readonly createdAt!: Date;
 
   public static associations: {
@@ -14,13 +12,7 @@ export default class Funding extends Model {
 }
 
 Funding.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-  },
+  {},
   {
     tableName: 'funding',
     sequelize,
@@ -28,8 +20,9 @@ Funding.init(
     deletedAt: false,
     updatedAt: false,
     paranoid: true,
+    underscored: true,
   },
 );
 
-Funding.belongsTo(User, { foreignKey: 'userId' });
-Funding.belongsTo(Post, { foreignKey: 'PostId' });
+User.belongsToMany(Post, { through: Funding });
+Post.belongsToMany(User, { through: Funding });

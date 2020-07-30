@@ -45,9 +45,8 @@ Image.init(
   {
     tableName: 'image',
     sequelize,
+    underscored: true,
   },
 );
 
-Image.hasOne(Post, {
-  as: 'image',
-});
+Image.belongsTo(Post, { foreignKey: 'postId' });

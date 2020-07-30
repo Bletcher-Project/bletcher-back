@@ -4,8 +4,6 @@ import Post from './post';
 import User from './user';
 
 export default class Mix extends Model {
-  public id!: number;
-
   public due_date!: Date;
 
   public static associations: {
@@ -28,6 +26,7 @@ Mix.init(
   {
     tableName: 'mix',
     sequelize,
+    underscored: true,
   },
 );
 

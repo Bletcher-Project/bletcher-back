@@ -1,10 +1,9 @@
 import { Model, DataTypes, Association } from 'sequelize';
 import sequelize from '../config/database';
 import Post from './post';
-import Order from './order';
 
 export default class Shopitem extends Model {
-  public id!: number;
+  public post_id!: number;
 
   public posterSalesAmount!: number;
 
@@ -19,9 +18,10 @@ export default class Shopitem extends Model {
 
 Shopitem.init(
   {
-    id: {
+    post_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
+      allowNull: false,
       primaryKey: true,
     },
     posterSalesAmount: {
@@ -29,7 +29,7 @@ Shopitem.init(
       allowNull: false,
     },
     coloringSalesAmount: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     goodsSalesAmount: {
@@ -40,13 +40,8 @@ Shopitem.init(
   {
     tableName: 'shopitem',
     sequelize,
+    underscored: true,
   },
 );
 
 Shopitem.belongsTo(Post);
-
-Shopitem.hasMany(Order, {
-  foreignKey: 'shopitemId',
-  sourceKey: 'id',
-  as: 'orders',
-});

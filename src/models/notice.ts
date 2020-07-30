@@ -6,7 +6,7 @@ import User from './user';
 export default class Notice extends Model {
   public id!: number;
 
-  public noticeType!: Date;
+  public noticeType!: string;
 
   public static associations: {
     accounts: Association<User, Post>;
@@ -28,6 +28,7 @@ Notice.init(
   {
     tableName: 'notice',
     sequelize,
+    underscored: true,
   },
 );
 
