@@ -15,7 +15,9 @@ export const getAllUser = async () => {
   return allUser;
 };
 
-export const getUserByUserInfo = async (userInfo: IUserInfo) => {
+export const getUserByUserInfo = async (
+  userInfo: IUserInfo,
+): Promise<User | null> => {
   const user = await User.findOne({
     where: {
       [Op.or]: [
@@ -28,7 +30,7 @@ export const getUserByUserInfo = async (userInfo: IUserInfo) => {
   return user;
 };
 
-export const deleteUser = async (id: number) => {
+export const deleteUser = async (id: number): Promise<number> => {
   const user = await User.destroy({
     where: { id },
   });

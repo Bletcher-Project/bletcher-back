@@ -3,53 +3,49 @@ import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import User from '../models/user';
 import jwtKey from '../config';
+import { IAuthUser } from '../interfaces/auth';
 
-export const authenticate = async (id: string, password: string) => {
+export const authenticate = async (
+  authInfo: IAuthUser,
+): Promise<User | null> => {
   const user = await User.findOne({
     where: {
-      [Op.or]: [{ email: id }, { name: id }],
+      [Op.or]: [{ email: authInfo.id }, { user_id: authInfo.id }],
     },
   });
   if (!user) {
-    return false;
+    return null;
   }
 
-  const isPasswordMatch = bcrypt.compareSync(password, user.password);
+  const isPasswordMatch = bcrypt.compareSync(authInfo.password, user.password);
   if (!isPasswordMatch) {
-    return false;
+    return null;
   }
 
   return user;
 };
 
-/* Generate an auth token for the user */
-export const authorize = (user: any) => {
-  const p = new Promise((resolve, reject) => {
-    jwt.sign(
-      { id: user.id, email: user.email },
-      jwtKey.toString(),
-      {
-        expiresIn: '7d',
-        issuer: 'bletcher',
-        subject: 'userInfo',
-      },
-      (err, token) => {
-        if (err) reject(err);
-        resolve(token);
-      },
-    );
-  });
-  return p;
+export const authorize = (user: User): string => {
+  const token = jwt.sign(
+    { id: user.id, email: user.email },
+    jwtKey.toString(),
+    {
+      expiresIn: '7d',
+      issuer: 'bletcher',
+      subject: 'userInfo',
+    },
+  );
+  return token;
 };
 
-export const getUser = async (id?: number) => {
-  let user;
+export const getUserById = async (id?: number): Promise<User | null> => {
   if (id) {
-    user = await User.findOne({
+    const user = await User.findOne({
       where: {
         [Op.or]: [{ id }],
       },
     });
+    return user;
   }
-  return user;
+  return null;
 };
