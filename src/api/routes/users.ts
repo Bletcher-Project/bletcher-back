@@ -29,7 +29,6 @@ userRouter.post(
     }),
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    Logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
     const { email, userId } = req.body;
     try {
       const existUser = await getUserByUserInfo({ email, userId });
@@ -61,7 +60,6 @@ userRouter.get(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    Logger.debug('Calling Get-User endpoint with query: %o', req.query);
     const { id, email, userId } = req.query;
     try {
       if (!id && !email && !userId) {
@@ -96,7 +94,6 @@ userRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    Logger.debug('Calling Delete-User endpoint with params: %o', req.params);
     const id = parseInt(req.params.id, 10);
     try {
       const deletedUser = await deleteUser(id);

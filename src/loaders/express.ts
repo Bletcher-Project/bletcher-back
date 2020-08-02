@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import methodOverride from 'method-override';
 import { errors } from 'celebrate';
+import morgan from 'morgan';
 import config from '../config';
 import routes from '../api/routes';
 
@@ -23,6 +24,9 @@ export default ({ app }: { app: Application }) => {
 
   /* FOR USE RESTful API */
   app.use(methodOverride());
+
+  /* Morgan Request Logger */
+  app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 
   /* REQUEST DATA */
   app.use(express.json());
