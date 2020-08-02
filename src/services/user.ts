@@ -10,6 +10,7 @@ export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
     nickname: userInfo.nickname,
     password: userInfo.password,
   });
+  return false;
 };
 
 export const getAllUser = async () => {
