@@ -15,7 +15,8 @@ import {
   GET_ONE_USER_SUCCESS,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAIL,
-} from '../../constants/responseMessage';
+} from '../../util/response/message';
+import response from '../../util/response';
 
 const userRouter = Router();
 
@@ -33,16 +34,10 @@ userRouter.post(
     try {
       const existUser = await getUserByUserInfo({ email, userId });
       if (existUser) {
-        return res.status(409).json({
-          status: '409 Conflict',
-          message: EXIST_USER,
-        });
+        return res.status(409).json(response.response409(EXIST_USER));
       }
       await createUser(req.body as IUserforSignUp);
-      return res.status(200).json({
-        status: '200 OK',
-        message: SIGN_UP_SUCCESS,
-      });
+      return res.status(200).json(response.response200(SIGN_UP_SUCCESS));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -64,19 +59,15 @@ userRouter.get(
     try {
       if (!id && !email && !userId) {
         const allUser = await getAllUser();
-        return res.status(200).json({
-          status: '200 OK',
-          message: GET_ALL_USER_SUCCESS,
-          allUsers: allUser,
-        });
+        return res
+          .status(200)
+          .json(response.response200(GET_ALL_USER_SUCCESS, allUser));
       }
       const user = await getUserByUserInfo(req.query as IUserInfo);
       if (user) {
-        return res.status(200).json({
-          status: '200 OK',
-          message: GET_ONE_USER_SUCCESS,
-          userInfo: user,
-        });
+        return res
+          .status(200)
+          .json(response.response200(GET_ONE_USER_SUCCESS, user));
       }
       return res.status(204).end();
     } catch (err) {
@@ -98,15 +89,11 @@ userRouter.delete(
     try {
       const deletedUser = await deleteUser(id);
       if (deletedUser) {
-        return res.status(200).json({
-          status: '200 OK',
-          message: DELETE_USER_SUCCESS,
-          deletedUser,
-        });
+        return res
+          .status(200)
+          .json(response.response200(DELETE_USER_SUCCESS, deletedUser));
       }
-      return res
-        .status(400)
-        .json({ status: '400 Bad Request', message: DELETE_USER_FAIL });
+      return res.status(400).json(response.response400(DELETE_USER_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

@@ -4,7 +4,8 @@ import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
 import { IAuthUser, IJwtRequest } from '../../interfaces/auth';
 import { authenticate, authorize, getUserById } from '../../services/auth';
-import { AUTH_SUCCESS, AUTH_FAIL } from '../../constants/responseMessage';
+import { AUTH_SUCCESS, AUTH_FAIL } from '../../util/response/message';
+import response from '../../util/response';
 
 const authRouter = Router();
 
@@ -20,17 +21,12 @@ authRouter.post(
     try {
       const user = await authenticate(req.body as IAuthUser);
       if (!user) {
-        return res.status(401).json({
-          status: '401 Unauthorized',
-          message: AUTH_FAIL,
-        });
+        return res.status(401).json(response.response401(AUTH_FAIL));
       }
       const token = authorize(user);
-      return res.status(200).json({
-        status: '200 OK',
-        message: AUTH_SUCCESS,
-        data: { user, token },
-      });
+      return res
+        .status(200)
+        .json(response.response200(AUTH_SUCCESS, { user, token }));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -44,11 +40,7 @@ authRouter.get(
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
     try {
       const user = await getUserById(req.decoded?.id);
-      return res.status(200).json({
-        status: '200 OK',
-        message: AUTH_SUCCESS,
-        data: { user },
-      });
+      return res.status(200).json(response.response200(AUTH_SUCCESS, user));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
