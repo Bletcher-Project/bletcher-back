@@ -1,19 +1,15 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 
 export default class Account extends Model {
   public id!: number;
 
-  public userId!: number;
-
   public account_number!: number;
 
   public bank_name!: string;
 
-  public static associations: {
-    accounts: Association<User, Account>;
-  };
+  public user_id!: number;
 }
 
 Account.init(
@@ -23,10 +19,6 @@ Account.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
     account_number: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -35,9 +27,15 @@ Account.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'account',
     sequelize,
   },
 );
+
+Account.belongsTo(User, { foreignKey: 'user_id' });

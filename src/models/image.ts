@@ -1,53 +1,53 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import User from './user';
+import Post from './post';
 
-export default class Address extends Model {
+export default class Image extends Model {
   public id!: number;
 
-  public street_name_address!: string;
+  public name!: string;
 
-  public detail_address!: string;
+  public type!: string;
 
-  public zip_code!: number;
+  public width!: number;
 
-  public building_name!: string;
+  public height!: number;
 
-  public user_id!: number;
+  public post_id!: number;
 }
 
-Address.init(
+Image.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
     },
-    street_name_address: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    detail_address: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    zip_code: {
+    width: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    building_name: {
-      type: DataTypes.STRING,
+    height: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    user_id: {
+    post_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
   },
   {
-    tableName: 'address',
+    tableName: 'image',
     sequelize,
   },
 );
 
-Address.belongsTo(User, { foreignKey: 'user_id' });
+Image.belongsTo(Post, { foreignKey: 'post_id' });
