@@ -15,11 +15,11 @@ export default class User extends Model {
 
   public profile_image!: string | null;
 
-  public readonly createdAt!: Date;
+  public readonly created_at!: Date;
 
-  public readonly updatedAt!: Date;
+  public readonly updated_at!: Date;
 
-  public readonly deletedAt!: Date | null;
+  public readonly deleted_at!: Date | null;
 }
 
 User.init(
@@ -56,8 +56,8 @@ User.init(
     tableName: 'user',
     sequelize,
     timestamps: true,
-    paranoid: true,
     underscored: true,
+    paranoid: true,
     hooks: {
       beforeCreate: async (user) => {
         const encryptedPw = await bcrypt.hash(user.password, 10);

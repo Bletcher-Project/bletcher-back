@@ -6,10 +6,10 @@ import User from './user';
 export default class Notice extends Model {
   public id!: number;
 
-  public noticeType!: string;
+  public notice_type!: string;
 
   public static associations: {
-    accounts: Association<User, Post>;
+    notices: Association<User, Post>;
   };
 }
 
@@ -20,7 +20,7 @@ Notice.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    noticeType: {
+    notice_type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -28,10 +28,9 @@ Notice.init(
   {
     tableName: 'notice',
     sequelize,
-    underscored: true,
   },
 );
 
-Notice.belongsTo(User, { foreignKey: 'userSendId' });
-Notice.belongsTo(User, { foreignKey: 'userReceiveId' });
-Notice.belongsTo(Post, { foreignKey: 'postId' });
+Notice.belongsTo(User, { foreignKey: 'user_send_id' });
+Notice.belongsTo(User, { foreignKey: 'user_receive_id' });
+Notice.belongsTo(Post, { foreignKey: 'post_id' });

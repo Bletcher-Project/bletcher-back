@@ -14,7 +14,7 @@ export default class Category extends Model {
   public right!: number;
 
   public static associations: {
-    accounts: Association<Post, Category>;
+    categorys: Association<Post, Category>;
   };
 }
 
@@ -24,10 +24,6 @@ Category.init(
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
-    },
-    parentId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
@@ -45,17 +41,13 @@ Category.init(
   {
     tableName: 'category',
     sequelize,
-    underscored: true,
   },
 );
 
 Category.hasMany(Category, {
-  as: 'sub_cat',
+  as: 'sub_category',
   foreignKey: 'parent_id',
 });
 Category.belongsTo(Category, {
   foreignKey: 'parent_id',
-});
-Category.hasMany(Post, {
-  as: 'category',
 });

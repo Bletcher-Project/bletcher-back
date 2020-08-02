@@ -5,6 +5,8 @@ import User from './user';
 export default class Account extends Model {
   public id!: number;
 
+  public user_id!: number;
+
   public account_number!: number;
 
   public bank_name!: string;
@@ -33,8 +35,7 @@ Account.init(
   {
     tableName: 'account',
     sequelize,
-    underscored: true,
   },
 );
 
-Account.belongsTo(User);
+Account.belongsTo(User, { foreignKey: 'user_id' });

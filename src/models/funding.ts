@@ -4,10 +4,10 @@ import User from './user';
 import Post from './post';
 
 export default class Funding extends Model {
-  public readonly createdAt!: Date;
+  public readonly created_at!: Date;
 
   public static associations: {
-    accounts: Association<User, Post>;
+    fundings: Association<User, Post>;
   };
 }
 
@@ -17,12 +17,12 @@ Funding.init(
     tableName: 'funding',
     sequelize,
     timestamps: true,
+    underscored: true,
     deletedAt: false,
     updatedAt: false,
     paranoid: true,
-    underscored: true,
   },
 );
 
-User.belongsToMany(Post, { through: Funding });
-Post.belongsToMany(User, { through: Funding });
+User.belongsToMany(Post, { through: Funding, foreignKey: 'user_id' });
+Post.belongsToMany(User, { through: Funding, foreignKey: 'post_id' });

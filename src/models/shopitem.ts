@@ -5,14 +5,14 @@ import Post from './post';
 export default class Shopitem extends Model {
   public post_id!: number;
 
-  public posterSalesAmount!: number;
+  public poster_sales_amount!: number;
 
-  public coloringSalesAmount!: string;
+  public coloring_sales_amount!: string;
 
-  public goodsSalesAmount!: number;
+  public goods_sales_amount!: number;
 
   public static associations: {
-    accounts: Association<Post, Shopitem>;
+    shopitems: Association<Post, Shopitem>;
   };
 }
 
@@ -24,15 +24,15 @@ Shopitem.init(
       allowNull: false,
       primaryKey: true,
     },
-    posterSalesAmount: {
+    poster_sales_amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    coloringSalesAmount: {
+    coloring_sales_amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    goodsSalesAmount: {
+    goods_sales_amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -40,8 +40,7 @@ Shopitem.init(
   {
     tableName: 'shopitem',
     sequelize,
-    underscored: true,
   },
 );
 
-Shopitem.belongsTo(Post);
+Shopitem.belongsTo(Post, { foreignKey: 'post_id' });

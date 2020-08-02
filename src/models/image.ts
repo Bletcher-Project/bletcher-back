@@ -14,7 +14,7 @@ export default class Image extends Model {
   public height!: number;
 
   public static associations: {
-    accounts: Association<Post, Image>;
+    images: Association<Post, Image>;
   };
 }
 
@@ -45,8 +45,7 @@ Image.init(
   {
     tableName: 'image',
     sequelize,
-    underscored: true,
   },
 );
 
-Image.belongsTo(Post, { foreignKey: 'postId' });
+Image.belongsTo(Post, { foreignKey: 'post_id' });

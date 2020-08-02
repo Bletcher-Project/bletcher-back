@@ -1,6 +1,7 @@
 import { Model, DataTypes, Association } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
+import Category from './category';
 
 export default class Post extends Model {
   public id!: number;
@@ -13,11 +14,11 @@ export default class Post extends Model {
 
   public is_public!: boolean;
 
-  public readonly createdAt!: Date;
+  public readonly created_at!: Date;
 
-  public readonly updatedAt!: Date;
+  public readonly updated_at!: Date;
 
-  public readonly deletedAt!: Date | null;
+  public readonly deleted_at!: Date | null;
 
   public static associations: {
     posts: Association<User, Post>;
@@ -48,13 +49,16 @@ Post.init(
     tableName: 'post',
     sequelize,
     timestamps: true,
+    underscored: true,
     paranoid: true,
   },
 );
 
 Post.belongsTo(User, {
   foreignKey: {
-    name: 'userId',
+    name: 'user_id',
     allowNull: false,
   },
 });
+
+Post.belongsTo(Category, { foreignKey: 'category_id' });

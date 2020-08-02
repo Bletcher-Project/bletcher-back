@@ -5,6 +5,8 @@ import User from './user';
 export default class Address extends Model {
   public id!: number;
 
+  public user_id!: number;
+
   public street_name_address!: string;
 
   public detail_address!: string;
@@ -45,8 +47,7 @@ Address.init(
   {
     tableName: 'address',
     sequelize,
-    underscored: true,
   },
 );
 
-Address.belongsTo(User);
+Address.belongsTo(User, { foreignKey: 'user_id' });

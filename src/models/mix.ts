@@ -7,7 +7,7 @@ export default class Mix extends Model {
   public due_date!: Date;
 
   public static associations: {
-    accounts: Association<User, Post>;
+    mixs: Association<User, Post>;
   };
 }
 
@@ -26,10 +26,9 @@ Mix.init(
   {
     tableName: 'mix',
     sequelize,
-    underscored: true,
   },
 );
 
 Mix.belongsTo(User, { foreignKey: 'origin_user' });
 Mix.belongsTo(User, { foreignKey: 'sub_user' });
-Mix.belongsTo(Post);
+Mix.belongsTo(Post, { foreignKey: 'post_id' });

@@ -6,18 +6,18 @@ import Shopitem from './shopitem';
 export default class Order extends Model {
   public id!: number;
 
-  public readonly createdAt!: Date;
+  public readonly created_at!: Date;
 
-  public readonly updatedAt!: Date;
+  public readonly updated_at!: Date;
 
-  public readonly deletedAt!: Date | null;
+  public readonly deleted_at!: Date | null;
 
   public option!: string;
 
   public quantity!: number;
 
   public static associations: {
-    posts: Association<User, Shopitem>;
+    orders: Association<User, Shopitem>;
   };
 }
 
@@ -41,10 +41,10 @@ Order.init(
     tableName: 'order',
     sequelize,
     timestamps: true,
-    paranoid: true,
     underscored: true,
+    paranoid: true,
   },
 );
 
-User.belongsToMany(Shopitem, { through: Order });
-Shopitem.belongsToMany(User, { through: Order });
+User.belongsToMany(Shopitem, { through: Order, foreignKey: 'user_id' });
+Shopitem.belongsToMany(User, { through: Order, foreignKey: 'shopitem_id' });
