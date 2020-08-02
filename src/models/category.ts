@@ -1,11 +1,8 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import Post from './post';
 
 export default class Category extends Model {
   public id!: number;
-
-  public parent_id!: number;
 
   public name!: string;
 
@@ -13,9 +10,7 @@ export default class Category extends Model {
 
   public right!: number;
 
-  public static associations: {
-    categorys: Association<Post, Category>;
-  };
+  public parent_id!: number | null;
 }
 
 Category.init(

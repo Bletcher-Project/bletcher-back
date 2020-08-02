@@ -1,11 +1,9 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 
 export default class Address extends Model {
   public id!: number;
-
-  public user_id!: number;
 
   public street_name_address!: string;
 
@@ -15,9 +13,7 @@ export default class Address extends Model {
 
   public building_name!: string;
 
-  public static associations: {
-    addresses: Association<User, Address>;
-  };
+  public user_id!: number;
 }
 
 Address.init(
@@ -50,4 +46,4 @@ Address.init(
   },
 );
 
-Address.belongsTo(User, { foreignKey: 'user_id' });
+Address.belongsTo(User, { foreignKey: { name: 'user_id', allowNull: false } });

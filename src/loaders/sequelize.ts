@@ -30,6 +30,6 @@ export default async (): Promise<Sequelize> => {
     Post,
     Shopitem,
   };
-  const connection = await db.sequelize.sync({ force: true });
+  const connection = await db.sequelize.sync();
   return connection;
 };

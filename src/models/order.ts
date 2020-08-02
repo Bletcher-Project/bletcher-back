@@ -1,4 +1,4 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 import Shopitem from './shopitem';
@@ -6,19 +6,19 @@ import Shopitem from './shopitem';
 export default class Order extends Model {
   public id!: number;
 
+  public option!: string;
+
+  public quantity!: number;
+
   public readonly created_at!: Date;
 
   public readonly updated_at!: Date;
 
   public readonly deleted_at!: Date | null;
 
-  public option!: string;
+  public user_id!: number;
 
-  public quantity!: number;
-
-  public static associations: {
-    orders: Association<User, Shopitem>;
-  };
+  public shopitem_id!: number;
 }
 
 Order.init(
@@ -41,10 +41,16 @@ Order.init(
     tableName: 'order',
     sequelize,
     timestamps: true,
-    underscored: true,
     paranoid: true,
+    underscored: true,
   },
 );
 
-User.belongsToMany(Shopitem, { through: Order, foreignKey: 'user_id' });
-Shopitem.belongsToMany(User, { through: Order, foreignKey: 'shopitem_id' });
+User.belongsToMany(Shopitem, {
+  through: Order,
+  foreignKey: { name: 'user_id', allowNull: false },
+});
+Shopitem.belongsToMany(User, {
+  through: Order,
+  foreignKey: { name: 'shopitem_id', allowNull: false },
+});

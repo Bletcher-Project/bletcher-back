@@ -1,19 +1,15 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 
 export default class Account extends Model {
   public id!: number;
 
-  public user_id!: number;
-
   public account_number!: number;
 
   public bank_name!: string;
 
-  public static associations: {
-    accounts: Association<User, Account>;
-  };
+  public user_id!: number;
 }
 
 Account.init(
@@ -38,4 +34,4 @@ Account.init(
   },
 );
 
-Account.belongsTo(User, { foreignKey: 'user_id' });
+Account.belongsTo(User, { foreignKey: { name: 'user_id', allowNull: false } });

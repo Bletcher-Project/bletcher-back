@@ -1,9 +1,9 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import Post from './post';
 
 export default class Shopitem extends Model {
-  public post_id!: number;
+  public id!: number;
 
   public poster_sales_amount!: number;
 
@@ -11,17 +11,14 @@ export default class Shopitem extends Model {
 
   public goods_sales_amount!: number;
 
-  public static associations: {
-    shopitems: Association<Post, Shopitem>;
-  };
+  public post_id!: number;
 }
 
 Shopitem.init(
   {
-    post_id: {
+    id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
-      allowNull: false,
       primaryKey: true,
     },
     poster_sales_amount: {
@@ -43,4 +40,4 @@ Shopitem.init(
   },
 );
 
-Shopitem.belongsTo(Post, { foreignKey: 'post_id' });
+Shopitem.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });

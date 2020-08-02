@@ -1,4 +1,4 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import Post from './post';
 import User from './user';
@@ -8,9 +8,11 @@ export default class Notice extends Model {
 
   public notice_type!: string;
 
-  public static associations: {
-    notices: Association<User, Post>;
-  };
+  public user_send_id!: number;
+
+  public user_receive_id!: number;
+
+  public post_id!: number;
 }
 
 Notice.init(
@@ -31,6 +33,10 @@ Notice.init(
   },
 );
 
-Notice.belongsTo(User, { foreignKey: 'user_send_id' });
-Notice.belongsTo(User, { foreignKey: 'user_receive_id' });
-Notice.belongsTo(Post, { foreignKey: 'post_id' });
+Notice.belongsTo(User, {
+  foreignKey: { name: 'user_send_id', allowNull: false },
+});
+Notice.belongsTo(User, {
+  foreignKey: { name: 'user_receive_id', allowNull: false },
+});
+Notice.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });

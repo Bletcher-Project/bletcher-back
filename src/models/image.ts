@@ -1,4 +1,4 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import Post from './post';
 
@@ -13,9 +13,7 @@ export default class Image extends Model {
 
   public height!: number;
 
-  public static associations: {
-    images: Association<Post, Image>;
-  };
+  public post_id!: number;
 }
 
 Image.init(
@@ -48,4 +46,4 @@ Image.init(
   },
 );
 
-Image.belongsTo(Post, { foreignKey: 'post_id' });
+Image.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });

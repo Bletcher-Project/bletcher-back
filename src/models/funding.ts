@@ -1,4 +1,4 @@
-import { Model, Association } from 'sequelize';
+import { Model } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 import Post from './post';
@@ -6,9 +6,9 @@ import Post from './post';
 export default class Funding extends Model {
   public readonly created_at!: Date;
 
-  public static associations: {
-    fundings: Association<User, Post>;
-  };
+  public user_id!: number;
+
+  public post_id!: number;
 }
 
 Funding.init(
@@ -17,10 +17,8 @@ Funding.init(
     tableName: 'funding',
     sequelize,
     timestamps: true,
-    underscored: true,
-    deletedAt: false,
     updatedAt: false,
-    paranoid: true,
+    underscored: true,
   },
 );
 

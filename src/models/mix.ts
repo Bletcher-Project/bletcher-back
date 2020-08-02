@@ -1,14 +1,18 @@
-import { Model, DataTypes, Association } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import Post from './post';
 import User from './user';
 
 export default class Mix extends Model {
+  public id!: number;
+
   public due_date!: Date;
 
-  public static associations: {
-    mixs: Association<User, Post>;
-  };
+  public origin_user!: number;
+
+  public sub_user!: number | null;
+
+  public post_id!: number;
 }
 
 Mix.init(
@@ -29,6 +33,6 @@ Mix.init(
   },
 );
 
-Mix.belongsTo(User, { foreignKey: 'origin_user' });
+Mix.belongsTo(User, { foreignKey: { name: 'origin_user', allowNull: false } });
 Mix.belongsTo(User, { foreignKey: 'sub_user' });
-Mix.belongsTo(Post, { foreignKey: 'post_id' });
+Mix.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });

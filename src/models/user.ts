@@ -18,8 +18,6 @@ export default class User extends Model {
   public readonly created_at!: Date;
 
   public readonly updated_at!: Date;
-
-  public readonly deleted_at!: Date | null;
 }
 
 User.init(
@@ -57,7 +55,6 @@ User.init(
     sequelize,
     timestamps: true,
     underscored: true,
-    paranoid: true,
     hooks: {
       beforeCreate: async (user) => {
         const encryptedPw = await bcrypt.hash(user.password, 10);
