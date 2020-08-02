@@ -1,18 +1,13 @@
-import { Op, Model } from 'sequelize';
+import { Op } from 'sequelize';
 import User from '../models/user';
 import { IUserforSignUp, IUserInfo } from '../interfaces/user';
 
-console.log('hello');
-
 export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
-  const a = 1;
   await User.create({
     email: userInfo.email,
     nickname: userInfo.nickname,
     password: userInfo.password,
   });
-  a = 2;
-  return a;
 };
 
 export const getAllUser = async () => {
