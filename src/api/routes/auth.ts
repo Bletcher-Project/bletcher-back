@@ -40,15 +40,10 @@ authRouter.post(
 
 authRouter.get(
   '/',
-  celebrate({
-    [Segments.HEADERS]: Joi.object({
-      token: Joi.string().token().required(),
-    }),
-  }),
   checkJWT,
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
     try {
-      const user = getUserById(req.decoded?.id);
+      const user = await getUserById(req.decoded?.id);
       return res.status(200).json({
         status: '200 OK',
         message: AUTH_SUCCESS,
@@ -61,20 +56,11 @@ authRouter.get(
   },
 );
 
-authRouter.get(
-  '/check',
-  celebrate({
-    [Segments.HEADERS]: Joi.object({
-      token: Joi.string().token().required(),
-    }),
-  }),
-  checkJWT,
-  (req: IJwtRequest, res: Response) => {
-    res.json({
-      success: true,
-      info: req.decoded,
-    });
-  },
-);
+authRouter.get('/check', checkJWT, (req: IJwtRequest, res: Response) => {
+  res.json({
+    success: true,
+    info: req.decoded,
+  });
+});
 
 export default authRouter;
