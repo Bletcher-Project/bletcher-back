@@ -1,6 +1,11 @@
 import { Request } from 'express';
 
-interface IJsonWebTokenInfo {
+export interface IAuthUser {
+  id: string;
+  password: string;
+}
+
+interface IJwtInfo {
   id?: number;
   email?: string;
   iat?: number;
@@ -9,6 +14,6 @@ interface IJsonWebTokenInfo {
   sub?: string;
 }
 
-export interface IJsonWebTokenRequest extends Request {
-  decoded?: IJsonWebTokenInfo;
+export interface IJwtRequest extends Request {
+  decoded?: IJwtInfo;
 }
