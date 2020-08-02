@@ -32,6 +32,9 @@ Category.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    parent_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+    },
   },
   {
     tableName: 'category',

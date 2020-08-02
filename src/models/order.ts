@@ -10,15 +10,15 @@ export default class Order extends Model {
 
   public quantity!: number;
 
+  public user_id!: number;
+
+  public shopitem_id!: number;
+
   public readonly created_at!: Date;
 
   public readonly updated_at!: Date;
 
   public readonly deleted_at!: Date | null;
-
-  public user_id!: number;
-
-  public shopitem_id!: number;
 }
 
 Order.init(
@@ -36,6 +36,14 @@ Order.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    shopitem_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'order',
@@ -46,11 +54,5 @@ Order.init(
   },
 );
 
-User.belongsToMany(Shopitem, {
-  through: Order,
-  foreignKey: { name: 'user_id', allowNull: false },
-});
-Shopitem.belongsToMany(User, {
-  through: Order,
-  foreignKey: { name: 'shopitem_id', allowNull: false },
-});
+User.belongsToMany(Shopitem, { through: Order, foreignKey: 'user_id' });
+Shopitem.belongsToMany(User, { through: Order, foreignKey: 'shopitem_id' });

@@ -3,22 +3,19 @@ import sequelize from '../config/database';
 import Post from './post';
 
 export default class Shopitem extends Model {
-  public id!: number;
+  public post_id!: number;
 
   public poster_sales_amount!: number;
 
   public coloring_sales_amount!: string;
 
   public goods_sales_amount!: number;
-
-  public post_id!: number;
 }
 
 Shopitem.init(
   {
-    id: {
+    post_id: {
       type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
       primaryKey: true,
     },
     poster_sales_amount: {
@@ -40,4 +37,4 @@ Shopitem.init(
   },
 );
 
-Shopitem.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });
+Shopitem.belongsTo(Post, { foreignKey: 'post_id' });

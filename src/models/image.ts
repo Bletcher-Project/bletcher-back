@@ -39,6 +39,10 @@ Image.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    post_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'image',
@@ -46,4 +50,4 @@ Image.init(
   },
 );
 
-Image.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });
+Image.belongsTo(Post, { foreignKey: 'post_id' });

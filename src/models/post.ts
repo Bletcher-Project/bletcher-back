@@ -12,15 +12,15 @@ export default class Post extends Model {
 
   public is_public!: boolean;
 
+  public user_id!: number;
+
+  public category_id!: number;
+
   public readonly created_at!: Date;
 
   public readonly updated_at!: Date;
 
   public readonly deleted_at!: Date | null;
-
-  public user_id!: number;
-
-  public category_id!: number;
 }
 
 Post.init(
@@ -42,6 +42,14 @@ Post.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    category_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'post',
@@ -52,9 +60,5 @@ Post.init(
   },
 );
 
-Post.belongsTo(User, {
-  foreignKey: { name: 'user_id', allowNull: false },
-});
-Post.belongsTo(Category, {
-  foreignKey: { name: 'category_id', allowNull: false },
-});
+Post.belongsTo(User, { foreignKey: 'user_id' });
+Post.belongsTo(Category, { foreignKey: 'category_id' });

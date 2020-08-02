@@ -26,6 +26,18 @@ Notice.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_send_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    user_receive_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    post_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'notice',
@@ -33,10 +45,6 @@ Notice.init(
   },
 );
 
-Notice.belongsTo(User, {
-  foreignKey: { name: 'user_send_id', allowNull: false },
-});
-Notice.belongsTo(User, {
-  foreignKey: { name: 'user_receive_id', allowNull: false },
-});
-Notice.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });
+Notice.belongsTo(User, { foreignKey: 'user_send_id' });
+Notice.belongsTo(User, { foreignKey: 'user_receive_id' });
+Notice.belongsTo(Post, { foreignKey: 'post_id' });

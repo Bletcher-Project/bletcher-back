@@ -26,6 +26,18 @@ Mix.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    origin_user: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    sub_user: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+    post_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'mix',
@@ -33,6 +45,6 @@ Mix.init(
   },
 );
 
-Mix.belongsTo(User, { foreignKey: { name: 'origin_user', allowNull: false } });
+Mix.belongsTo(User, { foreignKey: 'origin_user' });
 Mix.belongsTo(User, { foreignKey: 'sub_user' });
-Mix.belongsTo(Post, { foreignKey: { name: 'post_id', allowNull: false } });
+Mix.belongsTo(Post, { foreignKey: 'post_id' });

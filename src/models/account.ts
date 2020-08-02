@@ -27,6 +27,10 @@ Account.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'account',
@@ -34,4 +38,4 @@ Account.init(
   },
 );
 
-Account.belongsTo(User, { foreignKey: { name: 'user_id', allowNull: false } });
+Account.belongsTo(User, { foreignKey: 'user_id' });

@@ -39,6 +39,10 @@ Address.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     tableName: 'address',
@@ -46,4 +50,4 @@ Address.init(
   },
 );
 
-Address.belongsTo(User, { foreignKey: { name: 'user_id', allowNull: false } });
+Address.belongsTo(User, { foreignKey: 'user_id' });
