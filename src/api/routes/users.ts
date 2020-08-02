@@ -25,14 +25,14 @@ userRouter.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       email: Joi.string().email().required(),
-      userId: Joi.string().required(),
+      nickname: Joi.string().required(),
       password: Joi.string().required(),
     }),
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, userId } = req.body;
+    const { email, nickname } = req.body;
     try {
-      const existUser = await getUserByUserInfo({ email, userId });
+      const existUser = await getUserByUserInfo({ email, nickname });
       if (existUser) {
         return res.status(409).json(response.response409(EXIST_USER));
       }
@@ -51,13 +51,13 @@ userRouter.get(
     [Segments.QUERY]: {
       id: Joi.number().integer(),
       email: Joi.string().email(),
-      userId: Joi.string(),
+      nickname: Joi.string(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id, email, userId } = req.query;
+    const { id, email, nickname } = req.query;
     try {
-      if (!id && !email && !userId) {
+      if (!id && !email && !nickname) {
         const allUser = await getAllUser();
         return res
           .status(200)

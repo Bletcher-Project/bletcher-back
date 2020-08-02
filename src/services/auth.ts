@@ -10,7 +10,7 @@ export const authenticate = async (
 ): Promise<User | null> => {
   const user = await User.findOne({
     where: {
-      [Op.or]: [{ email: authInfo.id }, { user_id: authInfo.id }],
+      [Op.or]: [{ email: authInfo.id }, { nickname: authInfo.id }],
     },
   });
   if (!user) {
