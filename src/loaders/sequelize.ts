@@ -20,16 +20,16 @@ export default async (): Promise<Sequelize> => {
     User,
     Account,
     Address,
+    Post,
+    Image,
     Category,
+    Shopitem,
     Favorite,
     Funding,
-    Image,
     Mix,
     Notice,
     Order,
-    Post,
-    Shopitem,
   };
-  const connection = await db.sequelize.sync();
+  const connection = await db.sequelize.sync({});
   return connection;
 };
