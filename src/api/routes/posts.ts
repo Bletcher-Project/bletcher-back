@@ -8,6 +8,7 @@ import {
   getPostByPostId,
   getPostByUserId,
   deletePost,
+  editPost,
 } from '../../services/post';
 import {
   POST_UP_SUCCESS,
@@ -17,6 +18,7 @@ import {
   AUTH_FAIL,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
+  EDIT_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 import checkJWT from '../middleware/checkJwt';
@@ -114,4 +116,30 @@ postRouter.delete(
   },
 );
 
+postRouter.put(
+  '/:id',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      title: Joi.string().required(),
+      description: Joi.string().required(),
+      is_public: Joi.boolean().required(),
+      user_id: Joi.number().required(),
+      category_id: Joi.number().required(),
+    }),
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id, 10);
+    try {
+      if (!req.body.user_id) {
+        return res.status(409).json(response.response409(AUTH_FAIL));
+      }
+      const editpost = await editPost(req.body as IPostdetail, id);
+      return res.status(200).json(response.response200(EDIT_SUCCESS, editpost));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
 export default postRouter;

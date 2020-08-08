@@ -21,3 +21,4 @@ export const GET_USER_POST_SUCCESS = '해당 사용자의 게시물을 불러왔
 export const GET_ONE_POST_SUCCESS = '해당 게시물의 상세내역을 불러왔습니다.';
 export const DELETE_POST_SUCCESS = '게시물을 삭제했습니다.';
 export const DELETE_POST_FAIL = '존재하지 않거나 이미 삭제된 게시물입니다.';
+export const EDIT_SUCCESS = '게시물 수정을 성공하였습니다.';

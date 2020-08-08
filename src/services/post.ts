@@ -46,3 +46,17 @@ export const deletePost = async (id: number): Promise<number> => {
   });
   return post;
 };
+
+export const editPost = async (postInfo: IPostdetail, id: number) => {
+  const post = Post.update(
+    {
+      title: postInfo.title,
+      description: postInfo.description,
+      is_public: postInfo.is_public,
+      user_id: postInfo.user_id,
+      category_id: postInfo.category_id,
+    },
+    { where: { id } },
+  );
+  return post;
+};
