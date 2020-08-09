@@ -5,8 +5,3 @@ export interface IPostdetail {
   user_id: number;
   category_id: number;
 }
-
-export interface IPostInfo {
-  userid?: number;
-  postid?: number;
-}

@@ -30,6 +30,6 @@ export default async (): Promise<Sequelize> => {
     Notice,
     Order,
   };
-  const connection = await db.sequelize.sync({});
+  const connection = await db.sequelize.sync();
   return connection;
 };
