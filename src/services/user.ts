@@ -10,7 +10,7 @@ export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
   });
 };
 
-export const getAllUser = async () => {
+export const getAllUser = async (): Promise<User[] | null> => {
   const allUser = await User.findAll({});
   return allUser;
 };

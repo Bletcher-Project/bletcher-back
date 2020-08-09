@@ -16,9 +16,10 @@ export const DELETE_USER_FAIL = '사용자가 존재하지 않거나 이미 삭�
 /* POSTS */
 export const POST_UP_SUCCESS = '게시물 업로드를 성공하였습니다.';
 export const GET_ALL_POST_SUCCESS = '모든 게시물을 불러왔습니다.';
-export const GET_POST_FAIL = '게시물을 받아오지 못했습니다.';
 export const GET_USER_POST_SUCCESS = '해당 사용자의 게시물을 불러왔습니다.';
 export const GET_ONE_POST_SUCCESS = '해당 게시물의 상세내역을 불러왔습니다.';
+export const GET_POST_FAIL = '게시물을 받아오지 못했습니다.';
 export const DELETE_POST_SUCCESS = '게시물을 삭제했습니다.';
 export const DELETE_POST_FAIL = '존재하지 않거나 이미 삭제된 게시물입니다.';
 export const EDIT_SUCCESS = '게시물 수정을 성공하였습니다.';
+export const EDIT_FAIL = '게시물을 수정을 실패했습니다.';

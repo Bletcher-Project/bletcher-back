@@ -11,7 +11,7 @@ export const createPost = async (postInfo: IPostdetail): Promise<void> => {
   });
 };
 
-export const getAllPost = async () => {
+export const getAllPost = async (): Promise<Post[] | null> => {
   const allPost = await Post.findAll({
     offset: 0,
     limit: 100,
@@ -31,7 +31,9 @@ export const getPostByPostId = async (
   return post;
 };
 
-export const getPostByUserId = async (postInfo: IPostInfo) => {
+export const getPostByUserId = async (
+  postInfo: IPostInfo,
+): Promise<Post[] | null> => {
   const post = await Post.findAll({
     where: {
       user_id: postInfo.userid || null,
@@ -47,13 +49,15 @@ export const deletePost = async (id: number): Promise<number> => {
   return post;
 };
 
-export const editPost = async (postInfo: IPostdetail, id: number) => {
-  const post = Post.update(
+export const editPost = async (
+  postInfo: IPostdetail,
+  id: number,
+): Promise<[number, Post[]]> => {
+  const post = await Post.update(
     {
       title: postInfo.title,
       description: postInfo.description,
       is_public: postInfo.is_public,
-      user_id: postInfo.user_id,
       category_id: postInfo.category_id,
     },
     { where: { id } },
