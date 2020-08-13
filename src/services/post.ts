@@ -22,10 +22,7 @@ export const getPostPages = async (
   page: number,
   limit: number,
 ): Promise<Post[]> => {
-  let offset = 0;
-  if (page > 1) {
-    offset = limit * (page - 1);
-  }
+  const offset = limit * (page - 1);
   const pagePost = await Post.findAll({
     offset,
     limit,
