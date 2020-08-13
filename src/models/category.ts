@@ -42,10 +42,11 @@ Category.init(
   },
 );
 
-Category.hasMany(Category, {
-  as: 'sub_category',
-  foreignKey: 'parent_id',
-});
-Category.belongsTo(Category, {
-  foreignKey: 'parent_id',
-});
+// Category.hasMany(Category, {
+//   as: 'sub_category',
+//   foreignKey: 'parent_id',
+// });
+// Category.belongsTo(Category, {
+//   as: 'sub_category',
+//   foreignKey: 'parent_id',
+// });
