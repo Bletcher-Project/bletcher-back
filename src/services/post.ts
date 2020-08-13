@@ -38,10 +38,28 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
   return post;
 };
 
-export const getPostByUserId = async (
+export const getAllPostByUserId = async (
   userid: number,
 ): Promise<Post[] | null> => {
   const post = await Post.findAll({
+    order: [['created_at', 'DESC']],
+    where: {
+      user_id: userid,
+    },
+  });
+  return post;
+};
+
+export const getPostPageByUserId = async (
+  userid: number,
+  page: number,
+  limit: number,
+): Promise<Post[] | null> => {
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
     where: {
       user_id: userid,
     },

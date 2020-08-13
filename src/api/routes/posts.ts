@@ -6,7 +6,8 @@ import {
   createPost,
   getAllPost,
   getPostByPostId,
-  getPostByUserId,
+  getPostPageByUserId,
+  getAllPostByUserId,
   getPostPages,
   deletePost,
   editPost,
@@ -57,37 +58,83 @@ postRouter.get(
   '/',
   celebrate({
     [Segments.QUERY]: {
-      userid: Joi.number(),
-      postid: Joi.number(),
-      page: Joi.number(),
-      limit: Joi.number(),
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userid, postid } = req.query as any;
     const { page, limit } = req.query as any;
 
     try {
-      if (!postid && !userid && !page && !limit) {
+      if (!page && !limit) {
         const allPost = await getAllPost();
         return res
           .status(200)
           .json(response.response200(GET_ALL_POST_SUCCESS, allPost));
       }
+      if (page && limit) {
+        const pagepost = await getPostPages(page, limit);
+        return res
+          .status(200)
+          .json(response.response200(GET_PAGE_POST_SUCCESS, pagepost));
+      }
+      return res.status(400).json(response.response400(GET_POST_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/:id',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postid: number = parseInt(req.params.id, 10);
+    try {
       if (postid) {
         const onepost = await getPostByPostId(postid);
         return res
           .status(200)
           .json(response.response200(GET_ONE_POST_SUCCESS, onepost));
       }
-      if (userid) {
-        const userpost = await getPostByUserId(userid);
-        return res
-          .status(200)
-          .json(response.response200(GET_USER_POST_SUCCESS, userpost));
+      return res.status(400).json(response.response400(GET_POST_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/user/:id',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+    [Segments.PARAMS]: {
+      id: Joi.number(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userid: number = parseInt(req.params.id, 10);
+    const { page, limit } = req.query as any;
+    try {
+      if (!page && !limit) {
+        if (userid) {
+          const userpost = await getAllPostByUserId(userid);
+          return res
+            .status(200)
+            .json(response.response200(GET_USER_POST_SUCCESS, userpost));
+        }
       }
       if (page && limit) {
-        const pagepost = await getPostPages(page, limit);
+        const pagepost = await getPostPageByUserId(userid, page, limit);
         return res
           .status(200)
           .json(response.response200(GET_PAGE_POST_SUCCESS, pagepost));
@@ -109,7 +156,7 @@ postRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const postid = parseInt(req.params.id, 10);
+    const postid: number = parseInt(req.params.id, 10);
     try {
       const deletedPost = await deletePost(postid);
       if (deletedPost) {

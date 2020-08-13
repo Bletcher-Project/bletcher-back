@@ -85,7 +85,7 @@ userRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id, 10);
+    const id: number = parseInt(req.params.id, 10);
     try {
       const deletedUser = await deleteUser(id);
       if (deletedUser) {
