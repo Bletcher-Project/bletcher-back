@@ -39,6 +39,7 @@ postRouter.post(
       is_public: Joi.boolean().required(),
       user_id: Joi.number().required(),
       category_id: Joi.number().required(),
+      image_id: Joi.number().required(),
     }),
   }),
   async (req: Request, res: Response, next: NextFunction) => {

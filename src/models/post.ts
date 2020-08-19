@@ -2,6 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import User from './user';
 import Category from './category';
+import Image from './image';
 
 export default class Post extends Model {
   public id!: number;
@@ -13,6 +14,8 @@ export default class Post extends Model {
   public is_public!: boolean;
 
   public user_id!: number;
+
+  public image_id!: string;
 
   public category_id!: number;
 
@@ -46,6 +49,10 @@ Post.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
+    image_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
     category_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
@@ -62,3 +69,4 @@ Post.init(
 
 Post.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Post.belongsTo(Category, { foreignKey: 'category_id' });
+Post.belongsTo(Image, { foreignKey: 'image_id' });

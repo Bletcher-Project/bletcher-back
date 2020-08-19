@@ -8,6 +8,7 @@ export const createPost = async (postInfo: IPostdetail): Promise<void> => {
     is_public: postInfo.is_public,
     user_id: postInfo.user_id,
     category_id: postInfo.category_id,
+    image_id: postInfo.image_id,
   });
 };
 
