@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import Category from '../models/category';
 
 export const getAllCategories = async (): Promise<Category[] | null> => {
@@ -7,6 +8,7 @@ export const getAllCategories = async (): Promise<Category[] | null> => {
       {
         model: Category,
         as: 'sub_category',
+        required: true,
         attributes: ['id', 'name'],
       },
     ],
@@ -15,21 +17,22 @@ export const getAllCategories = async (): Promise<Category[] | null> => {
 };
 
 export const getGroupCategories = async (
-  name: number,
+  id: number,
 ): Promise<Category[] | null> => {
   const category = await Category.findOne({
-    where: { name },
+    where: { id },
   });
   if (!category) {
     return null;
   }
   const groupCategory = await Category.findAll({
     attributes: ['id', 'name'],
-    where: { name },
+    where: { id },
     include: [
       {
         model: Category,
         as: 'sub_category',
+        required: true,
         attributes: ['id', 'name'],
         order: [['left', 'DESC']],
       },

@@ -15,14 +15,14 @@ categoryRouter.get(
   '/',
   celebrate({
     [Segments.QUERY]: {
-      categoryname: Joi.string(),
+      categoryid: Joi.string(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { categoryname } = req.query as any;
+    const { categoryid } = req.query as any;
     try {
-      if (categoryname) {
-        const groupcategory = await getGroupCategories(categoryname);
+      if (categoryid) {
+        const groupcategory = await getGroupCategories(categoryid);
         if (!groupcategory) {
           return res.status(400).json(response.response400(GET_CATEGORY_FAIL));
         }

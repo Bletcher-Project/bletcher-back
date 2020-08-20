@@ -8,6 +8,8 @@ import {
   getPostByPostId,
   getPostPageByUserId,
   getAllPostByUserId,
+  getPostPageByCategoryId,
+  getAllPostByCategoryId,
   getPostPages,
   deletePost,
   editPost,
@@ -23,6 +25,7 @@ import {
   EDIT_SUCCESS,
   EDIT_FAIL,
   GET_PAGE_POST_SUCCESS,
+  GET_POST_BY_CATEGORY_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 import checkJWT from '../middleware/checkJwt';
@@ -127,18 +130,62 @@ postRouter.get(
     const { page, limit } = req.query as any;
     try {
       if (!page && !limit) {
-        if (userid) {
-          const userpost = await getAllPostByUserId(userid);
-          return res
-            .status(200)
-            .json(response.response200(GET_USER_POST_SUCCESS, userpost));
-        }
+        const userpost = await getAllPostByUserId(userid);
+        return res
+          .status(200)
+          .json(response.response200(GET_USER_POST_SUCCESS, userpost));
       }
       if (page && limit) {
         const pagepost = await getPostPageByUserId(userid, page, limit);
         return res
           .status(200)
           .json(response.response200(GET_PAGE_POST_SUCCESS, pagepost));
+      }
+      return res.status(400).json(response.response400(GET_POST_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/category/:id',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+    [Segments.PARAMS]: {
+      id: Joi.number(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const categoryid: number = parseInt(req.params.id, 10);
+    const { page, limit } = req.query as any;
+    try {
+      if (!page && !limit) {
+        const allCategoryPost = await getAllPostByCategoryId(categoryid);
+        return res
+          .status(200)
+          .json(
+            response.response200(GET_POST_BY_CATEGORY_SUCCESS, allCategoryPost),
+          );
+      }
+      if (page && limit) {
+        const pagecategorypost = await getPostPageByCategoryId(
+          categoryid,
+          page,
+          limit,
+        );
+        return res
+          .status(200)
+          .json(
+            response.response200(
+              GET_POST_BY_CATEGORY_SUCCESS,
+              pagecategorypost,
+            ),
+          );
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {

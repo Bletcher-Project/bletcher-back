@@ -68,6 +68,64 @@ export const getPostPageByUserId = async (
   return post;
 };
 
+export const getPostPageByCategoryId = async (
+  category_id: number,
+  page: number,
+  limit: number,
+): Promise<Post[] | null> => {
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    attributes: ['id', 'title', 'description', 'is_public'],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
+      },
+      {
+        model: Category,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Image,
+        attributes: ['id', 'name'],
+      },
+    ],
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
+    where: {
+      category_id,
+    },
+  });
+  return post;
+};
+export const getAllPostByCategoryId = async (
+  category_id: number,
+): Promise<Post[] | null> => {
+  const post = await Post.findAll({
+    attributes: ['id', 'title', 'description', 'is_public'],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
+      },
+      {
+        model: Category,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Image,
+        attributes: ['id', 'name'],
+      },
+    ],
+    order: [['created_at', 'DESC']],
+    where: {
+      category_id,
+    },
+  });
+  return post;
+};
+
 export const deletePost = async (id: number): Promise<number> => {
   const post = await Post.destroy({
     where: { id },
