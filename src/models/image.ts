@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import Post from './post';
 
 export default class Image extends Model {
   public id!: number;
@@ -12,8 +11,6 @@ export default class Image extends Model {
   public width!: number;
 
   public height!: number;
-
-  public post_id!: number;
 }
 
 Image.init(
@@ -33,15 +30,11 @@ Image.init(
     },
     width: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
     },
     height: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    post_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
+      // allowNull: false,
     },
   },
   {
@@ -49,5 +42,3 @@ Image.init(
     sequelize,
   },
 );
-
-Image.belongsTo(Post, { foreignKey: 'post_id' });
