@@ -9,6 +9,7 @@ export const getAllCategories = async (): Promise<Category[] | null> => {
       {
         model: Category,
         as: 'sub_category',
+        required: true,
         attributes: ['id', 'name'],
         required: true,
         order: [['left', 'DESC']],
@@ -27,13 +28,12 @@ export const getGroupCategories = async (
   }
   const groupCategory = await Category.findAll({
     attributes: ['id', 'name'],
-    where: {
-      id,
-    },
+    where: { id },
     include: [
       {
         model: Category,
         as: 'sub_category',
+        required: true,
         attributes: ['id', 'name'],
         required: true,
         order: [['left', 'DESC']],
