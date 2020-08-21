@@ -4,16 +4,14 @@ import Logger from '../../loaders/logger';
 import { IPostdetail } from '../../interfaces/post';
 import {
   createPost,
-  getAllPost,
+  getPost,
   getPostByPostId,
-  getPostPageByUserId,
-  getAllPostByUserId,
-  getPostPageByCategoryId,
-  getAllPostByCategoryId,
-  getPostPages,
+  getPostByUserId,
+  getPostByCategoryId,
   deletePost,
   editPost,
 } from '../../services/post';
+import { getNestedCategories } from '../../services/category';
 import {
   POST_UP_SUCCESS,
   GET_ALL_POST_SUCCESS,
@@ -24,8 +22,8 @@ import {
   DELETE_POST_FAIL,
   EDIT_SUCCESS,
   EDIT_FAIL,
-  GET_PAGE_POST_SUCCESS,
   GET_POST_BY_CATEGORY_SUCCESS,
+  GET_POST_BY_NESTED_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 import checkJWT from '../middleware/checkJwt';
@@ -68,19 +66,12 @@ postRouter.get(
   }),
   async (req: Request, res: Response, next: NextFunction) => {
     const { page, limit } = req.query as any;
-
     try {
-      if (!page && !limit) {
-        const allPost = await getAllPost();
+      const allPost = await getPost(page, limit);
+      if (allPost) {
         return res
           .status(200)
           .json(response.response200(GET_ALL_POST_SUCCESS, allPost));
-      }
-      if (page && limit) {
-        const pagepost = await getPostPages(page, limit);
-        return res
-          .status(200)
-          .json(response.response200(GET_PAGE_POST_SUCCESS, pagepost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -94,17 +85,17 @@ postRouter.get(
   '/:id',
   celebrate({
     [Segments.PARAMS]: {
-      id: Joi.number(),
+      id: Joi.number().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const postid: number = parseInt(req.params.id, 10);
+    const postId: number = parseInt(req.params.id, 10);
     try {
-      if (postid) {
-        const onepost = await getPostByPostId(postid);
+      if (postId) {
+        const onePost = await getPostByPostId(postId);
         return res
           .status(200)
-          .json(response.response200(GET_ONE_POST_SUCCESS, onepost));
+          .json(response.response200(GET_ONE_POST_SUCCESS, onePost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -122,24 +113,18 @@ postRouter.get(
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      id: Joi.number(),
+      id: Joi.number().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const userid: number = parseInt(req.params.id, 10);
+    const userId: number = parseInt(req.params.id, 10);
     const { page, limit } = req.query as any;
     try {
-      if (!page && !limit) {
-        const userpost = await getAllPostByUserId(userid);
+      const userPost = await getPostByUserId(userId, page, limit);
+      if (userPost) {
         return res
           .status(200)
-          .json(response.response200(GET_USER_POST_SUCCESS, userpost));
-      }
-      if (page && limit) {
-        const pagepost = await getPostPageByUserId(userid, page, limit);
-        return res
-          .status(200)
-          .json(response.response200(GET_PAGE_POST_SUCCESS, pagepost));
+          .json(response.response200(GET_USER_POST_SUCCESS, userPost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -157,35 +142,52 @@ postRouter.get(
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      id: Joi.number(),
+      id: Joi.number().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const categoryid: number = parseInt(req.params.id, 10);
+    const categoryId: number = parseInt(req.params.id, 10);
     const { page, limit } = req.query as any;
     try {
-      if (!page && !limit) {
-        const allCategoryPost = await getAllPostByCategoryId(categoryid);
+      const categoryPost = await getPostByCategoryId(categoryId, page, limit);
+      if (categoryPost) {
         return res
           .status(200)
           .json(
-            response.response200(GET_POST_BY_CATEGORY_SUCCESS, allCategoryPost),
+            response.response200(GET_POST_BY_CATEGORY_SUCCESS, categoryPost),
           );
       }
-      if (page && limit) {
-        const pagecategorypost = await getPostPageByCategoryId(
-          categoryid,
-          page,
-          limit,
-        );
+      return res.status(400).json(response.response400(GET_POST_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/category/all/:id',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const categoryId: number = parseInt(req.params.id, 10);
+      const nestedId = await getNestedCategories(categoryId);
+      const nestedIdArr = Object.values(nestedId as Object);
+      const nestedIdMap = nestedIdArr.map((getid) => getid.id);
+      const result = await Promise.all(
+        nestedIdMap.map((v) => {
+          const getpost = getPostByCategoryId(v, null, null);
+          return getpost;
+        }),
+      );
+      if (result) {
         return res
           .status(200)
-          .json(
-            response.response200(
-              GET_POST_BY_CATEGORY_SUCCESS,
-              pagecategorypost,
-            ),
-          );
+          .json(response.response200(GET_POST_BY_NESTED_SUCCESS, result));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {

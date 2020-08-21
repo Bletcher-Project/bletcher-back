@@ -26,6 +26,7 @@ export const EDIT_FAIL = '게시물을 수정을 실패했습니다.';
 export const GET_PAGE_POST_SUCCESS = '요청한 게시글 페이지를 불러왔습니다.';
 export const GET_PAGE_POST_FAIL = '요청한 게시글 페이지를 불러오지 못했습니다';
 export const GET_POST_BY_CATEGORY_SUCCESS = '해당 카테고리의 게시물을 불러왔습니다.';
+export const GET_POST_BY_NESTED_SUCCESS = '해당 카테고리와 연관된 모든 게시물을 불러왔습니다.';
 
 /* CATEGORYS */
 export const GET_ALL_CATEGORY_SUCCESS = '모든 카테고리를 불러왔습니다.';
