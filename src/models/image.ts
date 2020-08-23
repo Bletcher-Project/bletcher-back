@@ -8,9 +8,7 @@ export default class Image extends Model {
 
   public type!: string;
 
-  public width!: number;
-
-  public height!: number;
+  public path!: string;
 }
 
 Image.init(
@@ -28,13 +26,9 @@ Image.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    width: {
-      type: DataTypes.INTEGER,
-      // allowNull: false,
-    },
-    height: {
-      type: DataTypes.INTEGER,
-      // allowNull: false,
+    path: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {
