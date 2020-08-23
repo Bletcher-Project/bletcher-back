@@ -80,15 +80,6 @@ imageRouter.get(
     const imageid: number = parseInt(req.params.imageid, 10);
     try {
       const imagepath = await getPostImagePath(imageid);
-      // if (imagepath) {
-      //   fs.readFile(`/uploads${imagepath.path}`, (error, data) => {
-      //     if (error) {
-      //       return res.status(500).send('Internal Server Error');
-      //     }
-      //     return res.status(200).send(data);
-      //     // .json(response.response200(IMAGE_LOAD_SUCCESS, data));
-      //   });
-      // }
       if (imagepath) {
         return res
           .status(200)
