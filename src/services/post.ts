@@ -16,11 +16,10 @@ export const createPost = async (postInfo: IPostdetail): Promise<void> => {
 };
 
 export const getPost = async (
-  page: number | null,
-  limit: number | null,
+  page: number = 1,
+  limit: number = 10,
 ): Promise<Post[] | null> => {
-  if (!page && !limit) {
-    const allPost = await Post.findAll({
+  const allPost = await Post.findAll({
       attributes: [
         'id',
         'title',
