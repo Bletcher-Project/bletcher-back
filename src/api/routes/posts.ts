@@ -180,7 +180,7 @@ postRouter.get(
       const nestedIdMap = nestedIdArr.map((getid) => getid.id);
       const result = await Promise.all(
         nestedIdMap.map((v) => {
-          const getpost = getPostByCategoryId(v, null, null);
+          const getpost = getPostByCategoryId(v);
           return getpost;
         }),
       );
