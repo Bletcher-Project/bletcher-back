@@ -31,7 +31,7 @@ export default async (): Promise<Sequelize> => {
     Notice,
     Order,
   };
-  const connection = await db.sequelize.sync({ force: true });
+  const connection = await db.sequelize.sync();
   Seeder();
   return connection;
 };

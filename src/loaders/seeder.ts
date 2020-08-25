@@ -76,6 +76,6 @@ export default async (): Promise<void> => {
       { id: 50, name: '소분류1', left: 96, right: 97, parent_id: 21 },
       { id: 51, name: '소분류2', left: 98, right: 99, parent_id: 21 },
     ],
-    { validate: true },
+    { updateOnDuplicate: ['id'] },
   );
 };
