@@ -9,8 +9,6 @@ export const postPostImage = async (
     name: imageInfo.name,
     type: imageInfo.type,
     path: imageInfo.path,
-    width: imageInfo.width,
-    heigt: imageInfo.height,
   });
   const imageid = await Image.findOne({
     where: { name: imageInfo.name },
@@ -21,12 +19,6 @@ export const postPostImage = async (
 
 export const getPostImagePath = async (id: number): Promise<Image | null> => {
   const postimagepath = await Image.findOne({
-    // include: [
-    //   {
-    //     model: Post,
-    //     attributes: ['id', 'title'],
-    //   },
-    // ],
     where: { id },
     attributes: ['path'],
   });

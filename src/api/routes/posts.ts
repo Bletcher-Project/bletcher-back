@@ -180,14 +180,15 @@ postRouter.get(
       const nestedIdMap = nestedIdArr.map((getid) => getid.id);
       const result = await Promise.all(
         nestedIdMap.map((v) => {
-          const getpost = getPostByCategoryId(v, null, null);
+          const getpost = getPostByCategoryId(v);
           return getpost;
         }),
       );
+      const filterResult = result.filter((v) => v.length !== 0);
       if (result) {
         return res
           .status(200)
-          .json(response.response200(GET_POST_BY_NESTED_SUCCESS, result));
+          .json(response.response200(GET_POST_BY_NESTED_SUCCESS, filterResult));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
