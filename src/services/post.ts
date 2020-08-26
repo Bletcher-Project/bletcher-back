@@ -40,7 +40,7 @@ export const getPost = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -69,7 +69,7 @@ export const getPost = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       offset,
@@ -102,7 +102,7 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
       },
       {
         model: Image,
-        attributes: ['id', 'name'],
+        attributes: ['id', 'path'],
       },
     ],
     where: { id },
@@ -136,7 +136,7 @@ export const getPostByUserId = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -168,7 +168,7 @@ export const getPostByUserId = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       offset,
@@ -209,7 +209,7 @@ export const getPostByCategoryId = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -241,7 +241,7 @@ export const getPostByCategoryId = async (
         },
         {
           model: Image,
-          attributes: ['id', 'name'],
+          attributes: ['id', 'path'],
         },
       ],
       offset,

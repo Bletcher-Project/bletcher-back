@@ -1,6 +1,10 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import calcUtil from '../../util/calc';
+
+const cloudinary = require('cloudinary').v2;
 
 /* create folder for Profile IMG upload */
 fs.readdir('uploads/profile', (error) => {
@@ -16,44 +20,21 @@ fs.readdir('uploads/post', (error) => {
   }
 });
 
-const multerProfile = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, 'uploads/profile');
-    },
-    filename(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, new Date().valueOf() + ext);
+const parser = (purpose: string) => multer({
+  storage: new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: '/' + purpose,
+      format: async (req, file) => calcUtil.getExtension(file.originalname),
+      public_id: async () => {
+        return new Date().valueOf() + calcUtil.getNand(10);
+      },
     },
   }),
-  // limits: { fileSize: 5 * 1024 * 1024 }
-});
+}); 
 
-const multerPost = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, 'uploads/post');
-    },
-    filename(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, new Date().valueOf() + ext);
-    },
-  }),
-  // limits: { fileSize: 5 * 1024 * 1024 }
-});
-
-const multerSketcherPost = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, 'uploads/post');
-    },
-    filename(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, new Date().valueOf() + ext);
-    },
-  }),
-});
+const multerProfile = parser('profile');
+const multerPost = parser('post');
 
 export const uploadProfile = multerProfile.single('img');
 export const uploadPost = multerPost.single('img');
-export const uploadSketcherPost = multerSketcherPost.array('img', 2);
