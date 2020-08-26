@@ -12,6 +12,7 @@ import Notice from '../models/notice';
 import Order from '../models/order';
 import Post from '../models/post';
 import Shopitem from '../models/shopitem';
+import Seeder from './seeder';
 
 export default async (): Promise<Sequelize> => {
   const db = {
@@ -31,5 +32,6 @@ export default async (): Promise<Sequelize> => {
     Order,
   };
   const connection = await db.sequelize.sync();
+  Seeder();
   return connection;
 };
