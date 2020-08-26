@@ -1,5 +1,4 @@
 import multer from 'multer';
-import path from 'path';
 import fs from 'fs';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import calcUtil from '../../util/calc';
@@ -22,19 +21,14 @@ fs.readdir('uploads/post', (error) => {
 
 const parser = (purpose: string) => multer({
   storage: new CloudinaryStorage({
-    cloudinary: cloudinary,
+    cloudinary,
     params: {
-      folder: '/' + purpose,
+      folder: `/${purpose}`,
       format: async (req, file) => calcUtil.getExtension(file.originalname),
-      public_id: async () => {
-        return new Date().valueOf() + calcUtil.getNand(10);
-      },
+      public_id: async () => new Date().valueOf() + calcUtil.getNand(10),
     },
   }),
-}); 
+});
 
-const multerProfile = parser('profile');
-const multerPost = parser('post');
-
-export const uploadProfile = multerProfile.single('img');
-export const uploadPost = multerPost.single('img');
+export const uploadProfile = parser('profile').single('img');
+export const uploadPost = parser('post').single('img');
