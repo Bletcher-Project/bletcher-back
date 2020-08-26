@@ -35,17 +35,17 @@ categoryRouter.get(
 );
 
 categoryRouter.get(
-  '/group',
+  '/:id/group',
   celebrate({
-    [Segments.QUERY]: {
-      categoryid: Joi.number().required(),
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { categoryid } = req.query as any;
+    const id: number = parseInt(req.params.id, 10);
     try {
-      if (categoryid) {
-        const groupcategory = await getGroupCategories(categoryid);
+      if (id) {
+        const groupcategory = await getGroupCategories(id);
         if (!groupcategory) {
           return res.status(400).json(response.response400(GET_CATEGORY_FAIL));
         }
@@ -64,17 +64,17 @@ categoryRouter.get(
 );
 
 categoryRouter.get(
-  '/group/all',
+  '/:id/group/all',
   celebrate({
-    [Segments.QUERY]: {
-      categoryid: Joi.number().required(),
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { categoryid } = req.query as any;
+    const id: number = parseInt(req.params.id, 10);
     try {
-      if (categoryid) {
-        const nestedcategories = await getNestedCategories(categoryid);
+      if (id) {
+        const nestedcategories = await getNestedCategories(id);
         if (!nestedcategories) {
           return res.status(400).json(response.response400(GET_CATEGORY_FAIL));
         }

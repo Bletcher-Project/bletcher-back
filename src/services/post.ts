@@ -16,69 +16,38 @@ export const createPost = async (postInfo: IPostdetail): Promise<void> => {
 };
 
 export const getPost = async (
-  page: number | null,
-  limit: number | null,
+  page: number = 1,
+  limit: number = 10,
 ): Promise<Post[] | null> => {
-  if (!page && !limit) {
-    const allPost = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      order: [['created_at', 'DESC']],
-    });
-    return allPost;
-  }
-  if (page && limit) {
-    const offset = limit * (page - 1);
-    const pagePost = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      offset,
-      limit,
-      order: [['created_at', 'DESC']],
-    });
-    return pagePost;
-  }
-  return null;
+  const offset = limit * (page - 1);
+  const allPost = await Post.findAll({
+    attributes: [
+      'id',
+      'title',
+      'description',
+      'is_public',
+      'created_at',
+      'updated_at',
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
+      },
+      {
+        model: Category,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
+  });
+  return allPost;
 };
 
 export const getPostByPostId = async (id: number): Promise<Post | null> => {
@@ -112,148 +81,80 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
 
 export const getPostByUserId = async (
   userid: number,
-  page: number | null,
-  limit: number | null,
+  page: number = 1,
+  limit: number = 10,
 ): Promise<Post[] | null> => {
-  if (!page && !limit) {
-    const post = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      order: [['created_at', 'DESC']],
-      where: {
-        user_id: userid,
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    attributes: [
+      'id',
+      'title',
+      'description',
+      'is_public',
+      'created_at',
+      'updated_at',
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
       },
-    });
-    return post;
-  }
-  if (page && limit) {
-    const offset = limit * (page - 1);
-    const post = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      offset,
-      limit,
-      order: [['created_at', 'DESC']],
-      where: {
-        user_id: userid,
+      {
+        model: Category,
+        attributes: ['id', 'name'],
       },
-    });
-    return post;
-  }
-  return null;
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
+    where: {
+      user_id: userid,
+    },
+  });
+  return post;
 };
 
 export const getPostByCategoryId = async (
   category_id: number,
-  page: number | null,
-  limit: number | null,
-): Promise<Post[] | null> => {
-  if (!page && !limit) {
-    const post = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      order: [['created_at', 'DESC']],
-      where: {
-        category_id,
+  page: number = 1,
+  limit: number = 10,
+): Promise<Post[]> => {
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    attributes: [
+      'id',
+      'title',
+      'description',
+      'is_public',
+      'created_at',
+      'updated_at',
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
       },
-    });
-    return post;
-  }
-  if (page && limit) {
-    const offset = limit * (page - 1);
-    const post = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'description',
-        'is_public',
-        'created_at',
-        'updated_at',
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'nickname'],
-        },
-        {
-          model: Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Image,
-          attributes: ['id', 'path'],
-        },
-      ],
-      offset,
-      limit,
-      order: [['created_at', 'DESC']],
-      where: {
-        category_id,
+      {
+        model: Category,
+        attributes: ['id', 'name'],
       },
-    });
-    return post;
-  }
-  return null;
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
+    where: {
+      category_id,
+    },
+  });
+  return post;
 };
 
 export const deletePost = async (id: number): Promise<number> => {

@@ -2,8 +2,10 @@ import * as dotenv from 'dotenv';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-const envFound = dotenv.config();
-if (envFound.error) throw new Error("Couldn't find .env file");
+if (process.env.NODE_ENV !== 'production') {
+  const envFound = dotenv.config();
+  if (envFound.error) throw new Error("Couldn't find .env file");
+}
 
 const cloudinary = require('cloudinary').v2;
 
