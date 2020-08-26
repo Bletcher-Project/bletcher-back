@@ -7,7 +7,7 @@ async function startServer() {
   const app: Application = express();
 
   await loadApp({ expressApp: app });
-
+  config.cloudinary();
   app.listen(config.port, (err) => {
     if (err) {
       Logger.error(err);
