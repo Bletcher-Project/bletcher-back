@@ -1,8 +1,9 @@
 import Image from '../models/image';
-// import Post from '../models/post';
 import { IImageDetail } from '../interfaces/image';
 
-export const postPostImage = async (
+const cloudinary = require('cloudinary').v2;
+
+export const postImage = async (
   imageInfo: IImageDetail,
 ): Promise<Image | null> => {
   await Image.create({
@@ -17,10 +18,21 @@ export const postPostImage = async (
   return imageid;
 };
 
-export const getPostImagePath = async (id: number): Promise<Image | null> => {
-  const postimagepath = await Image.findOne({
+export const getImage = async (id: number): Promise<Image | null> => {
+  const image = await Image.findOne({
     where: { id },
-    attributes: ['path'],
   });
-  return postimagepath;
+  return image;
+};
+
+export const deleteImage = async (id: number): Promise<number> => {
+  const imageName = await getImage(id);
+  let image = 0;
+  if (imageName?.name) {
+    await cloudinary.api.delete_resources(imageName?.name);
+    image = await Image.destroy({
+      where: { id },
+    });
+  }
+  return image;
 };
