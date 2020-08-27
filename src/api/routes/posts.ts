@@ -12,7 +12,6 @@ import {
   editPost,
 } from '../../services/post';
 import { getNestedCategories } from '../../services/category';
-import { getPostFavorites } from '../../services/favorite';
 import {
   POST_UP_SUCCESS,
   GET_ALL_POST_SUCCESS,
@@ -23,10 +22,8 @@ import {
   EDIT_FAIL,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
-  POST_NOT_EXISTS,
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
-  GET_POST_FAVORITES_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 import checkJWT from '../middleware/checkJwt';
@@ -231,35 +228,6 @@ postRouter.get(
         return res.status(200).json(response.response200(GET_POST_BY_NESTED_SUCCESS, filterResult));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
-    } catch (err) {
-      Logger.error('🔥 error %o', err);
-      return next(err);
-    }
-  },
-);
-
-postRouter.get(
-  '/favorites/:postid',
-  celebrate({
-    [Segments.PARAMS]: {
-      postid: Joi.number().integer().required(),
-    },
-  }),
-  async (req: Request, res: Response, next: NextFunction) => {
-    const postid: number = parseInt(req.params.postid, 10);
-    try {
-      const post = await getPostByPostId(postid);
-      if (!post) {
-        return res.status(400).json(response.response400(POST_NOT_EXISTS));
-      }
-
-      const favorites = await getPostFavorites(postid);
-      const users = favorites.map((fav) => fav.user_id);
-      const count = favorites.length;
-
-      return res
-        .status(200)
-        .json(response.response200(GET_POST_FAVORITES_SUCCESS, { users, count }));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

@@ -36,8 +36,6 @@ export const GET_PAGE_POST_FAIL = '요청한 게시글 페이지를 불러오지
 export const GET_POST_BY_CATEGORY_SUCCESS = '해당 카테고리의 게시물을 불러왔습니다.';
 export const GET_POST_BY_NESTED_SUCCESS = '해당 카테고리와 연관된 모든 게시물을 불러왔습니다.';
 
-export const GET_POST_FAVORITES_SUCCESS = '해당 게시물의 즐겨찾기 정보를 불러왔습니다.';
-
 /* CATEGORIES */
 export const GET_ALL_CATEGORY_SUCCESS = '모든 카테고리를 불러왔습니다.';
 export const GET_GROUP_CATEGORY_SUCCESS = '해당 카테고리와 연관된 카테고리를 불러왔습니다';
@@ -56,6 +54,8 @@ export const FAVORITE_DELETE_SUCCESS = '게시물 즐겨찾기 해제를 성공�
 
 export const EXIST_FAVORITE = '이미 즐겨찾기한 게시물입니다.';
 export const NOT_EXIST_FAVORITE = '즐겨찾기한 적 없는 게시물입니다.';
+
+export const GET_FAVORITES_SUCCESS = '해당 게시물의 즐겨찾기 정보를 불러왔습니다.';
 
 /* FUNDINGS */
 export const FUNDING_POST_SUCCESS = '펀딩을 성공하였습니다.';
