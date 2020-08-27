@@ -241,10 +241,17 @@ postRouter.get(
 postRouter.get(
   '/my/favorites',
   checkJWT,
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+  }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
     try {
       const userid = req.decoded?.id;
-      const favorites = await getUserFavorites(userid as number);
+      const favorites = await getUserFavorites(userid as number, page, limit);
 
       const posts = await Promise.all(
         favorites.map((fav) => {
