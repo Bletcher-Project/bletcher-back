@@ -48,4 +48,7 @@ export const IMAGE_LOAD_FAIL = '이미지를 불러오지 못했습니다.';
 
 /* FAVORITES */
 export const FAVORITE_POST_SUCCESS = '포스트 즐겨찾기를 성공하였습니다.';
+export const FAVORITE_DELETE_SUCCESS = '포스트 즐겨찾기 해제를 성공하였습니다.';
+
 export const EXIST_FAVORITE = '이미 즐겨찾기한 포스트입니다.';
+export const NOT_EXIST_FAVORITE = '즐겨찾기한 적 없는 포스트입니다.';
