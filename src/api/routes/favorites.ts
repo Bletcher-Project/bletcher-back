@@ -26,14 +26,14 @@ favoriteRouter.post(
     },
   }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
-    const postId: number = parseInt(req.params.postid, 10);
+    const postid: number = parseInt(req.params.postid, 10);
     try {
-      const post = await getPostByPostId(postId);
+      const post = await getPostByPostId(postid);
       if (!post) {
         return res.status(400).json(response.response400(POST_NOT_EXISTS));
       }
 
-      const userAction = { user_id: req.decoded?.id, post_id: postId };
+      const userAction = { user_id: req.decoded?.id, post_id: postid };
       if (await checkFavoriteExists(userAction as IUserAction)) {
         return res.status(409).json(response.response409(EXIST_FAVORITE));
       }
@@ -56,14 +56,14 @@ favoriteRouter.delete(
     },
   }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
-    const postId: number = parseInt(req.params.postid, 10);
+    const postid: number = parseInt(req.params.postid, 10);
     try {
-      const post = await getPostByPostId(postId);
+      const post = await getPostByPostId(postid);
       if (!post) {
         return res.status(400).json(response.response400(POST_NOT_EXISTS));
       }
 
-      const userAction = { user_id: req.decoded?.id, post_id: postId };
+      const userAction = { user_id: req.decoded?.id, post_id: postid };
       if (!(await checkFavoriteExists(userAction as IUserAction))) {
         return res.status(409).json(response.response409(NOT_EXIST_FAVORITE));
       }
