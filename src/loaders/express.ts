@@ -20,7 +20,7 @@ export default ({ app }: { app: Application }) => {
     origin: config.reqAddress,
     credentials: true,
   };
-  app.use(cors(corsOptions));
+  app.use(cors());
 
   /* FOR USE RESTful API */
   app.use(methodOverride());
