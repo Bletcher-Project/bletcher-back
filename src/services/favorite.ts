@@ -33,6 +33,7 @@ export const getUserFavorites = async (user_id: number): Promise<Favorite[]> => 
     where: {
       user_id,
     },
+    order: [['created_at', 'DESC']],
   });
   return favorites;
 };

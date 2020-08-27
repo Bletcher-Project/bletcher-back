@@ -1,11 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
-import checkJWT from '../middleware/checkJwt';
-import { IJwtRequest } from '../../interfaces/auth';
 import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
 import { createUser, getAllUser, getUserByUserInfo, deleteUser } from '../../services/user';
-import { getUserFavorites } from '../../services/favorite';
 import {
   SIGN_UP_SUCCESS,
   EXIST_USER,
@@ -13,7 +10,6 @@ import {
   GET_ONE_USER_SUCCESS,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAIL,
-  GET_USER_FAVORITES_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 
@@ -87,22 +83,6 @@ userRouter.delete(
         return res.status(200).json(response.response200(DELETE_USER_SUCCESS, deletedUser));
       }
       return res.status(400).json(response.response400(DELETE_USER_FAIL));
-    } catch (err) {
-      Logger.error('🔥 error %o', err);
-      return next(err);
-    }
-  },
-);
-
-userRouter.get(
-  '/favorites',
-  checkJWT,
-  async (req: IJwtRequest, res: Response, next: NextFunction) => {
-    try {
-      const userid = req.decoded?.id;
-      const favPosts = await getUserFavorites(userid as number);
-
-      return res.status(200).json(response.response200(GET_USER_FAVORITES_SUCCESS, favPosts));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
