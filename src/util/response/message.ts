@@ -13,6 +13,8 @@ export const NO_USER = '조건에 해당하는 사용자가 없습니다.';
 export const DELETE_USER_SUCCESS = '사용자를 삭제했습니다.';
 export const DELETE_USER_FAIL = '사용자가 존재하지 않거나 이미 삭제되었습니다.';
 
+export const GET_USER_FAVORITES_SUCCESS = '사용자의 즐겨찾기 정보를 불러왔습니다.';
+
 /* POSTS */
 export const POST_UP_SUCCESS = '게시물 업로드를 성공하였습니다.';
 

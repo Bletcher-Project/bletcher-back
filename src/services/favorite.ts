@@ -27,3 +27,12 @@ export const getPostFavorites = async (post_id: number): Promise<Favorite[]> => 
   });
   return favorites;
 };
+
+export const getUserFavorites = async (user_id: number): Promise<Favorite[]> => {
+  const favorites: Favorite[] = await Favorite.findAll({
+    where: {
+      user_id,
+    },
+  });
+  return favorites;
+};
