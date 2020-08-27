@@ -20,11 +20,6 @@ const imageRouter = Router();
 imageRouter.post(
   '/posts',
   checkJWT,
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      img: Joi.binary(),
-    }),
-  }),
   uploadPost,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -50,11 +45,6 @@ imageRouter.post(
 imageRouter.post(
   '/profiles',
   checkJWT,
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      img: Joi.binary(),
-    }),
-  }),
   uploadProfile,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -110,13 +100,13 @@ imageRouter.delete(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const postid: number = parseInt(req.params.id, 10);
+    const imageid: number = parseInt(req.params.id, 10);
     try {
-      const deletedPost = await deleteImage(postid);
-      if (deletedPost) {
+      const deletedImage = await deleteImage(imageid);
+      if (deletedImage) {
         return res
           .status(200)
-          .json(response.response200(DELETE_IMAGE_SUCCESS, deletedPost));
+          .json(response.response200(DELETE_IMAGE_SUCCESS, deletedImage));
       }
       return res.status(400).json(response.response400(DELETE_IMAGE_FAIL));
     } catch (err) {
