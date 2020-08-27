@@ -15,11 +15,6 @@ export default ({ app }: { app: Application }) => {
   /* PROXY */
   app.enable('trust proxy');
 
-  /* ALLOW CONNECT BACK-FRONT */
-  const corsOptions = {
-    origin: config.reqAddress,
-    credentials: true,
-  };
   app.use(cors());
 
   /* FOR USE RESTful API */
