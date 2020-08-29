@@ -15,6 +15,7 @@ import {
 } from '../../services/post';
 import { getNestedCategories } from '../../services/category';
 import { getUserFavorites } from '../../services/favorite';
+import { getUserById } from '../../services/auth';
 import {
   POST_UP_SUCCESS,
   EDIT_SUCCESS,
@@ -28,6 +29,7 @@ import {
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
   GET_FAVORITE_POST_SUCCESS,
+  NO_USER,
 } from '../../util/response/message';
 import response from '../../util/response';
 
@@ -166,6 +168,10 @@ postRouter.get(
     const userId: number = parseInt(req.params.id, 10);
     const { page, limit } = req.query as any;
     try {
+      const existuser = await getUserById(userId);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
+      }
       const userPost = await getPostByUserId(userId, page, limit);
       if (userPost) {
         return res.status(200).json(response.response200(GET_USER_POST_SUCCESS, userPost));
@@ -251,6 +257,10 @@ postRouter.get(
     const { page, limit } = req.query as any;
     try {
       const userid = req.decoded?.id;
+      const existuser = await getUserById(userid);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
+      }
       const favorites = await getUserFavorites(userid as number, page, limit);
 
       const posts = await Promise.all(
