@@ -6,3 +6,8 @@ export interface IPostdetail {
   image_id: number;
   category_id: number;
 }
+
+export interface IMixInfo {
+  origin_post_id: number;
+  sub_post_id: number;
+}
