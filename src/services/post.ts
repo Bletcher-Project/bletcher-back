@@ -2,7 +2,7 @@ import Post from '../models/post';
 import User from '../models/user';
 import Image from '../models/image';
 import Category from '../models/category';
-import { IPostdetail } from '../interfaces/post';
+import { IPostdetail, IPostsearch } from '../interfaces/post';
 
 export const createPost = async (postInfo: IPostdetail): Promise<void> => {
   await Post.create({
@@ -79,12 +79,25 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
   return post;
 };
 
-export const getPostByUserId = async (
-  userid: number,
+export const getPostByUserInfo = async (
+  userInfo: IPostsearch,
   page: number = 1,
   limit: number = 10,
 ): Promise<Post[] | null> => {
   const offset = limit * (page - 1);
+  let userId: number;
+  if (typeof userInfo === 'string') {
+    const user = await User.findOne({
+      attributes: ['id'],
+      where: {
+        nickname: userInfo,
+      },
+    });
+    if (!user) return null;
+    userId = user.id;
+  } else {
+    userId = userInfo as number;
+  }
   const post = await Post.findAll({
     attributes: [
       'id',
@@ -112,7 +125,7 @@ export const getPostByUserId = async (
     limit,
     order: [['created_at', 'DESC']],
     where: {
-      user_id: userid,
+      userid: userId,
     },
   });
   return post;

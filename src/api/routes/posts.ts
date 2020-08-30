@@ -1,12 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
-import { IPostdetail } from '../../interfaces/post';
+import { IPostdetail, IPostsearch } from '../../interfaces/post';
 import {
   createPost,
   getPost,
   getPostByPostId,
-  getPostByUserId,
+  getPostByUserInfo,
   getPostByCategoryId,
   deletePost,
   editPost,
@@ -107,21 +107,22 @@ postRouter.get(
 );
 
 postRouter.get(
-  '/user/:id',
+  '/user/:info',
   celebrate({
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      id: Joi.number().required(),
+      info: Joi.number().required() || Joi.string().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId: number = parseInt(req.params.id, 10);
+    // const userId: number = parseInt(req.params.id, 10);
+    const userInfo = req.params.info;
     const { page, limit } = req.query as any;
     try {
-      const userPost = await getPostByUserId(userId, page, limit);
+      const userPost = await getPostByUserInfo(userInfo as IPostsearch, page, limit);
       if (userPost) {
         return res
           .status(200)
