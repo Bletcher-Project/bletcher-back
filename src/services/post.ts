@@ -125,7 +125,7 @@ export const getPostByUserInfo = async (
     limit,
     order: [['created_at', 'DESC']],
     where: {
-      userid: userId,
+      user_id: userId,
     },
   });
   return post;
