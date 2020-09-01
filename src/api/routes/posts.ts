@@ -114,7 +114,7 @@ postRouter.get(
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      info: Joi.number().required() || Joi.string().required(),
+      info: [Joi.number(), Joi.string()],
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
