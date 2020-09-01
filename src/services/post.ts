@@ -15,20 +15,37 @@ export const createPost = async (postInfo: IPostdetail): Promise<void> => {
   });
 };
 
-export const getPost = async (
-  page: number = 1,
-  limit: number = 10,
-): Promise<Post[] | null> => {
+export const editPost = async (
+  postInfo: IPostdetail,
+  id: number,
+): Promise<[number, Post[]] | null> => {
+  const existpost = await Post.findByPk(id);
+  if (!existpost) {
+    return null;
+  }
+  const post = await Post.update(
+    {
+      title: postInfo.title,
+      description: postInfo.description,
+      is_public: postInfo.is_public,
+      category_id: postInfo.category_id,
+    },
+    { where: { id } },
+  );
+  return post;
+};
+
+export const deletePost = async (id: number): Promise<number> => {
+  const post = await Post.destroy({
+    where: { id },
+  });
+  return post;
+};
+
+export const getPost = async (page: number = 1, limit: number = 10): Promise<Post[] | null> => {
   const offset = limit * (page - 1);
   const allPost = await Post.findAll({
-    attributes: [
-      'id',
-      'title',
-      'description',
-      'is_public',
-      'created_at',
-      'updated_at',
-    ],
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
     include: [
       {
         model: User,
@@ -52,14 +69,7 @@ export const getPost = async (
 
 export const getPostByPostId = async (id: number): Promise<Post | null> => {
   const post = await Post.findOne({
-    attributes: [
-      'id',
-      'title',
-      'description',
-      'is_public',
-      'created_at',
-      'updated_at',
-    ],
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
     include: [
       {
         model: User,
@@ -86,14 +96,7 @@ export const getPostByUserId = async (
 ): Promise<Post[] | null> => {
   const offset = limit * (page - 1);
   const post = await Post.findAll({
-    attributes: [
-      'id',
-      'title',
-      'description',
-      'is_public',
-      'created_at',
-      'updated_at',
-    ],
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
     include: [
       {
         model: User,
@@ -125,14 +128,7 @@ export const getPostByCategoryId = async (
 ): Promise<Post[]> => {
   const offset = limit * (page - 1);
   const post = await Post.findAll({
-    attributes: [
-      'id',
-      'title',
-      'description',
-      'is_public',
-      'created_at',
-      'updated_at',
-    ],
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
     include: [
       {
         model: User,
@@ -154,32 +150,5 @@ export const getPostByCategoryId = async (
       category_id,
     },
   });
-  return post;
-};
-
-export const deletePost = async (id: number): Promise<number> => {
-  const post = await Post.destroy({
-    where: { id },
-  });
-  return post;
-};
-
-export const editPost = async (
-  postInfo: IPostdetail,
-  id: number,
-): Promise<[number, Post[]] | null> => {
-  const existpost = await Post.findByPk(id);
-  if (!existpost) {
-    return null;
-  }
-  const post = await Post.update(
-    {
-      title: postInfo.title,
-      description: postInfo.description,
-      is_public: postInfo.is_public,
-      category_id: postInfo.category_id,
-    },
-    { where: { id } },
-  );
   return post;
 };

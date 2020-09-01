@@ -1,32 +1,37 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
+import checkJWT from '../middleware/checkJwt';
+import { IJwtRequest } from '../../interfaces/auth';
 import { IPostdetail } from '../../interfaces/post';
 import {
   createPost,
+  editPost,
+  deletePost,
   getPost,
   getPostByPostId,
   getPostByUserId,
   getPostByCategoryId,
-  deletePost,
-  editPost,
 } from '../../services/post';
 import { getNestedCategories } from '../../services/category';
+import { getUserFavorites } from '../../services/favorite';
+import { getUserById } from '../../services/auth';
 import {
   POST_UP_SUCCESS,
+  EDIT_SUCCESS,
+  EDIT_FAIL,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAIL,
   GET_ALL_POST_SUCCESS,
   GET_ONE_POST_SUCCESS,
   GET_USER_POST_SUCCESS,
   GET_POST_FAIL,
-  DELETE_POST_SUCCESS,
-  DELETE_POST_FAIL,
-  EDIT_SUCCESS,
-  EDIT_FAIL,
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
+  GET_FAVORITE_POST_SUCCESS,
+  NO_USER,
 } from '../../util/response/message';
 import response from '../../util/response';
-import checkJWT from '../middleware/checkJwt';
 
 const postRouter = Router();
 
@@ -43,12 +48,59 @@ postRouter.post(
       image_id: Joi.number().required(),
     }),
   }),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
     try {
       const newpost = await createPost(req.body as IPostdetail);
-      return res
-        .status(200)
-        .json(response.response200(POST_UP_SUCCESS, newpost));
+      return res.status(200).json(response.response200(POST_UP_SUCCESS, newpost));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.put(
+  '/:id',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      title: Joi.string().required(),
+      description: Joi.string().required(),
+      is_public: Joi.boolean().required(),
+      category_id: Joi.number().required(),
+    }),
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const postid = parseInt(req.params.id, 10);
+    try {
+      const editpost = await editPost(req.body as IPostdetail, postid);
+      if (editpost) {
+        return res.status(200).json(response.response200(EDIT_SUCCESS, editpost));
+      }
+      return res.status(400).json(response.response400(EDIT_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.delete(
+  '/:id',
+  checkJWT,
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().integer().required(),
+    },
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const postid: number = parseInt(req.params.id, 10);
+    try {
+      const deletedPost = await deletePost(postid);
+      if (deletedPost) {
+        return res.status(200).json(response.response200(DELETE_POST_SUCCESS, deletedPost));
+      }
+      return res.status(400).json(response.response400(DELETE_POST_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -94,9 +146,7 @@ postRouter.get(
     try {
       if (postId) {
         const onePost = await getPostByPostId(postId);
-        return res
-          .status(200)
-          .json(response.response200(GET_ONE_POST_SUCCESS, onePost));
+        return res.status(200).json(response.response200(GET_ONE_POST_SUCCESS, onePost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -121,11 +171,13 @@ postRouter.get(
     const userId: number = parseInt(req.params.id, 10);
     const { page, limit } = req.query as any;
     try {
+      const existuser = await getUserById(userId);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
+      }
       const userPost = await getPostByUserId(userId, page, limit);
       if (userPost) {
-        return res
-          .status(200)
-          .json(response.response200(GET_USER_POST_SUCCESS, userPost));
+        return res.status(200).json(response.response200(GET_USER_POST_SUCCESS, userPost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -154,9 +206,7 @@ postRouter.get(
       if (categoryPost) {
         return res
           .status(200)
-          .json(
-            response.response200(GET_POST_BY_CATEGORY_SUCCESS, categoryPost),
-          );
+          .json(response.response200(GET_POST_BY_CATEGORY_SUCCESS, categoryPost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -187,9 +237,7 @@ postRouter.get(
       );
       const filterResult = result.filter((v) => v.length !== 0);
       if (result) {
-        return res
-          .status(200)
-          .json(response.response200(GET_POST_BY_NESTED_SUCCESS, filterResult));
+        return res.status(200).json(response.response200(GET_POST_BY_NESTED_SUCCESS, filterResult));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
@@ -199,24 +247,33 @@ postRouter.get(
   },
 );
 
-postRouter.delete(
-  '/:id',
+postRouter.get(
+  '/my/favorites',
   checkJWT,
   celebrate({
-    [Segments.PARAMS]: {
-      id: Joi.number().integer().required(),
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
     },
   }),
-  async (req: Request, res: Response, next: NextFunction) => {
-    const postid: number = parseInt(req.params.id, 10);
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
     try {
-      const deletedPost = await deletePost(postid);
-      if (deletedPost) {
-        return res
-          .status(200)
-          .json(response.response200(DELETE_POST_SUCCESS, deletedPost));
+      const userid = req.decoded?.id;
+      const existuser = await getUserById(userid);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
       }
-      return res.status(400).json(response.response400(DELETE_POST_FAIL));
+      const favorites = await getUserFavorites(userid as number, page, limit);
+
+      const posts = await Promise.all(
+        favorites.map((fav) => {
+          const post = getPostByPostId(fav.post_id);
+          return post;
+        }),
+      );
+
+      return res.status(200).json(response.response200(GET_FAVORITE_POST_SUCCESS, posts));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -224,31 +281,4 @@ postRouter.delete(
   },
 );
 
-postRouter.put(
-  '/:id',
-  checkJWT,
-  celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      title: Joi.string().required(),
-      description: Joi.string().required(),
-      is_public: Joi.boolean().required(),
-      category_id: Joi.number().required(),
-    }),
-  }),
-  async (req: Request, res: Response, next: NextFunction) => {
-    const postid = parseInt(req.params.id, 10);
-    try {
-      const editpost = await editPost(req.body as IPostdetail, postid);
-      if (editpost) {
-        return res
-          .status(200)
-          .json(response.response200(EDIT_SUCCESS, editpost));
-      }
-      return res.status(400).json(response.response400(EDIT_FAIL));
-    } catch (err) {
-      Logger.error('🔥 error %o', err);
-      return next(err);
-    }
-  },
-);
 export default postRouter;

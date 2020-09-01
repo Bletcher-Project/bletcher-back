@@ -2,12 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
 import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
-import {
-  createUser,
-  getAllUser,
-  getUserByUserInfo,
-  deleteUser,
-} from '../../services/user';
+import { createUser, getAllUser, getUserByUserInfo, deleteUser } from '../../services/user';
 import {
   SIGN_UP_SUCCESS,
   EXIST_USER,
@@ -59,15 +54,11 @@ userRouter.get(
     try {
       if (!id && !email && !nickname) {
         const allUser = await getAllUser();
-        return res
-          .status(200)
-          .json(response.response200(GET_ALL_USER_SUCCESS, allUser));
+        return res.status(200).json(response.response200(GET_ALL_USER_SUCCESS, allUser));
       }
       const user = await getUserByUserInfo(req.query as IUserInfo);
       if (user) {
-        return res
-          .status(200)
-          .json(response.response200(GET_ONE_USER_SUCCESS, user));
+        return res.status(200).json(response.response200(GET_ONE_USER_SUCCESS, user));
       }
       return res.status(204).end();
     } catch (err) {
@@ -89,9 +80,7 @@ userRouter.delete(
     try {
       const deletedUser = await deleteUser(id);
       if (deletedUser) {
-        return res
-          .status(200)
-          .json(response.response200(DELETE_USER_SUCCESS, deletedUser));
+        return res.status(200).json(response.response200(DELETE_USER_SUCCESS, deletedUser));
       }
       return res.status(400).json(response.response400(DELETE_USER_FAIL));
     } catch (err) {
