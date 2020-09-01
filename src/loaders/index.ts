@@ -2,6 +2,7 @@ import { Application } from 'express';
 import expressLoader from './express';
 import sequelizeLoader from './sequelize';
 import Logger from './logger';
+import cloudinaryLoader from './cloudinary';
 
 export default async ({ expressApp }: { expressApp: Application }) => {
   await sequelizeLoader();
@@ -9,4 +10,7 @@ export default async ({ expressApp }: { expressApp: Application }) => {
 
   expressLoader({ app: expressApp });
   Logger.info('Express loaded');
+
+  cloudinaryLoader();
+  Logger.info('Cloudinary Storage connected');
 };
