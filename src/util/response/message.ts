@@ -37,5 +37,7 @@ export const GET_CATEGORY_FAIL = '해당 카테고리를 불러오지 못했습�
 /* IMAGES */
 export const IMAGE_UPLOAD_SUCCESS = '이미지 업로드를 성공하였습니다.';
 export const IMAGE_UPLOAD_FAIL = '이미지 업로드를 실패했습니다';
-export const IMAGE_LOAD_SUCCESS = '해당 이미지를 불러왔습니다.';
-export const IMAGE_LOAD_FAIL = '이미지를 불러오지 못했습니다.';
+export const GET_IMAGE_SUCCESS = '해당 이미지를 불러왔습니다.';
+export const GET_IMAGE_FAIL = '이미지를 불러오지 못했습니다.';
+export const DELETE_IMAGE_SUCCESS = '해당 이미지를 삭제했습니다.';
+export const DELETE_IMAGE_FAIL = '이미지가 존재하지 않거나 이미 삭제되었습니다.';

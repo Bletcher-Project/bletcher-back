@@ -1,16 +1,18 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
-// import fs from 'fs';
 import { uploadPost, uploadProfile } from '../middleware/multer';
 import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
 import {
   IMAGE_UPLOAD_SUCCESS,
-  IMAGE_LOAD_SUCCESS,
-  IMAGE_LOAD_FAIL,
+  IMAGE_UPLOAD_FAIL,
+  GET_IMAGE_SUCCESS,
+  GET_IMAGE_FAIL,
+  DELETE_IMAGE_SUCCESS,
+  DELETE_IMAGE_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
-import { postPostImage, getPostImagePath } from '../../services/image';
+import { postImage, getImage, deleteImage } from '../../services/image';
 import { IImageDetail } from '../../interfaces/image';
 
 const imageRouter = Router();
@@ -18,11 +20,6 @@ const imageRouter = Router();
 imageRouter.post(
   '/posts',
   checkJWT,
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      img: Joi.binary(),
-    }),
-  }),
   uploadPost,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -31,10 +28,13 @@ imageRouter.post(
         type: req.file.mimetype,
         path: req.file.path,
       };
-      const newimage = await postPostImage(detail as IImageDetail);
-      return res
-        .status(200)
-        .json(response.response200(IMAGE_UPLOAD_SUCCESS, newimage));
+      const newimage = await postImage(detail as IImageDetail);
+      if (newimage) {
+        return res
+          .status(200)
+          .json(response.response200(IMAGE_UPLOAD_SUCCESS, newimage));
+      }
+      return res.status(400).json(response.response400(IMAGE_UPLOAD_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -45,11 +45,6 @@ imageRouter.post(
 imageRouter.post(
   '/profiles',
   checkJWT,
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      img: Joi.binary(),
-    }),
-  }),
   uploadProfile,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -58,10 +53,13 @@ imageRouter.post(
         type: req.file.mimetype,
         path: req.file.path,
       };
-      const newimage = await postPostImage(detail as IImageDetail);
-      return res
-        .status(200)
-        .json(response.response200(IMAGE_UPLOAD_SUCCESS, newimage));
+      const newimage = await postImage(detail as IImageDetail);
+      if (newimage) {
+        return res
+          .status(200)
+          .json(response.response200(IMAGE_UPLOAD_SUCCESS, newimage));
+      }
+      return res.status(400).json(response.response400(IMAGE_UPLOAD_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -70,22 +68,47 @@ imageRouter.post(
 );
 
 imageRouter.get(
-  '/:imageid',
+  '/:id',
   celebrate({
     [Segments.PARAMS]: {
-      imageid: Joi.number().required().greater(0),
+      id: Joi.number().required().greater(0),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const imageid: number = parseInt(req.params.imageid, 10);
+    const imageid: number = parseInt(req.params.id, 10);
     try {
-      const imagepath = await getPostImagePath(imageid);
+      const imagepath = await getImage(imageid);
       if (imagepath) {
         return res
           .status(200)
-          .json(response.response200(IMAGE_LOAD_SUCCESS, imagepath));
+          .json(response.response200(GET_IMAGE_SUCCESS, imagepath));
       }
-      return res.status(400).json(response.response400(IMAGE_LOAD_FAIL));
+      return res.status(400).json(response.response400(GET_IMAGE_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+imageRouter.delete(
+  '/:id',
+  checkJWT,
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().integer().required(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const imageid: number = parseInt(req.params.id, 10);
+    try {
+      const deletedImage = await deleteImage(imageid);
+      if (deletedImage) {
+        return res
+          .status(200)
+          .json(response.response200(DELETE_IMAGE_SUCCESS, deletedImage));
+      }
+      return res.status(409).json(response.response409(DELETE_IMAGE_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
