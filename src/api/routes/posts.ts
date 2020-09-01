@@ -118,7 +118,6 @@ postRouter.get(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    // const userId: number = parseInt(req.params.id, 10);
     const userInfo = req.params.info;
     const { page, limit } = req.query as any;
     try {
