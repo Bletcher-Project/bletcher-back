@@ -6,8 +6,3 @@ export interface IPostdetail {
   image_id: number;
   category_id: number;
 }
-
-export interface IPostsearch {
-  id?: number;
-  nickname?: string;
-}

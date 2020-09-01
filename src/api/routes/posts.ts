@@ -1,12 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
-import { IPostdetail, IPostsearch } from '../../interfaces/post';
+import { IPostdetail } from '../../interfaces/post';
 import {
   createPost,
   getPost,
   getPostByPostId,
-  getPostByUserInfo,
+  getPostByUserNickname,
   getPostByCategoryId,
   deletePost,
   editPost,
@@ -17,6 +17,7 @@ import {
   GET_ALL_POST_SUCCESS,
   GET_ONE_POST_SUCCESS,
   GET_USER_POST_SUCCESS,
+  NO_USER,
   GET_POST_FAIL,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
@@ -27,6 +28,8 @@ import {
 } from '../../util/response/message';
 import response from '../../util/response';
 import checkJWT from '../middleware/checkJwt';
+import { getUserByUserInfo } from '../../services/user';
+import { IUserInfo } from '../../interfaces/user';
 
 const postRouter = Router();
 
@@ -107,21 +110,27 @@ postRouter.get(
 );
 
 postRouter.get(
-  '/user/:info',
+  '/user/:nickname',
   celebrate({
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      info: [Joi.number(), Joi.string()],
+      nickname: Joi.string().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const userInfo = req.params.info;
+    const userNickname = req.params.nickname;
     const { page, limit } = req.query as any;
     try {
-      const userPost = await getPostByUserInfo(userInfo as IPostsearch, page, limit);
+      const existUser = await getUserByUserInfo({ nickname: userNickname });
+      if (!existUser) {
+        return res
+          .status(404)
+          .json(response.response404(NO_USER));
+      }
+      const userPost = await getPostByUserNickname(userNickname, page, limit);
       if (userPost) {
         return res
           .status(200)
