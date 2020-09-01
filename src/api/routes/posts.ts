@@ -121,7 +121,10 @@ postRouter.get(
     try {
       const allPost = await getPost(page, limit);
       if (allPost) {
-        return res.status(200).json(response.response200(GET_ALL_POST_SUCCESS, allPost));
+        return res
+          .status(200)
+          .cookie('same-site-cookie', 'http://cloudinary.com/', { sameSite: 'lax' })
+          .json(response.response200(GET_ALL_POST_SUCCESS, allPost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
