@@ -15,7 +15,7 @@ export default class Post extends Model {
 
   public user_id!: number;
 
-  public image_id!: string;
+  public image_id!: number;
 
   public category_id!: number;
 

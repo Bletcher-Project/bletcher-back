@@ -2,6 +2,7 @@ import Post from '../models/post';
 import User from '../models/user';
 import Image from '../models/image';
 import Category from '../models/category';
+import Mix from '../models/mix';
 import { IPostdetail } from '../interfaces/post';
 
 export const createPost = async (postInfo: IPostdetail): Promise<Post | null> => {
@@ -47,7 +48,16 @@ export const getPost = async (page: number = 1, limit: number = 10): Promise<Pos
 
 export const getPostByPostId = async (id: number): Promise<Post | null> => {
   const post = await Post.findOne({
-    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at', 'user_id'],
+    attributes: [
+      'id',
+      'title',
+      'description',
+      'is_public',
+      'created_at',
+      'updated_at',
+      'user_id',
+      'image_id',
+    ],
     include: [
       {
         model: User,
@@ -127,6 +137,72 @@ export const getPostByCategoryId = async (
     where: {
       category_id,
     },
+  });
+  return post;
+};
+
+export const getMixedPostOrigin = async (
+  userid: number,
+  page: number = 1,
+  limit: number = 10,
+): Promise<Post[]> => {
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
+      },
+      {
+        model: Category,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+      { model: Mix, required: true },
+    ],
+    offset,
+    limit,
+    where: { user_id: userid },
+
+    order: [['created_at', 'DESC']],
+  });
+  return post;
+};
+
+export const getMixedPostSub = async (
+  userid: number,
+  page: number = 1,
+  limit: number = 10,
+): Promise<Post[]> => {
+  const offset = limit * (page - 1);
+  const post = await Post.findAll({
+    attributes: ['id', 'title', 'description', 'is_public', 'created_at', 'updated_at'],
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'nickname'],
+      },
+      {
+        model: Category,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+      {
+        model: Mix,
+        include: [{ model: Post, where: { user_id: userid } }],
+        required: true,
+      },
+    ],
+    offset,
+    limit,
+    order: [['created_at', 'DESC']],
   });
   return post;
 };

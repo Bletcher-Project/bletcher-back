@@ -42,7 +42,7 @@ Mix.init(
     underscored: true,
   },
 );
-
+Post.hasOne(Mix, { foreignKey: 'post_id' });
 Mix.belongsTo(Post, { foreignKey: 'post_id' });
 Mix.belongsTo(Post, { foreignKey: 'origin_post_id' });
 Mix.belongsTo(Post, { foreignKey: 'sub_post_id' });
