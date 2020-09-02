@@ -51,3 +51,5 @@ export const DELETE_IMAGE_FAIL = '이미지가 존재하지 않거나 이미 삭
 export const MIX_SUCCESS = '이미지 합성을 성공하였습니다.';
 export const MIX_FAIL = '이미지 합성을 실패했습니다.';
 export const ALREADY_MIXED = '이미 합성된 이미지입니다.';
+export const GET_MIX_INFO_SUCCESS = '이미지 합성 정보를 가져왔습니다.';
+export const GET_MIX_INFO_FAIL = '이미지 합성 정보를 가져오지 못했습니다.';

@@ -1,13 +1,19 @@
-import { Router, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
 import { IJwtRequest } from '../../interfaces/auth';
 import { IMixInfo } from '../../interfaces/post';
 import { getPostByPostId } from '../../services/post';
-import { POST_NOT_EXISTS, MIX_SUCCESS, ALREADY_MIXED } from '../../util/response/message';
+import { checkMixExists, addMix, getOriginMixInfo, getSubMixInfo } from '../../services/mix';
+import {
+  POST_NOT_EXISTS,
+  MIX_SUCCESS,
+  ALREADY_MIXED,
+  GET_MIX_INFO_SUCCESS,
+  GET_MIX_INFO_FAIL,
+} from '../../util/response/message';
 import response from '../../util/response';
-import { checkMixExists, addMix } from '../../services/mix';
 
 const mixRouter = Router();
 
@@ -35,6 +41,52 @@ mixRouter.post(
       }
       const newmix = await addMix(mixDetail as IMixInfo);
       return res.status(200).json(response.response200(MIX_SUCCESS, newmix));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+mixRouter.get(
+  '/origin/:id',
+  checkJWT,
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().integer().required(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postid: number = parseInt(req.params.id, 10);
+    try {
+      const mixinfo = await getOriginMixInfo(postid);
+      if (mixinfo) {
+        return res.status(200).json(response.response200(GET_MIX_INFO_SUCCESS, mixinfo));
+      }
+      return res.status(400).json(response.response400(GET_MIX_INFO_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+mixRouter.get(
+  '/sub/:id',
+  checkJWT,
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.number().integer().required(),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postid: number = parseInt(req.params.id, 10);
+    try {
+      const mixinfo = await getSubMixInfo(postid);
+      if (mixinfo) {
+        return res.status(200).json(response.response200(GET_MIX_INFO_SUCCESS, mixinfo));
+      }
+      return res.status(400).json(response.response400(GET_MIX_INFO_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
