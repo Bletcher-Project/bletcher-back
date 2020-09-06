@@ -9,11 +9,11 @@ assignees: ''
 
 ## Description
 
-> description
+<!-- description -->
 
 ## Branch
 
-> branch name
+<!-- feature/[feature name] -->
 
 ## Progress
 

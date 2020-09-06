@@ -28,14 +28,16 @@ export const GET_ALL_POST_SUCCESS = '모든 게시물을 불러왔습니다.';
 export const GET_USER_POST_SUCCESS = '해당 사용자의 게시물을 불러왔습니다.';
 export const GET_ONE_POST_SUCCESS = '해당 게시물의 상세내역을 불러왔습니다.';
 export const GET_POST_FAIL = '게시물을 받아오지 못했습니다.';
+
 export const GET_PAGE_POST_SUCCESS = '요청한 게시글 페이지를 불러왔습니다.';
 export const GET_PAGE_POST_FAIL = '요청한 게시글 페이지를 불러오지 못했습니다';
+
 export const GET_POST_BY_CATEGORY_SUCCESS = '해당 카테고리의 게시물을 불러왔습니다.';
 export const GET_POST_BY_NESTED_SUCCESS = '해당 카테고리와 연관된 모든 게시물을 불러왔습니다.';
 export const GET_MIX_POST_SUCCESS = '합성된 게시글을 불러왔습니다.';
-export const GET_MIX_POST_FAIL = '';
+export const GET_FAVORITE_POST_SUCCESS = '사용자의 즐겨찾기 게시물들을 불러왔습니다.';
 
-/* CATEGORYS */
+/* CATEGORIES */
 export const GET_ALL_CATEGORY_SUCCESS = '모든 카테고리를 불러왔습니다.';
 export const GET_GROUP_CATEGORY_SUCCESS = '해당 카테고리와 연관된 카테고리를 불러왔습니다';
 export const GET_NESTED_CATEGORY_SUCCESS = '해당 카테고리와 연관된 모든 카테고리를 불러왔습니다.';
@@ -57,3 +59,14 @@ export const GET_MIX_INFO_SUCCESS = '이미지 합성 정보를 가져왔습니�
 export const GET_MIX_INFO_FAIL = '이미지 합성 정보를 가져오지 못했습니다.';
 export const DELETE_MIX_SUCCESS = '이미지 합성 내역을 삭제했습니다.';
 export const NO_MIX_EXIST = '해당 합성 내역이 존재하지 않습니다';
+
+/* FAVORITES */
+export const FAVORITE_POST_SUCCESS = '게시물 즐겨찾기를 성공하였습니다.';
+export const FAVORITE_DELETE_SUCCESS = '게시물 즐겨찾기 해제를 성공하였습니다.';
+
+export const EXIST_FAVORITE = '이미 즐겨찾기한 게시물입니다.';
+export const NOT_EXIST_FAVORITE = '즐겨찾기한 적 없는 게시물입니다.';
+
+/* FUNDINGS */
+export const FUNDING_POST_SUCCESS = '펀딩을 성공하였습니다.';
+export const EXIST_FUNDING = '이미 펀딩한 게시물입니다.';

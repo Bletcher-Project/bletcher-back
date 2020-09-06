@@ -108,7 +108,7 @@ imageRouter.delete(
           .status(200)
           .json(response.response200(DELETE_IMAGE_SUCCESS, deletedImage));
       }
-      return res.status(400).json(response.response400(DELETE_IMAGE_FAIL));
+      return res.status(409).json(response.response409(DELETE_IMAGE_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

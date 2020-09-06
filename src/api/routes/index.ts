@@ -5,6 +5,8 @@ import images from './images';
 import posts from './posts';
 import categories from './categories';
 import mix from './mix';
+import favorites from './favorites';
+import funds from './funds';
 
 const router = Router();
 
@@ -14,5 +16,7 @@ router.use('/images', images);
 router.use('/posts', posts);
 router.use('/categories', categories);
 router.use('/mix', mix);
+router.use('/favorites', favorites);
+router.use('/funds', funds);
 
 export default router;
