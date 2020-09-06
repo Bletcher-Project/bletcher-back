@@ -21,7 +21,6 @@ export const createPost = async (postInfo: IPostdetail): Promise<Post | null> =>
   return postid;
 };
 
-
 export const editPost = async (
   postInfo: IPostdetail,
   id: number,
@@ -225,5 +224,3 @@ export const getMixedPostSub = async (
   });
   return post;
 };
-
-
