@@ -1,6 +1,6 @@
 export interface IPostdetail {
   title: string;
-  description: string;
+  description: string | null;
   is_public: boolean;
   user_id: number;
   image_id: number;

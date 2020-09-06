@@ -214,10 +214,10 @@ postRouter.get(
         return res.status(400).json(response.response400(NO_USER));
       }
       const userPost = await getMixedPostOrigin(userid as number, page, limit);
-      if (userPost) {
-        return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
+      if (!userPost) {
+        return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
       }
-      return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
+      return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -246,10 +246,10 @@ postRouter.get(
         return res.status(400).json(response.response400(NO_USER));
       }
       const userPost = await getMixedPostSub(userid as number, page, limit);
-      if (userPost) {
-        return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
+      if (!userPost) {
+        return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
       }
-      return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
+      return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

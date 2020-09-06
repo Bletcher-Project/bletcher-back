@@ -7,7 +7,7 @@ import { IMixInfo } from '../../interfaces/post';
 import { getPostByPostId, deletePost } from '../../services/post';
 import {
   checkMixExists,
-  addMix,
+  postMix,
   getOriginMixInfo,
   getSubMixInfo,
   deleteMix,
@@ -48,7 +48,7 @@ mixRouter.post(
       if (await checkMixExists(mixDetail as IMixInfo)) {
         return res.status(409).json(response.response409(ALREADY_MIXED));
       }
-      const newmix = await addMix(mixDetail as IMixInfo);
+      const newmix = await postMix(mixDetail as IMixInfo);
       return res.status(200).json(response.response200(MIX_SUCCESS, newmix));
     } catch (err) {
       Logger.error('🔥 error %o', err);

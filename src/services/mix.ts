@@ -10,13 +10,12 @@ export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   return mix != null;
 };
 
-export const addMix = async (params: IMixInfo): Promise<void> => {
+export const postMix = async (params: IMixInfo): Promise<void> => {
   const sampleOriginPost = await getPostByPostId(params.origin_post_id);
   const sampleSubPost = await getPostByPostId(params.sub_post_id);
-  /* image will come from AI, like getImageFromAI method */
 
-  const originUserId = await sampleOriginPost?.getDataValue('user_id');
-  const subUserId = await sampleSubPost?.getDataValue('user_id');
+  const originUserId = sampleOriginPost?.getDataValue('user_id');
+  const subUserId = sampleSubPost?.getDataValue('user_id');
 
   const originUserName = await getUsernameById(originUserId as number);
   const subUserName = await getUsernameById(subUserId as number);
@@ -24,12 +23,14 @@ export const addMix = async (params: IMixInfo): Promise<void> => {
   const mixTitle = `${originUserName!.nickname} X ${subUserName!.nickname}`;
 
   const newpostinfo = {
-    title: mixTitle, // origin-postname X sub-postname
-    description: 'no desc', // null
+    title: mixTitle,
+    description: null,
     is_public: true,
-    user_id: sampleOriginPost?.getDataValue('user_id'), // origin-postname
-    category_id: 1, // will be changed to 'mix' category
-    image_id: sampleOriginPost?.getDataValue('image_id'),
+    user_id: originUserId,
+    category_id: 1,
+    image_id: sampleOriginPost?.getDataValue(
+      'image_id',
+    ) /* image_id will come from getImageFromAI */,
   };
   const mixedPost = await createPost(newpostinfo as IPostdetail);
   await Mix.create({

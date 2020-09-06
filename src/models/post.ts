@@ -3,7 +3,6 @@ import sequelize from '../config/database';
 import User from './user';
 import Category from './category';
 import Image from './image';
-import Mix from './mix';
 
 export default class Post extends Model {
   public id!: number;
