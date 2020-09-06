@@ -18,7 +18,6 @@ import {
 import { getUserById } from '../../services/auth';
 import { getNestedCategories } from '../../services/category';
 import { getUserFavorites } from '../../services/favorite';
-import { getUserById } from '../../services/auth';
 import {
   POST_UP_SUCCESS,
   EDIT_SUCCESS,
@@ -33,7 +32,6 @@ import {
   GET_POST_BY_NESTED_SUCCESS,
   NO_USER,
   GET_MIX_POST_SUCCESS,
-  GET_MIX_POST_FAIL,
   GET_FAVORITE_POST_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
@@ -274,7 +272,7 @@ postRouter.get(
       }
       const userPost = await getMixedPostOrigin(userid as number, page, limit);
       if (!userPost) {
-        return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
+        return res.status(400).json(response.response400(GET_POST_FAIL));
       }
       return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
     } catch (err) {
@@ -306,7 +304,7 @@ postRouter.get(
       }
       const userPost = await getMixedPostSub(userid as number, page, limit);
       if (!userPost) {
-        return res.status(400).json(response.response400(GET_MIX_POST_FAIL));
+        return res.status(400).json(response.response400(GET_POST_FAIL));
       }
       return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
     } catch (err) {
@@ -315,7 +313,6 @@ postRouter.get(
     }
   },
 );
-
 
 postRouter.get(
   '/my/favorites',
