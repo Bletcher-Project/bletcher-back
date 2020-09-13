@@ -15,7 +15,7 @@ export default class Post extends Model {
 
   public user_id!: number;
 
-  public image_id!: string;
+  public image_id!: number;
 
   public category_id!: number;
 
@@ -37,7 +37,6 @@ Post.init(
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     is_public: {
       type: DataTypes.BOOLEAN,

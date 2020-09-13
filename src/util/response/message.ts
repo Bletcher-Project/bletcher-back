@@ -34,7 +34,7 @@ export const GET_PAGE_POST_FAIL = '요청한 게시글 페이지를 불러오지
 
 export const GET_POST_BY_CATEGORY_SUCCESS = '해당 카테고리의 게시물을 불러왔습니다.';
 export const GET_POST_BY_NESTED_SUCCESS = '해당 카테고리와 연관된 모든 게시물을 불러왔습니다.';
-
+export const GET_MIX_POST_SUCCESS = '합성된 게시글을 불러왔습니다.';
 export const GET_FAVORITE_POST_SUCCESS = '사용자의 즐겨찾기 게시물들을 불러왔습니다.';
 
 /* CATEGORIES */
@@ -50,6 +50,15 @@ export const GET_IMAGE_SUCCESS = '해당 이미지를 불러왔습니다.';
 export const GET_IMAGE_FAIL = '이미지를 불러오지 못했습니다.';
 export const DELETE_IMAGE_SUCCESS = '해당 이미지를 삭제했습니다.';
 export const DELETE_IMAGE_FAIL = '이미지가 존재하지 않거나 이미 삭제되었습니다.';
+
+/* Mix */
+export const MIX_SUCCESS = '이미지 합성을 성공하였습니다.';
+export const MIX_FAIL = '이미지 합성을 실패했습니다.';
+export const ALREADY_MIXED = '이미 합성된 이미지입니다.';
+export const GET_MIX_INFO_SUCCESS = '이미지 합성 정보를 가져왔습니다.';
+export const GET_MIX_INFO_FAIL = '이미지 합성 정보를 가져오지 못했습니다.';
+export const DELETE_MIX_SUCCESS = '이미지 합성 내역을 삭제했습니다.';
+export const NO_MIX_EXIST = '해당 합성 내역이 존재하지 않습니다';
 
 /* FAVORITES */
 export const FAVORITE_POST_SUCCESS = '게시물 즐겨찾기를 성공하였습니다.';

@@ -12,10 +12,12 @@ import {
   getPostByPostId,
   getPostByUserNickname,
   getPostByCategoryId,
+  getMixedPostOrigin,
+  getMixedPostSub,
 } from '../../services/post';
+import { getUserById } from '../../services/auth';
 import { getNestedCategories } from '../../services/category';
 import { getUserFavorites } from '../../services/favorite';
-import { getUserById } from '../../services/auth';
 import {
   POST_UP_SUCCESS,
   EDIT_SUCCESS,
@@ -29,6 +31,7 @@ import {
   GET_POST_FAIL,
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
+  GET_MIX_POST_SUCCESS,
   GET_FAVORITE_POST_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
@@ -251,6 +254,70 @@ postRouter.get(
 );
 
 postRouter.get(
+  '/mix/origin/:id',
+  checkJWT,
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
+    },
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
+    try {
+      const userid = parseInt(req.params.id, 10);
+      const existuser = await getUserById(userid);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
+      }
+      const userPost = await getMixedPostOrigin(userid as number, page, limit);
+      if (!userPost) {
+        return res.status(400).json(response.response400(GET_POST_FAIL));
+      }
+      return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/mix/sub/:id',
+  checkJWT,
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+    [Segments.PARAMS]: {
+      id: Joi.number().required(),
+    },
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
+    try {
+      const userid = parseInt(req.params.id, 10);
+      const existuser = await getUserById(userid);
+      if (!existuser) {
+        return res.status(400).json(response.response400(NO_USER));
+      }
+      const userPost = await getMixedPostSub(userid as number, page, limit);
+      if (!userPost) {
+        return res.status(400).json(response.response400(GET_POST_FAIL));
+      }
+      return res.status(200).json(response.response200(GET_MIX_POST_SUCCESS, userPost));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
   '/my/favorites',
   checkJWT,
   celebrate({
@@ -268,14 +335,12 @@ postRouter.get(
         return res.status(400).json(response.response400(NO_USER));
       }
       const favorites = await getUserFavorites(userid as number, page, limit);
-
       const posts = await Promise.all(
         favorites.map((fav) => {
           const post = getPostByPostId(fav.post_id);
           return post;
         }),
       );
-
       return res.status(200).json(response.response200(GET_FAVORITE_POST_SUCCESS, posts));
     } catch (err) {
       Logger.error('🔥 error %o', err);

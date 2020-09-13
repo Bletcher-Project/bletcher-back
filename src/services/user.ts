@@ -15,9 +15,7 @@ export const getAllUser = async (): Promise<User[] | null> => {
   return allUser;
 };
 
-export const getUserByUserInfo = async (
-  userInfo: IUserInfo,
-): Promise<User | null> => {
+export const getUserByUserInfo = async (userInfo: IUserInfo): Promise<User | null> => {
   const user = await User.findOne({
     where: {
       [Op.or]: [
@@ -28,6 +26,11 @@ export const getUserByUserInfo = async (
     },
   });
   return user;
+};
+
+export const getUsernameById = async (id: number): Promise<User | null> => {
+  const nickname = await User.findOne({ where: { id }, raw: true, attributes: ['nickname'] });
+  return nickname;
 };
 
 export const deleteUser = async (id: number): Promise<number> => {
