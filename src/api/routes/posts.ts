@@ -30,12 +30,9 @@ import {
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
   GET_FAVORITE_POST_SUCCESS,
-  NO_USER,
 } from '../../util/response/message';
 import response from '../../util/response';
-import checkJWT from '../middleware/checkJwt';
 import { getUserByUserInfo } from '../../services/user';
-import { IUserInfo } from '../../interfaces/user';
 
 const postRouter = Router();
 
