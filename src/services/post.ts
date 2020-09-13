@@ -95,8 +95,8 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
   return post;
 };
 
-export const getPostByUserId = async (
-  userid: number,
+export const getPostByUserNickname = async (
+  userNickname: string,
   page: number = 1,
   limit: number = 10,
 ): Promise<Post[] | null> => {
@@ -107,6 +107,7 @@ export const getPostByUserId = async (
       {
         model: User,
         attributes: ['id', 'nickname'],
+        where: { nickname: userNickname },
       },
       {
         model: Category,
@@ -120,9 +121,6 @@ export const getPostByUserId = async (
     offset,
     limit,
     order: [['created_at', 'DESC']],
-    where: {
-      user_id: userid,
-    },
   });
   return post;
 };

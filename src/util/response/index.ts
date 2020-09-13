@@ -17,6 +17,10 @@ export default {
     message,
     error,
   }),
+  response404: (message: string) => ({
+    status: '404 Not Found',
+    message,
+  }),
   response409: (message: string) => ({
     status: '409 Conflict',
     message,
