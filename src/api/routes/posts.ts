@@ -10,7 +10,7 @@ import {
   deletePost,
   getPost,
   getPostByPostId,
-  getPostByUserId,
+  getPostByUserNickname,
   getPostByCategoryId,
 } from '../../services/post';
 import { getNestedCategories } from '../../services/category';
@@ -25,13 +25,14 @@ import {
   GET_ALL_POST_SUCCESS,
   GET_ONE_POST_SUCCESS,
   GET_USER_POST_SUCCESS,
+  NO_USER,
   GET_POST_FAIL,
   GET_POST_BY_CATEGORY_SUCCESS,
   GET_POST_BY_NESTED_SUCCESS,
   GET_FAVORITE_POST_SUCCESS,
-  NO_USER,
 } from '../../util/response/message';
 import response from '../../util/response';
+import { getUserByUserInfo } from '../../services/user';
 
 const postRouter = Router();
 
@@ -157,25 +158,27 @@ postRouter.get(
 );
 
 postRouter.get(
-  '/user/:id',
+  '/user/:nickname',
   celebrate({
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
       limit: Joi.number().greater(0),
     },
     [Segments.PARAMS]: {
-      id: Joi.number().required(),
+      nickname: Joi.string().required(),
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId: number = parseInt(req.params.id, 10);
+    const userNickname = req.params.nickname;
     const { page, limit } = req.query as any;
     try {
-      const existuser = await getUserById(userId);
-      if (!existuser) {
-        return res.status(400).json(response.response400(NO_USER));
+      const existUser = await getUserByUserInfo({ nickname: userNickname });
+      if (!existUser) {
+        return res
+          .status(404)
+          .json(response.response404(NO_USER));
       }
-      const userPost = await getPostByUserId(userId, page, limit);
+      const userPost = await getPostByUserNickname(userNickname, page, limit);
       if (userPost) {
         return res.status(200).json(response.response200(GET_USER_POST_SUCCESS, userPost));
       }
