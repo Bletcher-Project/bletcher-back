@@ -22,8 +22,6 @@ export default class Post extends Model {
   public readonly created_at!: Date;
 
   public readonly updated_at!: Date;
-
-  public readonly deleted_at!: Date | null;
 }
 
 Post.init(
@@ -62,7 +60,6 @@ Post.init(
     tableName: 'post',
     sequelize,
     timestamps: true,
-    paranoid: true,
     underscored: true,
   },
 );

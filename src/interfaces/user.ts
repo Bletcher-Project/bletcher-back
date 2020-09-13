@@ -9,3 +9,8 @@ export interface IUserInfo {
   email?: string;
   nickname?: string;
 }
+
+export interface IUserAction {
+  user_id: number;
+  post_id: number;
+}
