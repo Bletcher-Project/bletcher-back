@@ -1,3 +1,4 @@
+import schedule from 'node-schedule';
 import { Sequelize } from 'sequelize';
 import sequelize from '../config/database';
 import User from '../models/user';
@@ -13,6 +14,8 @@ import Order from '../models/order';
 import Post from '../models/post';
 import Shopitem from '../models/shopitem';
 import Seeder from './seeder';
+import { checkFundingExpired } from '../services/funding';
+import Logger from './logger';
 
 export default async (): Promise<Sequelize> => {
   const db = {
@@ -33,5 +36,11 @@ export default async (): Promise<Sequelize> => {
   };
   const connection = await db.sequelize.sync();
   Seeder();
+  schedule.scheduleJob('*/10 * * * * *', async () => {
+    const checkExpired = await checkFundingExpired();
+    if (checkExpired) {
+      Logger.info(`${checkExpired}개의 항목이 만료되었습니다.`);
+    }
+  });
   return connection;
 };
