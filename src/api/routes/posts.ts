@@ -368,7 +368,10 @@ postRouter.get(
           return post;
         }),
       );
-      return res.status(200).json(response.response200(GET_ONGOING_POST_SUCCESS, posts));
+      if (fundings) {
+        return res.status(200).json(response.response200(GET_ONGOING_POST_SUCCESS, posts));
+      }
+      return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
@@ -394,7 +397,10 @@ postRouter.get(
           return post;
         }),
       );
-      return res.status(200).json(response.response200(GET_END_POST_SUCCESS, posts));
+      if (fundings) {
+        return res.status(200).json(response.response200(GET_END_POST_SUCCESS, posts));
+      }
+      return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
