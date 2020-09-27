@@ -8,6 +8,8 @@ export default class Funding extends Model {
 
   public post_id!: number;
 
+  public is_expired!: boolean;
+
   public readonly created_at!: Date;
 }
 
@@ -20,6 +22,11 @@ Funding.init(
     post_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+    },
+    is_expired: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
