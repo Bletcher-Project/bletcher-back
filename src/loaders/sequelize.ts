@@ -36,10 +36,10 @@ export default async (): Promise<Sequelize> => {
   };
   const connection = await db.sequelize.sync();
   Seeder();
-  schedule.scheduleJob('*/10 * * * * *', async () => {
+  schedule.scheduleJob('00 00 00 * * *', async () => {
     const checkExpired = await checkFundingExpired();
     if (checkExpired) {
-      Logger.info(`${checkExpired}개의 항목이 만료되었습니다.`);
+      Logger.info(`${checkExpired}개의 게시글이 만료되었습니다.`);
     }
   });
   return connection;
