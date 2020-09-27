@@ -33,9 +33,12 @@ import {
   GET_POST_BY_NESTED_SUCCESS,
   GET_MIX_POST_SUCCESS,
   GET_FAVORITE_POST_SUCCESS,
+  GET_ONGOING_POST_SUCCESS,
+  GET_END_POST_SUCCESS,
 } from '../../util/response/message';
 import response from '../../util/response';
 import { getUserByUserInfo } from '../../services/user';
+import { getOngoingFunding, getEndFunding } from '../../services/funding';
 
 const postRouter = Router();
 
@@ -177,9 +180,7 @@ postRouter.get(
     try {
       const existUser = await getUserByUserInfo({ nickname: userNickname });
       if (!existUser) {
-        return res
-          .status(404)
-          .json(response.response404(NO_USER));
+        return res.status(404).json(response.response404(NO_USER));
       }
       const userPost = await getPostByUserNickname(userNickname, page, limit);
       if (userPost) {
@@ -342,6 +343,58 @@ postRouter.get(
         }),
       );
       return res.status(200).json(response.response200(GET_FAVORITE_POST_SUCCESS, posts));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/funds/ongoing',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
+    try {
+      const fundings = await getOngoingFunding(page, limit);
+      const posts = await Promise.all(
+        fundings.map((fun) => {
+          const post = getPostByPostId(fun.post_id);
+          return post;
+        }),
+      );
+      return res.status(200).json(response.response200(GET_ONGOING_POST_SUCCESS, posts));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/funds/end',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { page, limit } = req.query as any;
+    try {
+      const fundings = await getEndFunding(page, limit);
+      const posts = await Promise.all(
+        fundings.map((fun) => {
+          const post = getPostByPostId(fun.post_id);
+          return post;
+        }),
+      );
+      return res.status(200).json(response.response200(GET_END_POST_SUCCESS, posts));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

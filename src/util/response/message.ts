@@ -35,7 +35,11 @@ export const GET_PAGE_POST_FAIL = '요청한 게시글 페이지를 불러오지
 export const GET_POST_BY_CATEGORY_SUCCESS = '해당 카테고리의 게시물을 불러왔습니다.';
 export const GET_POST_BY_NESTED_SUCCESS = '해당 카테고리와 연관된 모든 게시물을 불러왔습니다.';
 export const GET_MIX_POST_SUCCESS = '합성된 게시글을 불러왔습니다.';
+
 export const GET_FAVORITE_POST_SUCCESS = '사용자의 즐겨찾기 게시물들을 불러왔습니다.';
+
+export const GET_ONGOING_POST_SUCCESS = '펀딩이 진행중인 게시물들을 불러왔습니다.';
+export const GET_END_POST_SUCCESS = '펀딩이 끝난 게시물들을 불러왔습니다.';
 
 /* CATEGORIES */
 export const GET_ALL_CATEGORY_SUCCESS = '모든 카테고리를 불러왔습니다.';

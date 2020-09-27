@@ -23,3 +23,32 @@ export const checkFundingExpired = async (): Promise<[number, Funding[]] | null>
   );
   return expiredCheck;
 };
+
+export const getOngoingFunding = async (
+  page: number = 1,
+  limit: number = 10,
+): Promise<Funding[]> => {
+  const offset = limit * (page - 1);
+  const fundings: Funding[] = await Funding.findAll({
+    where: {
+      is_expired: false,
+    },
+    order: [['created_at', 'DESC']],
+    offset,
+    limit,
+  });
+  return fundings;
+};
+
+export const getEndFunding = async (page: number = 1, limit: number = 10): Promise<Funding[]> => {
+  const offset = limit * (page - 1);
+  const fundings: Funding[] = await Funding.findAll({
+    where: {
+      is_expired: true,
+    },
+    order: [['created_at', 'DESC']],
+    offset,
+    limit,
+  });
+  return fundings;
+};
