@@ -142,10 +142,10 @@ postRouter.get(
 );
 
 postRouter.get(
-  '/main/:id',
+  '/main/:userid',
   celebrate({
     [Segments.PARAMS]: {
-      id: Joi.number().integer().required(),
+      userid: Joi.number().integer().required(),
     },
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
@@ -153,7 +153,7 @@ postRouter.get(
     },
   }),
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId: number = parseInt(req.params.id, 10);
+    const userId: number = parseInt(req.params.userid, 10);
     const { page, limit } = req.query as any;
     try {
       const allPost = await getPost(page, limit);
