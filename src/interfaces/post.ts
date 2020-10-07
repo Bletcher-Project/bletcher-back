@@ -1,3 +1,5 @@
+import Post from '../models/post';
+
 export interface IPostdetail {
   title: string;
   description: string | null;
@@ -10,4 +12,9 @@ export interface IPostdetail {
 export interface IMixInfo {
   origin_post_id: number;
   sub_post_id: number;
+}
+
+export interface IPostMain {
+  post: Post;
+  isFavorite: boolean;
 }

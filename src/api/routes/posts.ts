@@ -3,7 +3,7 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
 import { IJwtRequest } from '../../interfaces/auth';
-import { IPostdetail } from '../../interfaces/post';
+import { IPostdetail, IPostMain } from '../../interfaces/post';
 import {
   createPost,
   editPost,
@@ -17,7 +17,7 @@ import {
 } from '../../services/post';
 import { getUserById } from '../../services/auth';
 import { getNestedCategories } from '../../services/category';
-import { getUserFavorites } from '../../services/favorite';
+import { getUserFavorites, isFavoritePost } from '../../services/favorite';
 import {
   POST_UP_SUCCESS,
   EDIT_SUCCESS,
@@ -132,6 +132,42 @@ postRouter.get(
           .status(200)
           .cookie('same-site-cookie', 'http://cloudinary.com/', { sameSite: 'lax' })
           .json(response.response200(GET_ALL_POST_SUCCESS, allPost));
+      }
+      return res.status(400).json(response.response400(GET_POST_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+postRouter.get(
+  '/main/:userid',
+  celebrate({
+    [Segments.PARAMS]: {
+      userid: Joi.number().integer().required(),
+    },
+    [Segments.QUERY]: {
+      page: Joi.number().greater(0),
+      limit: Joi.number().greater(0),
+    },
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId: number = parseInt(req.params.userid, 10);
+    const { page, limit } = req.query as any;
+    try {
+      const allPost = await getPost(page, limit);
+      if (allPost) {
+        const mainPost: IPostMain[] = await Promise.all(
+          allPost.map(async (post) => ({
+            post,
+            isFavorite: userId === 0 ? false : await isFavoritePost(post.id, userId),
+          })),
+        );
+        return res
+          .status(200)
+          .cookie('same-site-cookie', 'http://cloudinary.com/', { sameSite: 'lax' })
+          .json(response.response200(GET_ALL_POST_SUCCESS, mainPost));
       }
       return res.status(400).json(response.response400(GET_POST_FAIL));
     } catch (err) {

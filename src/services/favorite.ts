@@ -19,13 +19,16 @@ export const deleteFavorite = async (params: IUserAction): Promise<number> => {
   return result;
 };
 
-export const getPostFavorites = async (post_id: number): Promise<Favorite[]> => {
-  const favorites: Favorite[] = await Favorite.findAll({
+export const isFavoritePost = async (post_id: number, user_id: number): Promise<boolean> => {
+  const result: Favorite | null = await Favorite.findOne({
     where: {
       post_id,
+      user_id,
     },
   });
-  return favorites;
+
+  if (!result) return false;
+  return true;
 };
 
 export const getUserFavorites = async (
