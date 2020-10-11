@@ -56,15 +56,15 @@ User.init(
     timestamps: true,
     underscored: true,
     hooks: {
-      beforeCreate: async (user) => {
-        const encryptedPw = await bcrypt.hash(user.password, 10);
-        user.password = encryptedPw;
-      },
-      // beforeBulkUpdate: async (user) => {
-      //   console.log(user);
-      //   const encryptedPw = await bcrypt.hash(user.password, 10);
-      //   user.password = encryptedPw;
-      // },
+      //   beforeCreate: async (user) => {
+      //     const encryptedPw = await bcrypt.hash(user.password, 10);
+      //     user.password = encryptedPw;
+      //   },
+      //   beforeUpdate: async (user) => {},
     },
   },
 );
+User.beforeCreate(async (user) => {
+  const encryptedPw = await bcrypt.hash(user.password, 10);
+  user.password = encryptedPw;
+});

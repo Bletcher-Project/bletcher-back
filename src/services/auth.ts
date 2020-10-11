@@ -5,9 +5,7 @@ import User from '../models/user';
 import jwtKey from '../config';
 import { IAuthUser } from '../interfaces/auth';
 
-export const authenticate = async (
-  authInfo: IAuthUser,
-): Promise<User | null> => {
+export const authenticate = async (authInfo: IAuthUser): Promise<User | null> => {
   const user = await User.findOne({
     where: {
       [Op.or]: [{ email: authInfo.id }, { nickname: authInfo.id }],
@@ -26,15 +24,11 @@ export const authenticate = async (
 };
 
 export const authorize = (user: User): string => {
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    jwtKey.toString(),
-    {
-      expiresIn: '7d',
-      issuer: 'bletcher',
-      subject: 'userInfo',
-    },
-  );
+  const token = jwt.sign({ id: user.id, email: user.email }, jwtKey.toString(), {
+    expiresIn: '7d',
+    issuer: 'bletcher',
+    subject: 'userInfo',
+  });
   return token;
 };
 
@@ -48,4 +42,12 @@ export const getUserById = async (id?: number): Promise<User | null> => {
     return user;
   }
   return null;
+};
+
+export const passwordMatch = (password: string, user: User): boolean => {
+  console.log(password + '\n');
+  console.log(user.password);
+  const isPasswordMatch = bcrypt.compareSync(password, user.password);
+  console.log(isPasswordMatch);
+  return isPasswordMatch;
 };
