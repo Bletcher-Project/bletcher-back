@@ -1,8 +1,16 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
+import { IJwtRequest } from '../../interfaces/auth';
+import checkJWT from '../middleware/checkJwt';
 import Logger from '../../loaders/logger';
-import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
-import { createUser, getAllUser, getUserByUserInfo, deleteUser } from '../../services/user';
+import { IUserforSignUp, IUserInfo, IUserModify } from '../../interfaces/user';
+import {
+  createUser,
+  getAllUser,
+  getUserByUserInfo,
+  deleteUser,
+  modifyUser,
+} from '../../services/user';
 import {
   SIGN_UP_SUCCESS,
   EXIST_USER,
@@ -10,6 +18,9 @@ import {
   GET_ONE_USER_SUCCESS,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAIL,
+  MODIFY_USER_SUCCESS,
+  MODIFY_USER_FAIL,
+  NO_USER,
 } from '../../util/response/message';
 import response from '../../util/response';
 
@@ -83,6 +94,36 @@ userRouter.delete(
         return res.status(200).json(response.response200(DELETE_USER_SUCCESS, deletedUser));
       }
       return res.status(400).json(response.response400(DELETE_USER_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+userRouter.put(
+  '/modify',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      nickname: Joi.string(),
+      password: Joi.string(),
+      email: Joi.string(),
+      introduce: Joi.string(),
+      profile_image: Joi.number(),
+    }),
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const userid = req.decoded?.id;
+    try {
+      if (userid) {
+        const user = await modifyUser(req.body as IUserModify, userid);
+        if (user) {
+          return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+        }
+        return res.status(400).json(response.response400(MODIFY_USER_FAIL));
+      }
+      return res.status(404).json(response.response404(NO_USER));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

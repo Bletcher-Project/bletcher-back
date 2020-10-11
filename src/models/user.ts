@@ -28,25 +28,25 @@ User.init(
       primaryKey: true,
     },
     email: {
-      type: new DataTypes.STRING(50),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
     },
     nickname: {
-      type: new DataTypes.STRING(30),
+      type: DataTypes.STRING(30),
       allowNull: false,
       unique: true,
     },
     password: {
-      type: new DataTypes.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     introduce: {
-      type: new DataTypes.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: true,
     },
     profile_image: {
-      type: new DataTypes.STRING(300),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: true,
     },
   },
@@ -60,6 +60,11 @@ User.init(
         const encryptedPw = await bcrypt.hash(user.password, 10);
         user.password = encryptedPw;
       },
+      // beforeBulkUpdate: async (user) => {
+      //   console.log(user);
+      //   const encryptedPw = await bcrypt.hash(user.password, 10);
+      //   user.password = encryptedPw;
+      // },
     },
   },
 );
