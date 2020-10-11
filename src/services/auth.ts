@@ -45,9 +45,6 @@ export const getUserById = async (id?: number): Promise<User | null> => {
 };
 
 export const passwordMatch = (password: string, user: User): boolean => {
-  console.log(password + '\n');
-  console.log(user.password);
   const isPasswordMatch = bcrypt.compareSync(password, user.password);
-  console.log(isPasswordMatch);
   return isPasswordMatch;
 };
