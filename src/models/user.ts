@@ -55,13 +55,6 @@ User.init(
     sequelize,
     timestamps: true,
     underscored: true,
-    hooks: {
-      //   beforeCreate: async (user) => {
-      //     const encryptedPw = await bcrypt.hash(user.password, 10);
-      //     user.password = encryptedPw;
-      //   },
-      //   beforeUpdate: async (user) => {},
-    },
   },
 );
 User.beforeCreate(async (user) => {
