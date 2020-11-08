@@ -46,7 +46,7 @@ export const getUserById = async (id?: number): Promise<User | null> => {
 
 export const passwordMatch = async (password: string, userid: number): Promise<boolean> => {
   const existUser = await User.findByPk(userid);
-  if (existUser) {
+  if (existUser && password) {
     const isPasswordMatch = bcrypt.compareSync(password, existUser.password);
     return isPasswordMatch;
   }

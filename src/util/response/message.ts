@@ -16,6 +16,9 @@ export const DELETE_USER_FAIL = '사용자가 존재하지 않거나 이미 삭�
 export const MODIFY_USER_SUCCESS = '사용자 정보를 수정하였습니다.';
 export const MODIFY_USER_FAIL = '사용자 정보 수정을 실패했습니다.';
 
+export const EXIST_EMAIL = '이미 존재하는 이메일입니다.';
+export const EXIST_ID = '이미 존재하는 아이디입니다.';
+
 /* POSTS */
 export const POST_UP_SUCCESS = '게시물 업로드를 성공하였습니다.';
 

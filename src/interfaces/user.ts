@@ -18,7 +18,7 @@ export interface IUserAction {
 export interface IUserModify {
   email: string;
   nickname: string;
-  password: string;
-  introduce: string;
-  profile_image: number;
+  password?: string;
+  introduce?: string;
+  profile_image?: number;
 }
