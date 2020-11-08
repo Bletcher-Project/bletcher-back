@@ -49,8 +49,7 @@ export const modifyUser = async (userInfo: IUserModify, id: number): Promise<Use
   }
   const inputPassword = userInfo.password;
   if (inputPassword) {
-    const isPasswordMatch = passwordMatch(inputPassword, existUser);
-    if (!isPasswordMatch) {
+    if (!(await passwordMatch(inputPassword, id))) {
       const encryptedPw = await bcrypt.hash(inputPassword, 10);
       existUser.update(
         {

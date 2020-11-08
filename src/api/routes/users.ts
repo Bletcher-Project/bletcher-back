@@ -21,8 +21,10 @@ import {
   MODIFY_USER_SUCCESS,
   MODIFY_USER_FAIL,
   NO_USER,
+  AUTH_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
+import { passwordMatch } from '../../services/auth';
 
 const userRouter = Router();
 
@@ -102,7 +104,7 @@ userRouter.delete(
 );
 
 userRouter.put(
-  '/modify',
+  '/',
   checkJWT,
   celebrate({
     [Segments.BODY]: Joi.object().keys({
@@ -111,17 +113,22 @@ userRouter.put(
       email: Joi.string(),
       introduce: Joi.string(),
       profile_image: Joi.number(),
+      checkpassword: Joi.string(),
     }),
   }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
     const userid = req.decoded?.id;
+    const checkPassword = req.body.checkpassword;
     try {
       if (userid) {
-        const user = await modifyUser(req.body as IUserModify, userid);
-        if (user) {
-          return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+        if (await passwordMatch(checkPassword, userid)) {
+          const user = await modifyUser(req.body as IUserModify, userid);
+          if (user) {
+            return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+          }
+          return res.status(400).json(response.response400(MODIFY_USER_FAIL));
         }
-        return res.status(400).json(response.response400(MODIFY_USER_FAIL));
+        return res.status(400).json(response.response400(AUTH_FAIL));
       }
       return res.status(404).json(response.response404(NO_USER));
     } catch (err) {
