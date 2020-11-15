@@ -1,6 +1,8 @@
 import { Op } from 'sequelize';
+import bcrypt from 'bcrypt';
 import User from '../models/user';
-import { IUserforSignUp, IUserInfo } from '../interfaces/user';
+import { IUserforSignUp, IUserInfo, IUserModify } from '../interfaces/user';
+import { passwordMatch } from './auth';
 
 export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
   await User.create({
@@ -37,5 +39,34 @@ export const deleteUser = async (id: number): Promise<number> => {
   const user = await User.destroy({
     where: { id },
   });
+  return user;
+};
+
+export const modifyUser = async (userInfo: IUserModify, id: number): Promise<User | null> => {
+  const existUser = await User.findByPk(id);
+  if (!existUser) {
+    return null;
+  }
+  const inputPassword = userInfo.password;
+  if (inputPassword) {
+    if (!(await passwordMatch(inputPassword, id))) {
+      const encryptedPw = await bcrypt.hash(inputPassword, 10);
+      existUser.update(
+        {
+          password: encryptedPw,
+        },
+        { where: { id } },
+      );
+    }
+  }
+  const user = existUser.update(
+    {
+      email: userInfo.email,
+      nickname: userInfo.nickname,
+      introduce: userInfo.introduce,
+      profile_image: userInfo.profile_image,
+    },
+    { where: { id } },
+  );
   return user;
 };

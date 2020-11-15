@@ -1,8 +1,16 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
+import { IJwtRequest } from '../../interfaces/auth';
+import checkJWT from '../middleware/checkJwt';
 import Logger from '../../loaders/logger';
-import { IUserforSignUp, IUserInfo } from '../../interfaces/user';
-import { createUser, getAllUser, getUserByUserInfo, deleteUser } from '../../services/user';
+import { IUserforSignUp, IUserInfo, IUserModify } from '../../interfaces/user';
+import {
+  createUser,
+  getAllUser,
+  getUserByUserInfo,
+  deleteUser,
+  modifyUser,
+} from '../../services/user';
 import {
   SIGN_UP_SUCCESS,
   EXIST_USER,
@@ -10,8 +18,15 @@ import {
   GET_ONE_USER_SUCCESS,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAIL,
+  MODIFY_USER_SUCCESS,
+  MODIFY_USER_FAIL,
+  NO_USER,
+  AUTH_FAIL,
+  EXIST_EMAIL,
+  EXIST_ID,
 } from '../../util/response/message';
 import response from '../../util/response';
+import { passwordMatch } from '../../services/auth';
 
 const userRouter = Router();
 
@@ -83,6 +98,49 @@ userRouter.delete(
         return res.status(200).json(response.response200(DELETE_USER_SUCCESS, deletedUser));
       }
       return res.status(400).json(response.response400(DELETE_USER_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+userRouter.put(
+  '/',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      nickname: Joi.string(),
+      password: Joi.string(),
+      email: Joi.string(),
+      introduce: Joi.string().allow('', null),
+      profile_image: Joi.number().allow('', null),
+      checkpassword: Joi.string(),
+    }),
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const userid = req.decoded?.id;
+    const checkPassword = req.body.checkpassword;
+    const { email, nickname } = req.body;
+    try {
+      if (!userid) {
+        return res.status(404).json(response.response404(NO_USER));
+      }
+      if (!(await passwordMatch(checkPassword, userid))) {
+        return res.status(400).json(response.response400(AUTH_FAIL));
+      }
+
+      if (await getUserByUserInfo({ email })) {
+        return res.status(409).json(response.response409(EXIST_EMAIL));
+      }
+      if (await getUserByUserInfo({ nickname })) {
+        return res.status(409).json(response.response409(EXIST_ID));
+      }
+      const user = await modifyUser(req.body as IUserModify, userid);
+      if (user) {
+        return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+      }
+      return res.status(400).json(response.response400(MODIFY_USER_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
