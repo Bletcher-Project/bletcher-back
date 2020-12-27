@@ -1,3 +1,4 @@
+import rp from 'request-promise';
 import Mix from '../models/mix';
 import { IMixInfo, IPostdetail } from '../interfaces/post';
 import { createPost, getPostByPostId } from './post';
@@ -13,6 +14,32 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
   const sampleOriginPost: any = await getPostByPostId(params.origin_post_id);
   const sampleSubPost: any = await getPostByPostId(params.sub_post_id);
   if (sampleOriginPost && sampleSubPost) {
+    const originImageUser = sampleOriginPost['User.nickname'];
+    const originImagePath = sampleOriginPost['Image.path'];
+    const subImageUser = sampleSubPost['User.nickname'];
+    const subImagePath = sampleSubPost['Image.path'];
+    await console.log(originImageUser, originImagePath);
+    rp(
+      {
+        url: 'http://localhost:8000/synthesizing', // http://bletcher-mix.herokuapp.com/synthesizing
+        method: 'POST',
+        timeout: 10000,
+        followRedirect: true,
+        maxRedirects: 10,
+        form: {
+          content_image_user: originImageUser,
+          content_image_path: originImagePath,
+          style_image_user: subImageUser,
+          style_image_path: subImagePath,
+        },
+      },
+      (error, response, body) => {
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body);
+      },
+    );
+
     const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
     const newpostinfo = {
       title: mixTitle,
