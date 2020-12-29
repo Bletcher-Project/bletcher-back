@@ -14,22 +14,19 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
   const sampleOriginPost: any = await getPostByPostId(params.origin_post_id);
   const sampleSubPost: any = await getPostByPostId(params.sub_post_id);
   if (sampleOriginPost && sampleSubPost) {
-    const originImageUser = sampleOriginPost['User.nickname'];
     const originImagePath = sampleOriginPost['Image.path'];
-    const subImageUser = sampleSubPost['User.nickname'];
     const subImagePath = sampleSubPost['Image.path'];
-    await console.log(originImageUser, originImagePath);
     rp(
       {
         url: 'http://localhost:8000/synthesizing', // http://bletcher-mix.herokuapp.com/synthesizing
         method: 'POST',
-        timeout: 10000,
+        timeout: 200000000, // timeout >= mixing time
         followRedirect: true,
         maxRedirects: 10,
+        resolveWithFullResponse: true,
+        simple: false,
         form: {
-          content_image_user: originImageUser,
           content_image_path: originImagePath,
-          style_image_user: subImageUser,
           style_image_path: subImagePath,
         },
       },
