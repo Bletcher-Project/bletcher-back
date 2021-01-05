@@ -1,8 +1,13 @@
 import rp from 'request-promise';
+import Image from '../models/image';
+import Post from '../models/post';
 import Mix from '../models/mix';
 import { IMixInfo, IPostdetail } from '../interfaces/post';
 import { createPost, getPostByPostId } from './post';
+import Logger from '../loaders/logger';
 import calcUtil from '../util/calc';
+import { IImageDetail } from '../interfaces/image';
+import { postImage } from './image';
 
 export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   const mix: Mix | null = await Mix.findOne({
@@ -17,9 +22,9 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
   if (sampleOriginPost && sampleSubPost) {
     const originImagePath = sampleOriginPost['Image.path'];
     const subImagePath = sampleSubPost['Image.path'];
-    rp(
+    await rp(
       {
-        url: 'http://localhost:8000/synthesizing', // http://bletcher-mix.herokuapp.com/synthesizing
+        url: 'http://bletcher-mix.herokuapp.com/synthesizing', // http://localhost:8000/synthesizing
         method: 'POST',
         timeout: 500000000, // timeout >= mixing time
         followRedirect: true,
@@ -32,35 +37,38 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
           mix_image_name: new Date().valueOf() + calcUtil.getNand(10),
         },
       },
-      (error, response, body) => {
-        console.error('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body);
+      async (error, response, body) => {
+        const obj = JSON.parse(body);
+        const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
+        const newImageInfo = {
+          name: `post/${obj.name}`,
+          type: obj.type,
+          path: obj.path,
+        };
+        const mixedImage: Image | null = await postImage(newImageInfo as IImageDetail);
+        const newPostInfo = {
+          title: mixTitle,
+          description: null,
+          is_public: true,
+          user_id: sampleOriginPost['User.id'],
+          category_id: 1,
+          image_id: mixedImage?.id,
+          /* image_id will come from getImageFromAI */
+        };
+
+        if (mixedImage) {
+          const mixedPost: Post | null = await createPost(newPostInfo as IPostdetail);
+          Mix.create({
+            origin_post_id: params.origin_post_id,
+            sub_post_id: params.sub_post_id,
+            post_id: mixedPost?.id,
+          });
+        }
+        if (error) {
+          Logger.error('🔥 error %o', error);
+        }
       },
     );
-
-    const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
-    // const newImageInfo = {
-    //   name:
-    //   type:
-    //   path:
-    // };
-    const newPostInfo = {
-      title: mixTitle,
-      description: null,
-      is_public: true,
-      user_id: sampleOriginPost['User.id'],
-      category_id: 1,
-      image_id: sampleOriginPost['Image.id'],
-      /* image_id will come from getImageFromAI */
-    };
-    // const mixedImage = await postImage(newImageInfo as IImageDetail);
-    const mixedPost = await createPost(newPostInfo as IPostdetail);
-    await Mix.create({
-      origin_post_id: params.origin_post_id,
-      sub_post_id: params.sub_post_id,
-      post_id: mixedPost?.getDataValue('id'),
-    });
   }
 };
 
