@@ -2,6 +2,7 @@ import rp from 'request-promise';
 import Mix from '../models/mix';
 import { IMixInfo, IPostdetail } from '../interfaces/post';
 import { createPost, getPostByPostId } from './post';
+import calcUtil from '../util/calc';
 
 export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   const mix: Mix | null = await Mix.findOne({
@@ -20,7 +21,7 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
       {
         url: 'http://localhost:8000/synthesizing', // http://bletcher-mix.herokuapp.com/synthesizing
         method: 'POST',
-        timeout: 200000000, // timeout >= mixing time
+        timeout: 500000000, // timeout >= mixing time
         followRedirect: true,
         maxRedirects: 10,
         resolveWithFullResponse: true,
@@ -28,6 +29,7 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
         form: {
           content_image_path: originImagePath,
           style_image_path: subImagePath,
+          mix_image_name: new Date().valueOf() + calcUtil.getNand(10),
         },
       },
       (error, response, body) => {
@@ -38,7 +40,12 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
     );
 
     const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
-    const newpostinfo = {
+    // const newImageInfo = {
+    //   name:
+    //   type:
+    //   path:
+    // };
+    const newPostInfo = {
       title: mixTitle,
       description: null,
       is_public: true,
@@ -47,7 +54,8 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
       image_id: sampleOriginPost['Image.id'],
       /* image_id will come from getImageFromAI */
     };
-    const mixedPost = await createPost(newpostinfo as IPostdetail);
+    // const mixedImage = await postImage(newImageInfo as IImageDetail);
+    const mixedPost = await createPost(newPostInfo as IPostdetail);
     await Mix.create({
       origin_post_id: params.origin_post_id,
       sub_post_id: params.sub_post_id,
