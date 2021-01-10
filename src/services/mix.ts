@@ -24,12 +24,10 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
     const subImagePath = sampleSubPost['Image.path'];
     await rp(
       {
-        url: 'http://bletcher-mix.herokuapp.com/synthesizing', // http://localhost:8000/synthesizing
+        url: 'http://bletcher-mix.herokuapp.com/synthesizing',
         method: 'POST',
-        timeout: 500000000, // timeout >= mixing time
         followRedirect: true,
         maxRedirects: 10,
-        resolveWithFullResponse: true,
         simple: false,
         form: {
           content_image_path: originImagePath,
@@ -38,14 +36,17 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
         },
       },
       async (error, response, body) => {
+        if (error) {
+          Logger.error('🔥 error %o', error);
+        }
         const obj = JSON.parse(body);
-        const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
         const newImageInfo = {
           name: `post/${obj.name}`,
           type: obj.type,
           path: obj.path,
         };
         const mixedImage: Image | null = await postImage(newImageInfo as IImageDetail);
+        const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
         const newPostInfo = {
           title: mixTitle,
           description: null,
@@ -55,18 +56,12 @@ export const postMix = async (params: IMixInfo): Promise<void> => {
           image_id: mixedImage?.id,
           /* image_id will come from getImageFromAI */
         };
-
-        if (mixedImage) {
-          const mixedPost: Post | null = await createPost(newPostInfo as IPostdetail);
-          Mix.create({
-            origin_post_id: params.origin_post_id,
-            sub_post_id: params.sub_post_id,
-            post_id: mixedPost?.id,
-          });
-        }
-        if (error) {
-          Logger.error('🔥 error %o', error);
-        }
+        const mixedPost: Post | null = await createPost(newPostInfo as IPostdetail);
+        Mix.create({
+          origin_post_id: params.origin_post_id,
+          sub_post_id: params.sub_post_id,
+          post_id: mixedPost?.id,
+        });
       },
     );
   }
