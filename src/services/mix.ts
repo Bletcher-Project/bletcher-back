@@ -3,11 +3,12 @@ import Image from '../models/image';
 import Post from '../models/post';
 import Mix from '../models/mix';
 import { IMixInfo, IPostdetail } from '../interfaces/post';
-import calcUtil from '../util/calc';
 import { IImageDetail } from '../interfaces/image';
 import { postImage } from './image';
 import { createPost, getPostByPostId } from './post';
+import calcUtil from '../util/calc';
 import Logger from '../loaders/logger';
+import { SERVER_URL, MIX_API } from '../util/mix-api';
 
 export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   const mix: Mix | null = await Mix.findOne({
@@ -24,7 +25,7 @@ export const postMix = async (params: IMixInfo): Promise<boolean> => {
   let mixSuccess = false;
 
   await rp({
-    url: 'http://bletcher-mix.herokuapp.com/synthesizing',
+    url: `${SERVER_URL}${MIX_API}`,
     method: 'POST',
     timeout: 180000,
     followRedirect: true,
