@@ -21,6 +21,7 @@ import {
   DELETE_MIX_SUCCESS,
   DELETE_POST_FAIL,
   NO_MIX_EXIST,
+  MIX_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
 
@@ -49,7 +50,10 @@ mixRouter.post(
         return res.status(409).json(response.response409(ALREADY_MIXED));
       }
       const newmix = await postMix(mixDetail as IMixInfo);
-      return res.status(200).json(response.response200(MIX_SUCCESS, newmix));
+      if (newmix) {
+        return res.status(200).json(response.response200(MIX_SUCCESS, newmix));
+      }
+      return res.status(500).json(response.response500(MIX_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
