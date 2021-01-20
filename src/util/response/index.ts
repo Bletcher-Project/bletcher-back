@@ -25,4 +25,8 @@ export default {
     status: '409 Conflict',
     message,
   }),
+  response500: (message: string) => ({
+    status: '500 Internal Server Error',
+    message,
+  }),
 };

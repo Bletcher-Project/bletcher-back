@@ -91,6 +91,7 @@ export const getPostByPostId = async (id: number): Promise<Post | null> => {
       },
     ],
     where: { id },
+    raw: true,
   });
   return post;
 };
