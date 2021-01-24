@@ -42,31 +42,25 @@ export const deleteUser = async (id: number): Promise<number> => {
   return user;
 };
 
-export const modifyUser = async (userInfo: IUserModify, id: number): Promise<User | null> => {
-  const existUser = await User.findByPk(id);
+export const modifyUser = async (userInfo: IUserModify): Promise<User | null> => {
+  const existUser = await User.findByPk(userInfo.id);
   if (!existUser) {
     return null;
   }
   const inputPassword = userInfo.password;
   if (inputPassword) {
-    if (!(await passwordMatch(inputPassword, id))) {
+    if (!(await passwordMatch(inputPassword, existUser.id))) {
       const encryptedPw = await bcrypt.hash(inputPassword, 10);
-      existUser.update(
-        {
-          password: encryptedPw,
-        },
-        { where: { id } },
-      );
+      existUser.update({
+        password: encryptedPw,
+      });
     }
   }
-  const user = existUser.update(
-    {
-      email: userInfo.email,
-      nickname: userInfo.nickname,
-      introduce: userInfo.introduce,
-      profile_image: userInfo.profile_image,
-    },
-    { where: { id } },
-  );
+  const user = existUser.update({
+    email: userInfo.email,
+    nickname: userInfo.nickname,
+    introduce: userInfo.introduce,
+    profile_image: userInfo.profile_image,
+  });
   return user;
 };

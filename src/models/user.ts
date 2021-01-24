@@ -13,7 +13,7 @@ export default class User extends Model {
 
   public introduce!: string | null;
 
-  public profile_image!: string | null;
+  public profile_image!: number | null;
 
   public readonly created_at!: Date;
 
