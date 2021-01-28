@@ -108,7 +108,7 @@ userRouter.delete(
   },
 );
 
-userRouter.put(
+userRouter.patch(
   '/',
   checkJWT,
   celebrate({
@@ -134,7 +134,6 @@ userRouter.put(
       if (await getUserByUserInfo({ email: modifyDetail.email })) {
         return res.status(409).json(response.response409(EXIST_EMAIL));
       }
-
       if (await getUserByUserInfo({ nickname: modifyDetail.nickname })) {
         return res.status(409).json(response.response409(EXIST_ID));
       }
@@ -145,8 +144,8 @@ userRouter.put(
           type: req.file.mimetype,
           path: req.file.path,
         };
-        if (existUser?.profile_image!) {
-          await deleteImage(existUser?.profile_image!);
+        if (existUser?.profile_image) {
+          await deleteImage(existUser?.profile_image);
         }
         const newImage: Image | null = await postImage(imageDetail as IImageDetail);
         modifyDetail = { ...modifyDetail, profile_image: newImage?.id };

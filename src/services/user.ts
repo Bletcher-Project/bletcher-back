@@ -43,7 +43,7 @@ export const deleteUser = async (id: number): Promise<number> => {
 };
 
 export const modifyUser = async (userInfo: IUserModify): Promise<User | null> => {
-  const existUser = await User.findByPk(userInfo.id);
+  const existUser: User | null = await User.findByPk(userInfo.id);
   if (!existUser) {
     return null;
   }
