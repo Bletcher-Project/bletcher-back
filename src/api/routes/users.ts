@@ -131,13 +131,18 @@ userRouter.patch(
       if (!(await passwordMatch(checkPassword, userid))) {
         return res.status(400).json(response.response400(AUTH_FAIL));
       }
-      if (await getUserByUserInfo({ email: modifyDetail.email })) {
-        return res.status(409).json(response.response409(EXIST_EMAIL));
+      const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
+      const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });
+      if (dupEmail) {
+        if (dupEmail.id !== userid) {
+          return res.status(409).json(response.response409(EXIST_EMAIL));
+        }
       }
-      if (await getUserByUserInfo({ nickname: modifyDetail.nickname })) {
-        return res.status(409).json(response.response409(EXIST_ID));
+      if (dupNickname) {
+        if (dupNickname.id !== userid) {
+          return res.status(409).json(response.response409(EXIST_ID));
+        }
       }
-
       if (req.file) {
         const imageDetail = {
           name: req.file.filename,
