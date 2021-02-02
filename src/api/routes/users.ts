@@ -20,13 +20,16 @@ import {
   DELETE_USER_FAIL,
   MODIFY_USER_SUCCESS,
   MODIFY_USER_FAIL,
-  NO_USER,
   AUTH_FAIL,
   EXIST_EMAIL,
   EXIST_ID,
 } from '../../util/response/message';
 import response from '../../util/response';
 import { passwordMatch } from '../../services/auth';
+import { uploadProfile } from '../middleware/multer';
+import { postImage, deleteImage } from '../../services/image';
+import { IImageDetail } from '../../interfaces/image';
+import Image from '../../models/image';
 
 const userRouter = Router();
 
@@ -105,7 +108,7 @@ userRouter.delete(
   },
 );
 
-userRouter.put(
+userRouter.patch(
   '/',
   checkJWT,
   celebrate({
@@ -114,29 +117,45 @@ userRouter.put(
       password: Joi.string(),
       email: Joi.string(),
       introduce: Joi.string().allow('', null),
-      profile_image: Joi.number().allow('', null),
       checkpassword: Joi.string(),
     }),
   }),
+  uploadProfile,
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
-    const userid = req.decoded?.id;
+    const userid: number = req.decoded?.id!;
     const checkPassword = req.body.checkpassword;
-    const { email, nickname } = req.body;
+    let modifyDetail = { id: userid, ...req.body };
+    const existUser = await getUserByUserInfo({ id: modifyDetail.id });
+
     try {
-      if (!userid) {
-        return res.status(404).json(response.response404(NO_USER));
-      }
       if (!(await passwordMatch(checkPassword, userid))) {
         return res.status(400).json(response.response400(AUTH_FAIL));
       }
-
-      if (await getUserByUserInfo({ email })) {
-        return res.status(409).json(response.response409(EXIST_EMAIL));
+      const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
+      const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });
+      if (dupEmail) {
+        if (dupEmail.id !== userid) {
+          return res.status(409).json(response.response409(EXIST_EMAIL));
+        }
       }
-      if (await getUserByUserInfo({ nickname })) {
-        return res.status(409).json(response.response409(EXIST_ID));
+      if (dupNickname) {
+        if (dupNickname.id !== userid) {
+          return res.status(409).json(response.response409(EXIST_ID));
+        }
       }
-      const user = await modifyUser(req.body as IUserModify, userid);
+      if (req.file) {
+        const imageDetail = {
+          name: req.file.filename,
+          type: req.file.mimetype,
+          path: req.file.path,
+        };
+        if (existUser?.profile_image) {
+          await deleteImage(existUser?.profile_image);
+        }
+        const newImage: Image | null = await postImage(imageDetail as IImageDetail);
+        modifyDetail = { ...modifyDetail, profile_image: newImage?.id };
+      }
+      const user = await modifyUser(modifyDetail as IUserModify);
       if (user) {
         return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
       }

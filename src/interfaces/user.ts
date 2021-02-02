@@ -5,7 +5,7 @@ export interface IUserforSignUp {
 }
 
 export interface IUserInfo {
-  id?: string;
+  id?: number;
   email?: string;
   nickname?: string;
 }
@@ -16,6 +16,7 @@ export interface IUserAction {
 }
 
 export interface IUserModify {
+  id: number;
   email: string;
   nickname: string;
   password?: string;
