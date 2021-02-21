@@ -129,7 +129,7 @@ userRouter.patch(
 
     try {
       if (!(await passwordMatch(checkPassword, userid))) {
-        return res.status(400).json(response.response400(AUTH_FAIL));
+        return res.status(403).json(response.response403(AUTH_FAIL));
       }
       const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
       const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });

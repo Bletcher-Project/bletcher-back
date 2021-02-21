@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 import User from '../models/user';
+import Image from '../models/image';
 import { IUserforSignUp, IUserInfo, IUserModify } from '../interfaces/user';
 import { passwordMatch } from './auth';
 
@@ -13,7 +14,14 @@ export const createUser = async (userInfo: IUserforSignUp): Promise<void> => {
 };
 
 export const getAllUser = async (): Promise<User[] | null> => {
-  const allUser = await User.findAll({});
+  const allUser = await User.findAll({
+    include: [
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
+  });
   return allUser;
 };
 
@@ -26,12 +34,28 @@ export const getUserByUserInfo = async (userInfo: IUserInfo): Promise<User | nul
         { nickname: userInfo.nickname || null },
       ],
     },
+    include: [
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
   });
   return user;
 };
 
 export const getUsernameById = async (id: number): Promise<User | null> => {
-  const nickname = await User.findOne({ where: { id }, raw: true, attributes: ['nickname'] });
+  const nickname = await User.findOne({
+    where: { id },
+    raw: true,
+    attributes: ['nickname'],
+    include: [
+      {
+        model: Image,
+        attributes: ['id', 'path'],
+      },
+    ],
+  });
   return nickname;
 };
 
