@@ -20,6 +20,7 @@ import {
   DELETE_USER_FAIL,
   MODIFY_USER_SUCCESS,
   MODIFY_USER_FAIL,
+  AUTH_SUCCESS,
   AUTH_FAIL,
   EXIST_EMAIL,
   EXIST_ID,
@@ -86,6 +87,29 @@ userRouter.get(
   },
 );
 
+userRouter.get(
+  '/check',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      checkpassword: Joi.string().required(),
+    }),
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const userid: number = req.decoded?.id!;
+    const checkPassword: string = req.body.checkpassword;
+    try {
+      if (!(await passwordMatch(checkPassword, userid))) {
+        return res.status(403).json(response.response403(AUTH_FAIL));
+      }
+      return res.status(200).json(response.response200(AUTH_SUCCESS, { success: true }));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
 userRouter.delete(
   '/:id',
   celebrate({
@@ -111,26 +135,20 @@ userRouter.delete(
 userRouter.patch(
   '/',
   checkJWT,
+  uploadProfile,
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       nickname: Joi.string(),
       password: Joi.string(),
       email: Joi.string(),
       introduce: Joi.string().allow('', null),
-      checkpassword: Joi.string(),
     }),
   }),
-  uploadProfile,
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
     const userid: number = req.decoded?.id!;
-    const checkPassword = req.body.checkpassword;
     let modifyDetail = { id: userid, ...req.body };
     const existUser = await getUserByUserInfo({ id: modifyDetail.id });
-
     try {
-      if (!(await passwordMatch(checkPassword, userid))) {
-        return res.status(400).json(response.response400(AUTH_FAIL));
-      }
       const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
       const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });
       if (dupEmail) {
