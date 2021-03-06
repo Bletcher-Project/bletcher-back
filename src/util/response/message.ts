@@ -85,3 +85,5 @@ export const EXIST_FUNDING = '이미 펀딩한 게시물입니다.';
 export const NOT_EXIST_FUNDING = '펀딩한 적 없는 게시물입니다.';
 export const GET_FUNDING_COUNT_SUCCESS = '펀딩 개수를 가져왔습니다.';
 export const GET_FUNDING_COUNT_FAIL = '펀딩 개수를 가져오지 못했습니다.';
+export const GET_FUNDING_DUEDATE_SUCCESS = '펀딩 기한을 가져왔습니다.';
+export const GET_FUNDING_DUEDATE_FAIL = '펀딩 기한을 가져오지 못했습니다.';

@@ -10,6 +10,7 @@ import {
   addFundingCount,
   deleteFunding,
   getFundingCount,
+  getFundingDuedate,
 } from '../../services/funding';
 import {
   POST_NOT_EXISTS,
@@ -19,6 +20,8 @@ import {
   NOT_EXIST_FUNDING,
   GET_FUNDING_COUNT_SUCCESS,
   GET_FUNDING_COUNT_FAIL,
+  GET_FUNDING_DUEDATE_SUCCESS,
+  GET_FUNDING_DUEDATE_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
 
@@ -47,6 +50,35 @@ fundRouter.get(
       return res
         .status(200)
         .json(response.response200(GET_FUNDING_COUNT_SUCCESS, { counts: fundingCount }));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+fundRouter.get(
+  '/duedate/:postid',
+  checkJWT,
+  celebrate({
+    [Segments.PARAMS]: {
+      postid: Joi.number().integer().required(),
+    },
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    const postid: number = parseInt(req.params.postid, 10);
+    try {
+      const post = await getPostByPostId(postid);
+      if (!post) {
+        return res.status(400).json(response.response400(POST_NOT_EXISTS));
+      }
+      const fundingDuedate = await getFundingDuedate(postid);
+      if (!fundingDuedate) {
+        return res.status(400).json(response.response400(GET_FUNDING_DUEDATE_FAIL));
+      }
+      return res
+        .status(200)
+        .json(response.response200(GET_FUNDING_DUEDATE_SUCCESS, fundingDuedate));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);

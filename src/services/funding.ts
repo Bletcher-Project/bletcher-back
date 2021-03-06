@@ -70,6 +70,21 @@ export const getFundingCount = async (postid: number): Promise<number | null> =>
   return fundings.count;
 };
 
+export const getFundingDuedate = async (postid: number): Promise<String | null> => {
+  const funding = await FundingPost.findOne({
+    where: {
+      post_id: postid,
+    },
+    attributes: ['post_id', 'is_expired', 'created_at'],
+    order: [['created_at', 'DESC']],
+  });
+  const date = new Date(funding?.getDataValue('created_at')!);
+  date.setDate(date.getDate() + 7);
+  const duedate = date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
+
+  return duedate;
+};
+
 export const deleteFunding = async (params: IUserAction): Promise<number> => {
   const result: number = await Funding.destroy({
     where: { user_id: params.user_id, post_id: params.post_id },
