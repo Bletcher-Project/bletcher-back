@@ -16,6 +16,7 @@ import Shopitem from '../models/shopitem';
 import Seeder from './seeder';
 import { checkFundingExpired } from '../services/funding';
 import Logger from './logger';
+import FundingPost from '../models/fundingPost';
 
 export default async (): Promise<Sequelize> => {
   const db = {
@@ -30,6 +31,7 @@ export default async (): Promise<Sequelize> => {
     Shopitem,
     Favorite,
     Funding,
+    FundingPost,
     Mix,
     Notice,
     Order,
