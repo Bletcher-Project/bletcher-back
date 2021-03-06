@@ -69,6 +69,8 @@ export const GET_MIX_INFO_SUCCESS = '이미지 합성 정보를 가져왔습니�
 export const GET_MIX_INFO_FAIL = '이미지 합성 정보를 가져오지 못했습니다.';
 export const DELETE_MIX_SUCCESS = '이미지 합성 내역을 삭제했습니다.';
 export const NO_MIX_EXIST = '해당 합성 내역이 존재하지 않습니다';
+export const MIX_POST_SUCCESS = '합성 이미지로 게시글을 생성하였습니다.';
+export const MIX_POST_FAIL = '합성 이미지로 게시글을 생성하지 못했습니다.';
 
 /* FAVORITES */
 export const FAVORITE_POST_SUCCESS = '게시물 즐겨찾기를 성공하였습니다.';

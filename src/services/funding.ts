@@ -14,8 +14,8 @@ export const addFundingCount = async (params: IUserAction): Promise<void> => {
   await Funding.create({ user_id: params.user_id, post_id: params.post_id });
 };
 
-export const addFundingPost = async (params: IUserAction): Promise<void> => {
-  await FundingPost.create({ post_id: params.post_id });
+export const addFundingPost = async (id: number): Promise<void> => {
+  await FundingPost.create({ post_id: id });
 };
 
 export const checkFundingExpired = async (): Promise<[number, FundingPost[]] | null> => {

@@ -11,6 +11,7 @@ import {
   getOriginMixInfo,
   getSubMixInfo,
   deleteMix,
+  postMixPost,
 } from '../../services/mix';
 import {
   POST_NOT_EXISTS,
@@ -22,23 +23,25 @@ import {
   DELETE_POST_FAIL,
   NO_MIX_EXIST,
   MIX_FAIL,
+  MIX_POST_SUCCESS,
+  MIX_POST_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
 
 const mixRouter = Router();
 
 mixRouter.post(
-  '/:originid/:subid',
+  '/:origin_post_id/:sub_post_id',
   checkJWT,
   celebrate({
     [Segments.PARAMS]: {
-      originid: Joi.number().integer().required(),
-      subid: Joi.number().integer().required(),
+      origin_post_id: Joi.number().integer().required(),
+      sub_post_id: Joi.number().integer().required(),
     },
   }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
-    const originPostId: number = parseInt(req.params.originid, 10);
-    const subPostId: number = parseInt(req.params.subid, 10);
+    const originPostId: number = parseInt(req.params.origin_post_id, 10);
+    const subPostId: number = parseInt(req.params.sub_post_id, 10);
     try {
       const originPost = await getPostByPostId(originPostId);
       const subPost = await getPostByPostId(subPostId);
@@ -51,9 +54,36 @@ mixRouter.post(
       }
       const newmix = await postMix(mixDetail as IMixInfo);
       if (newmix) {
-        return res.status(200).json(response.response200(MIX_SUCCESS, newmix));
+        const result = { image_id: newmix, origin_post_id: originPostId, sub_post_id: subPostId };
+        return res.status(200).json(response.response200(MIX_SUCCESS, result));
       }
       return res.status(500).json(response.response500(MIX_FAIL));
+    } catch (err) {
+      Logger.error('🔥 error %o', err);
+      return next(err);
+    }
+  },
+);
+
+mixRouter.post(
+  '/post',
+  checkJWT,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      origin_post_id: Joi.number().integer().required(),
+      sub_post_id: Joi.number().integer().required(),
+      is_public: Joi.boolean().required(),
+      image_id: Joi.number().integer().required(),
+    }),
+  }),
+  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+    try {
+      const mixPostDetail = req.body as IMixInfo;
+      const mixPost = await postMixPost(mixPostDetail);
+      if (mixPost) {
+        return res.status(200).json(response.response200(MIX_POST_SUCCESS, mixPost));
+      }
+      return res.status(400).json(response.response400(MIX_POST_FAIL));
     } catch (err) {
       Logger.error('🔥 error %o', err);
       return next(err);
