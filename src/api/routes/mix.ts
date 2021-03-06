@@ -27,6 +27,7 @@ import {
   MIX_POST_FAIL,
 } from '../../util/response/message';
 import response from '../../util/response';
+import { getImage } from '../../services/image';
 
 const mixRouter = Router();
 
@@ -53,8 +54,15 @@ mixRouter.post(
         return res.status(409).json(response.response409(ALREADY_MIXED));
       }
       const newmix = await postMix(mixDetail as IMixInfo);
+      const newimage = await getImage(newmix!);
       if (newmix) {
-        const result = { image_id: newmix, origin_post_id: originPostId, sub_post_id: subPostId };
+        const result = {
+          image_id: newmix,
+          origin_post_id: originPostId,
+          sub_post_id: subPostId,
+          image_path: newimage?.path,
+        };
+
         return res.status(200).json(response.response200(MIX_SUCCESS, result));
       }
       return res.status(500).json(response.response500(MIX_FAIL));
