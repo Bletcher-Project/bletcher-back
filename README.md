@@ -11,7 +11,7 @@ Bletcher Project의 Back-End Repository 입니다.
 
 ## Database Schema Diagram
 
-![DBschema](https://user-images.githubusercontent.com/22045163/90979345-725cf480-e58f-11ea-8a53-eddc0e1211f3.jpg)
+![Bletcher_21 03 09](https://user-images.githubusercontent.com/22341374/110419160-1d706e00-80dc-11eb-92af-833cb57bebcb.jpg)
 
 ## Run
 
