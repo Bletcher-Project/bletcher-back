@@ -4,10 +4,15 @@ Bletcher Project의 Back-End Repository 입니다.
 
 ## Technology
 
+![really](https://user-images.githubusercontent.com/22493971/110477817-f8551d00-8126-11eb-8fad-191ceb4846f9.jpg)
+
 - Node.js
+- TypeScript
 - Express
 - Sequelize
-- Typescript
+- heroku
+- Cloudinary
+- mariaDB
 
 ## Database Schema Diagram
 
