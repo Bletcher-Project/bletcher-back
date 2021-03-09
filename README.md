@@ -1,6 +1,7 @@
 # Bletcher-back
 
-Bletcher Project의 Back-End Repository 입니다.
+![realfinal](https://user-images.githubusercontent.com/22493971/110479894-39e6c780-8129-11eb-8e7f-4adfccd549fa.jpg)
+
 
 ## Technology
 
