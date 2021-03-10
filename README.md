@@ -97,9 +97,7 @@ yarn start
 권혁진 - @KimKwon - khj9709@icloud.com <br />
 김동규 - @kimdg1105 - kimss7334@naver.com <br />
 서그림 - @Seogeurim - geulims@naver.com <br />
-윤가영 <br />
-
-Your Name - @your_github - email@example.com
+윤가영 - @yoongoing - rkdud0925@hanyang.ac.kr <br />
 
 ## License<a id="license"></a>
 
