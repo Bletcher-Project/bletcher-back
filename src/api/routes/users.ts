@@ -87,7 +87,7 @@ userRouter.get(
   },
 );
 
-userRouter.get(
+userRouter.post(
   '/check',
   checkJWT,
   celebrate({
