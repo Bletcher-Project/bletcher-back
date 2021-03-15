@@ -1,4 +1,4 @@
-import { Router, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
@@ -29,13 +29,12 @@ const fundRouter = Router();
 
 fundRouter.get(
   '/count/:postid',
-  checkJWT,
   celebrate({
     [Segments.PARAMS]: {
       postid: Joi.number().integer().required(),
     },
   }),
-  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const postid: number = parseInt(req.params.postid, 10);
     try {
       const post = await getPostByPostId(postid);
@@ -59,13 +58,12 @@ fundRouter.get(
 
 fundRouter.get(
   '/duedate/:postid',
-  checkJWT,
   celebrate({
     [Segments.PARAMS]: {
       postid: Joi.number().integer().required(),
     },
   }),
-  async (req: IJwtRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const postid: number = parseInt(req.params.postid, 10);
     try {
       const post = await getPostByPostId(postid);
