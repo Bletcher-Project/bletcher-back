@@ -390,6 +390,9 @@ postRouter.get(
 postRouter.get(
   '/funds/ongoing/:userid',
   celebrate({
+    [Segments.PARAMS]: {
+      userid: Joi.number().integer().required(),
+    },
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
       limit: Joi.number().greater(0),
@@ -403,9 +406,8 @@ postRouter.get(
       const posts = await Promise.all(
         fundings.map(async (fun) => {
           const post = await getPostByPostId(fun.post_id);
-          const isFunding = userId === 0 ? false : await checkFundingExists(
-            { user_id: userId, post_id: fun.post_id } as IUserAction,
-          );
+          const isFunding = userId === 0 ? false
+            : await checkFundingExists({ user_id: userId, post_id: fun.post_id } as IUserAction);
           return {
             post,
             isFunding,

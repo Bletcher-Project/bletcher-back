@@ -80,7 +80,6 @@ export const NOT_EXIST_FAVORITE = '즐겨찾기한 적 없는 게시물입니다
 
 /* FUNDINGS */
 export const FUNDING_POST_SUCCESS = '펀딩을 성공하였습니다.';
-export const FUNDING_DELETE_SUCCESS = '게시물 펀딩 해제를 성공하였습니다.';
 export const EXIST_FUNDING = '이미 펀딩한 게시물입니다.';
 export const NOT_EXIST_FUNDING = '펀딩한 적 없는 게시물입니다.';
 export const GET_FUNDING_COUNT_SUCCESS = '펀딩 개수를 가져왔습니다.';

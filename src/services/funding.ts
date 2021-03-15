@@ -84,10 +84,3 @@ export const getFundingDuedate = async (postid: number): Promise<String | null> 
 
   return duedate;
 };
-
-export const deleteFunding = async (params: IUserAction): Promise<number> => {
-  const result: number = await Funding.destroy({
-    where: { user_id: params.user_id, post_id: params.post_id },
-  });
-  return result;
-};
