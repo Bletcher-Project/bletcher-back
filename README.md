@@ -3,9 +3,8 @@
 ![realfinalversion2](https://user-images.githubusercontent.com/22493971/110480555-f6d92400-8129-11eb-8388-acb605aea2a4.jpg)
 
 [Bletcher Project](https://github.com/Bletcher-Project/Bletcher)의 Back-End Repository 입니다.
-인공지능 예술 웹 서비스 Bletcher의 웹 백엔드입니다. 
-<!--  + 추가할 내용 ?: 어떠어떠한 이유로 ~~ 스택들을 사용했고, 프론트엔드와 ~~했다? but,
- + 여기 쓸 내용이 없다면, 프론트,백,믹스 레포 맨 위 상단은 블레처 로고를 가로 큰 배너 느낌으로 박아도 좋을 것 같습니다 -DG-  -->
+<!-- 인공지능 예술 웹 서비스 Bletcher의 웹 백엔드를 담당합니다. Node.js 기반으로 ~~ RESTful api 서버? 이런 내용을 이쁘게 쓰면 될듯 합니다.-->
+
 
 > 라이센스에 관련된 내용은 [License](#license)를 참조해주세요.
 
@@ -100,5 +99,4 @@ yarn start
 윤가영 - @yoongoing - rkdud0925@hanyang.ac.kr <br />
 
 ## License<a id="license"></a>
-
-All of source codes under our project are using [MIT License](http://opensource.org/licenses/MIT).
+프로젝트의 모든 라이센스는 [MIT License](http://opensource.org/licenses/MIT)를 따릅니다. 상세 라이센스 정보는 [Bletcher License](https://github.com/Bletcher-Project/bletcher-back/blob/master/LICENSE)를 참조해주세요.
