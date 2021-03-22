@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import User from '../models/user';
+import Image from '../models/image';
 import jwtKey from '../config';
 import { IAuthUser } from '../interfaces/auth';
 
@@ -38,6 +39,12 @@ export const getUserById = async (id?: number): Promise<User | null> => {
       where: {
         [Op.or]: [{ id }],
       },
+      include: [
+        {
+          model: Image,
+          attributes: ['id', 'path'],
+        },
+      ],
     });
     return user;
   }
