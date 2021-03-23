@@ -96,7 +96,7 @@ yarn start
 
 ## License<a id="license"></a>
 
-프로젝트의 모든 라이센스는 [MIT License](http://opensource.org/licenses/MIT)를 따릅니다. 상세 라이센스 정보는 [Bletcher License](https://github.com/Bletcher-Project/bletcher-back/blob/master/LICENSE)를 참조해주세요.
+프로젝트의 모든 라이센스는 [MIT License](http://opensource.org/licenses/MIT)를 따릅니다. 상세 라이센스 정보는 [Bletcher License](./LICENSE)를 참조해주세요.
 
 ---
 
