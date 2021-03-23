@@ -26,7 +26,7 @@ _👏 우리는 240여개의 commit과 20여개의 branch, 약 30여개의 issue
 
 ## Database Schema Diagram
 
-![Bletcher_21 03 09](https://user-images.githubusercontent.com/22341374/110419160-1d706e00-80dc-11eb-92af-833cb57bebcb.jpg)
+![Bletcher_21 03 09](README_image/210323.png)
 
 ## 프로젝트 설계 및 배포
 
