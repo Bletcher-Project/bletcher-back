@@ -71,7 +71,7 @@ _👏 우리는 240여개의 commit과 20여개의 branch, 약 30여개의 issue
 
 버전 관련 실행 오류를 겪으신다면 [이 이슈](https://github.com/Bletcher-Project/bletcher-back/issues/48)를 참고해주세요.
 
-## Run
+### Run
 
 Development Mode
 
