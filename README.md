@@ -1,4 +1,4 @@
-![GitHub contributors](https://img.shields.io/github/contributors/Bletcher-Project/bletcher-back?style=for-the-badge) [![GitHub issues](https://img.shields.io/github/issues/Bletcher-Project/bletcher-back?style=for-the-badge)](https://github.com/Bletcher-Project/bletcher-back/issues) [![GitHub license](https://img.shields.io/github/license/Bletcher-Project/bletcher-back?style=for-the-badge)](https://github.com/Bletcher-Project/bletcher-back/blob/main/LICENSE)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bletcher-Project/bletcher-back?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/Bletcher-Project/bletcher-back?style=for-the-badge) [![GitHub issues](https://img.shields.io/github/issues/Bletcher-Project/bletcher-back?style=for-the-badge)](https://github.com/Bletcher-Project/bletcher-back/issues) [![GitHub license](https://img.shields.io/github/license/Bletcher-Project/bletcher-back?style=for-the-badge)](https://github.com/Bletcher-Project/bletcher-back/blob/main/LICENSE)
 
 # Bletcher-back
 
@@ -9,6 +9,8 @@
 > 라이센스에 관련된 내용은 [License](#license)를 참조해주세요.
 
 _👏 우리는 240여개의 commit과 20여개의 branch, 약 30여개의 issue를 통한 긴 개발 과정 끝에 배포되었습니다!!_
+
+_🚀 Version 1.0.0 Released_
 
 ---
 
