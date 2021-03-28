@@ -12,6 +12,8 @@ export interface IPostdetail {
 export interface IMixInfo {
   origin_post_id: number;
   sub_post_id: number;
+  image_id?: number;
+  is_public?: boolean;
 }
 
 export interface IPostMain {

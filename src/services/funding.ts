@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import Funding from '../models/funding';
+import FundingPost from '../models/fundingPost';
 import { IUserAction } from '../interfaces/user';
 
 export const checkFundingExists = async (params: IUserAction): Promise<boolean> => {
@@ -9,15 +10,18 @@ export const checkFundingExists = async (params: IUserAction): Promise<boolean> 
   return funding != null;
 };
 
-export const addFunding = async (params: IUserAction): Promise<void> => {
+export const addFundingCount = async (params: IUserAction): Promise<void> => {
   await Funding.create({ user_id: params.user_id, post_id: params.post_id });
 };
 
-export const checkFundingExpired = async (): Promise<[number, Funding[]] | null> => {
+export const addFundingPost = async (id: number): Promise<void> => {
+  await FundingPost.create({ post_id: id });
+};
+
+export const checkFundingExpired = async (): Promise<[number, FundingPost[]] | null> => {
   const militime = Date.parse(new Date().toString()) - 7 * 24 * 3600 * 1000;
   const datetime = new Date(militime);
-
-  const expiredCheck = await Funding.update(
+  const expiredCheck = await FundingPost.update(
     { is_expired: true },
     { where: { created_at: { [Op.lt]: datetime } } },
   );
@@ -27,9 +31,9 @@ export const checkFundingExpired = async (): Promise<[number, Funding[]] | null>
 export const getOngoingFunding = async (
   page: number = 1,
   limit: number = 10,
-): Promise<Funding[]> => {
+): Promise<FundingPost[]> => {
   const offset = limit * (page - 1);
-  const fundings: Funding[] = await Funding.findAll({
+  const fundings: FundingPost[] = await FundingPost.findAll({
     where: {
       is_expired: false,
     },
@@ -40,9 +44,12 @@ export const getOngoingFunding = async (
   return fundings;
 };
 
-export const getEndFunding = async (page: number = 1, limit: number = 10): Promise<Funding[]> => {
+export const getEndFunding = async (
+  page: number = 1,
+  limit: number = 10,
+): Promise<FundingPost[]> => {
   const offset = limit * (page - 1);
-  const fundings: Funding[] = await Funding.findAll({
+  const fundings: FundingPost[] = await FundingPost.findAll({
     where: {
       is_expired: true,
     },
@@ -51,4 +58,29 @@ export const getEndFunding = async (page: number = 1, limit: number = 10): Promi
     limit,
   });
   return fundings;
+};
+
+export const getFundingCount = async (postid: number): Promise<number | null> => {
+  const fundings = await Funding.findAndCountAll({
+    where: {
+      post_id: postid,
+    },
+    order: [['created_at', 'DESC']],
+  });
+  return fundings.count;
+};
+
+export const getFundingDuedate = async (postid: number): Promise<String | null> => {
+  const funding = await FundingPost.findOne({
+    where: {
+      post_id: postid,
+    },
+    attributes: ['post_id', 'is_expired', 'created_at'],
+    order: [['created_at', 'DESC']],
+  });
+  const date = new Date(funding?.getDataValue('created_at')!);
+  date.setDate(date.getDate() + 7);
+  const duedate = date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
+
+  return duedate;
 };

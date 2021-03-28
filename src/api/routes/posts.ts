@@ -4,6 +4,7 @@ import Logger from '../../loaders/logger';
 import checkJWT from '../middleware/checkJwt';
 import { IJwtRequest } from '../../interfaces/auth';
 import { IPostdetail, IPostMain } from '../../interfaces/post';
+import { IUserAction } from '../../interfaces/user';
 import {
   createPost,
   editPost,
@@ -38,7 +39,7 @@ import {
 } from '../../util/response/message';
 import response from '../../util/response';
 import { getUserByUserInfo } from '../../services/user';
-import { getOngoingFunding, getEndFunding } from '../../services/funding';
+import { getOngoingFunding, getEndFunding, checkFundingExists } from '../../services/funding';
 
 const postRouter = Router();
 
@@ -387,8 +388,11 @@ postRouter.get(
 );
 
 postRouter.get(
-  '/funds/ongoing',
+  '/funds/ongoing/:userid',
   celebrate({
+    [Segments.PARAMS]: {
+      userid: Joi.number().integer().required(),
+    },
     [Segments.QUERY]: {
       page: Joi.number().greater(0),
       limit: Joi.number().greater(0),
@@ -396,12 +400,18 @@ postRouter.get(
   }),
   async (req: Request, res: Response, next: NextFunction) => {
     const { page, limit } = req.query as any;
+    const userId: number = parseInt(req.params.userid, 10);
     try {
       const fundings = await getOngoingFunding(page, limit);
       const posts = await Promise.all(
-        fundings.map((fun) => {
-          const post = getPostByPostId(fun.post_id);
-          return post;
+        fundings.map(async (fun) => {
+          const post = await getPostByPostId(fun.post_id);
+          const isFunding = userId === 0 ? false
+            : await checkFundingExists({ user_id: userId, post_id: fun.post_id } as IUserAction);
+          return {
+            post,
+            isFunding,
+          };
         }),
       );
       if (fundings) {

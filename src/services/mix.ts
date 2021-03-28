@@ -1,5 +1,4 @@
 import rp from 'request-promise';
-import Image from '../models/image';
 import Post from '../models/post';
 import Mix from '../models/mix';
 import { IMixInfo, IPostdetail } from '../interfaces/post';
@@ -9,6 +8,7 @@ import { createPost, getPostByPostId } from './post';
 import calcUtil from '../util/calc';
 import Logger from '../loaders/logger';
 import { SERVER_URL, MIX_API } from '../util/mix-api';
+import { addFundingPost } from './funding';
 
 export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   const mix: Mix | null = await Mix.findOne({
@@ -17,12 +17,12 @@ export const checkMixExists = async (params: IMixInfo): Promise<boolean> => {
   return mix != null;
 };
 
-export const postMix = async (params: IMixInfo): Promise<boolean> => {
+export const postMix = async (params: IMixInfo): Promise<number | null> => {
   const sampleOriginPost: any = await getPostByPostId(params.origin_post_id);
   const sampleSubPost: any = await getPostByPostId(params.sub_post_id);
   const originImagePath = sampleOriginPost['Image.path'];
   const subImagePath = sampleSubPost['Image.path'];
-  let mixSuccess = false;
+  let mixImageId: number | null;
 
   await rp({
     url: `${SERVER_URL}${MIX_API}`,
@@ -44,34 +44,41 @@ export const postMix = async (params: IMixInfo): Promise<boolean> => {
         type: jsonBody.type,
         path: jsonBody.path,
       };
-      const mixedImage: Image | null = await postImage(newImageInfo as IImageDetail);
-      if (mixedImage) {
-        const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
-        const newPostInfo = {
-          title: mixTitle,
-          description: null,
-          is_public: true,
-          user_id: sampleOriginPost['User.id'],
-          category_id: 1,
-          image_id: mixedImage?.id,
-        };
-        const mixedPost: Post | null = await createPost(newPostInfo as IPostdetail);
-        if (mixedPost) {
-          await Mix.create({
-            origin_post_id: params.origin_post_id,
-            sub_post_id: params.sub_post_id,
-            post_id: mixedPost?.id,
-          });
-        }
-        if (jsonBody.error === 0) {
-          mixSuccess = true;
-        }
-      }
+      const mixImage = await postImage(newImageInfo as IImageDetail);
+      mixImageId = mixImage?.id!;
     })
     .catch((err) => {
       Logger.error('🔥 error %o', err.message);
     });
-  return mixSuccess;
+  return mixImageId!;
+};
+
+export const postMixPost = async (params: IMixInfo): Promise<Post | null> => {
+  const sampleOriginPost: any = await getPostByPostId(params.origin_post_id);
+  const sampleSubPost: any = await getPostByPostId(params.sub_post_id);
+  const mixTitle = `${sampleOriginPost['User.nickname']} X ${sampleSubPost['User.nickname']}`;
+  const newPostInfo = {
+    title: mixTitle,
+    description: null,
+    is_public: params.is_public,
+    user_id: sampleOriginPost['User.id'],
+    category_id: 1,
+    image_id: params.image_id,
+  };
+
+  const mixedPost: Post | null = await createPost(newPostInfo as IPostdetail);
+  if (mixedPost) {
+    await Mix.create({
+      origin_post_id: params.origin_post_id,
+      sub_post_id: params.sub_post_id,
+      post_id: mixedPost?.id,
+    });
+    if (newPostInfo.is_public === true) {
+      await addFundingPost(mixedPost.id);
+    }
+  }
+
+  return mixedPost;
 };
 
 export const getOriginMixInfo = async (id: number): Promise<Mix[] | null> => {
