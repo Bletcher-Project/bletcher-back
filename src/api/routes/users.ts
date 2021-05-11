@@ -142,6 +142,7 @@ userRouter.patch(
       password: Joi.string(),
       email: Joi.string(),
       introduce: Joi.string().allow('', null),
+      profile_img_delete: Joi.boolean(),
     }),
   }),
   async (req: IJwtRequest, res: Response, next: NextFunction) => {
@@ -149,33 +150,38 @@ userRouter.patch(
     let modifyDetail = { id: userid, ...req.body };
     const existUser = await getUserByUserInfo({ id: modifyDetail.id });
     try {
-      const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
-      const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });
-      if (dupEmail) {
-        if (dupEmail.id !== userid) {
-          return res.status(409).json(response.response409(EXIST_EMAIL));
+      if (existUser) {
+        const dupEmail = await getUserByUserInfo({ email: modifyDetail.email });
+        const dupNickname = await getUserByUserInfo({ nickname: modifyDetail.nickname });
+        if (dupEmail) {
+          if (dupEmail.id !== userid) {
+            return res.status(409).json(response.response409(EXIST_EMAIL));
+          }
         }
-      }
-      if (dupNickname) {
-        if (dupNickname.id !== userid) {
-          return res.status(409).json(response.response409(EXIST_ID));
+        if (dupNickname) {
+          if (dupNickname.id !== userid) {
+            return res.status(409).json(response.response409(EXIST_ID));
+          }
         }
-      }
-      if (req.file) {
-        const imageDetail = {
-          name: req.file.filename,
-          type: req.file.mimetype,
-          path: req.file.path,
-        };
-        if (existUser?.profile_image) {
-          await deleteImage(existUser?.profile_image);
+        if (req.file) {
+          const imageDetail = {
+            name: req.file.filename,
+            type: req.file.mimetype,
+            path: req.file.path,
+          };
+          if (existUser.profile_image) {
+            await deleteImage(existUser?.profile_image);
+          }
+          const newImage: Image | null = await postImage(imageDetail as IImageDetail);
+          modifyDetail = { ...modifyDetail, profile_image: newImage?.id };
         }
-        const newImage: Image | null = await postImage(imageDetail as IImageDetail);
-        modifyDetail = { ...modifyDetail, profile_image: newImage?.id };
-      }
-      const user = await modifyUser(modifyDetail as IUserModify);
-      if (user) {
-        return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+        if (req.body.profile_img_delete && existUser.profile_image) {
+          await deleteImage(existUser.profile_image);
+        }
+        const user = await modifyUser(modifyDetail as IUserModify);
+        if (user) {
+          return res.status(200).json(response.response200(MODIFY_USER_SUCCESS, user));
+        }
       }
       return res.status(400).json(response.response400(MODIFY_USER_FAIL));
     } catch (err) {

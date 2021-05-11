@@ -44,21 +44,6 @@ export const getUserByUserInfo = async (userInfo: IUserInfo): Promise<User | nul
   return user;
 };
 
-export const getUsernameById = async (id: number): Promise<User | null> => {
-  const nickname = await User.findOne({
-    where: { id },
-    raw: true,
-    attributes: ['nickname'],
-    include: [
-      {
-        model: Image,
-        attributes: ['id', 'path'],
-      },
-    ],
-  });
-  return nickname;
-};
-
 export const deleteUser = async (id: number): Promise<number> => {
   const user = await User.destroy({
     where: { id },
